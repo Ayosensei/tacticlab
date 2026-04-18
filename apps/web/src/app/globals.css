@@ -74,7 +74,8 @@
 
 @layer utilities {
   .glass {
-    @apply bg-card/30 backdrop-blur-md border border-white/10;
+    background-color: oklch(0.15 0.02 260 / 0.3);
+    @apply backdrop-blur-md border border-white/10;
   }
   .pitch-gradient {
     background: radial-gradient(circle at center, oklch(0.25 0.1 150) 0%, oklch(0.15 0.05 150) 100%);
