@@ -3,16 +3,21 @@
 import { useTacticStore } from "@/store/tacticStore";
 import { PlayerToken } from "./PlayerToken";
 import { DndContext, DragEndEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export function Pitch() {
   const { currentTactic, updatePlayerPosition } = useTacticStore();
   const pitchRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8, // 8px of movement before dragging starts
+        distance: 8,
       },
     })
   );
@@ -23,32 +28,29 @@ export function Pitch() {
 
     if (!pitchRef.current) return;
 
-    // Get the dimensions of the pitch
     const rect = pitchRef.current.getBoundingClientRect();
-    
-    // Find the player to get current position
     const player = currentTactic.players.find(p => p.id === playerId);
     if (!player) return;
 
-    // Calculate new percentage based on delta and container size
     const deltaXPercent = (delta.x / rect.width) * 100;
     const deltaYPercent = (delta.y / rect.height) * 100;
 
     let newX = player.x + deltaXPercent;
     let newY = player.y + deltaYPercent;
 
-    // Clamp to pitch boundaries
     newX = Math.max(0, Math.min(100, newX));
     newY = Math.max(0, Math.min(100, newY));
 
     updatePlayerPosition(playerId, newX, newY);
   };
 
+  if (!isMounted) return <div className="h-full aspect-[74/105] bg-[#050608] rounded-xl animate-pulse" />;
+
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div 
         ref={pitchRef}
-        className="relative aspect-[74/105] max-h-[85vh] w-auto mx-auto rounded-xl overflow-hidden shadow-2xl border border-white/5 bg-[#050608]"
+        className="relative aspect-[74/105] h-full mx-auto rounded-xl overflow-hidden shadow-2xl border border-white/5 bg-[#050608]"
       >
         {/* Field Lines - More realistic dark green and thin lines */}
         <div className="absolute inset-x-8 inset-y-8 bg-[#0a0f0d] border border-white/5 shadow-inner">

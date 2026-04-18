@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+    <html lang="en" className="dark" style={{ colorScheme: "dark" }} suppressHydrationWarning>
       <body className={cn(inter.className, "bg-background text-foreground overflow-hidden h-screen flex flex-col")}>
         <TopNav />
         <div className="flex flex-1 overflow-hidden">
