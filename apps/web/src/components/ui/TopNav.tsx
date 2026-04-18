@@ -1,42 +1,51 @@
 "use client";
 
-import { useTacticStore } from "@/store/tacticStore";
-import { Save, Share2, Upload, Download } from "lucide-react";
+import { Bell, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const links = [
+  { label: "Builder", active: true },
+  { label: "Analysis" },
+  { label: "Compare" },
+  { label: "Community" },
+];
 
 export function TopNav() {
-  const { currentTactic } = useTacticStore();
-
   return (
-    <nav className="h-16 border-b glass flex items-center justify-between px-6 z-50">
-      <div className="flex items-center gap-4">
-        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-400">
-          TacticLab
+    <nav className="h-20 border-b border-white/5 bg-[#12141a] flex items-center justify-between px-8 z-50">
+      <div className="flex items-center gap-12">
+        <h1 className="text-2xl font-black text-emerald-400 tracking-tighter italic">
+          TACTICLAB
         </h1>
-        <div className="h-6 w-px bg-white/10" />
-        <span className="text-sm font-medium text-muted-foreground">
-          {currentTactic.title}
-        </span>
+        
+        <div className="flex items-center gap-8">
+          {links.map((link) => (
+            <button
+              key={link.label}
+              className={cn(
+                "text-[10px] uppercase font-bold tracking-[0.2em] transition-all hover:text-emerald-400",
+                link.active ? "text-emerald-400 border-b-2 border-emerald-400 pb-1 -mb-[2px]" : "text-muted-foreground"
+              )}
+            >
+              {link.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
-          <Upload className="w-4 h-4" />
-          Import .tac
+      <div className="flex items-center gap-6">
+        <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-[#0a0c10] font-bold text-[10px] uppercase tracking-widest px-6 h-10">
+          Deploy Tactic
         </Button>
-        <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-foreground">
-          <Download className="w-4 h-4" />
-          Export
-        </Button>
-        <div className="h-6 w-px bg-white/10 mx-2" />
-        <Button variant="outline" size="sm" className="gap-2 border-white/10 hover:bg-white/5">
-          <Share2 className="w-4 h-4" />
-          Share
-        </Button>
-        <Button size="sm" className="gap-2 bg-primary text-primary-foreground hover:opacity-90">
-          <Save className="w-4 h-4" />
-          Save Tactic
-        </Button>
+        
+        <div className="flex items-center gap-4 text-muted-foreground">
+          <Bell className="w-5 h-5 hover:text-foreground cursor-pointer" />
+          <Settings className="w-5 h-5 hover:text-foreground cursor-pointer" />
+          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/10 cursor-pointer hover:bg-white/20">
+            <User className="w-5 h-5" />
+          </div>
+        </div>
       </div>
     </nav>
   );
