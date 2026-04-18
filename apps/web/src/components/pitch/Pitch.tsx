@@ -78,11 +78,13 @@ export function Pitch() {
           <circle cx="50" cy="84" r="0.2" fill="white" />
         </svg>
 
-        {/* Players */}
-        <div className="absolute inset-0">
-          {currentTactic.players.map((player) => (
-            <PlayerToken key={player.id} player={player} />
-          ))}
+        {/* Players Layer - High Z-Index */}
+        <div className="absolute inset-0 z-30">
+          <div className="relative w-full h-full">
+            {currentTactic.players.map((player) => (
+              <PlayerToken key={player.id} player={player} />
+            ))}
+          </div>
         </div>
 
         {/* Formation Header Badge */}

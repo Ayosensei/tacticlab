@@ -4,17 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
 @layer base {
-  .theme {
-    --font-heading: var(--font-sans);
-    --font-sans: var(--font-sans);
-  }
   :root {
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
@@ -34,50 +24,41 @@
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
+    --radius: 0.75rem;
   }
+
   .dark {
     --background: oklch(0.12 0.02 260);
     --foreground: oklch(0.95 0.01 260);
-    --card: oklch(0.15 0.02 260 / 0.8);
+    --card: oklch(0.15 0.02 260);
     --card-foreground: oklch(0.95 0.01 260);
-    --popover: oklch(0.15 0.02 260);
-    --popover-foreground: oklch(0.95 0.01 260);
-    --primary: oklch(0.65 0.25 150); /* Vibrant Pitch Green */
+    --primary: oklch(0.65 0.25 150);
     --primary-foreground: oklch(0.1 0.02 260);
     --secondary: oklch(0.25 0.04 260);
     --secondary-foreground: oklch(0.95 0.01 260);
     --muted: oklch(0.2 0.03 260);
     --muted-foreground: oklch(0.7 0.02 260);
     --accent: oklch(0.65 0.25 150 / 0.2);
-    --accent-foreground: oklch(0.95 0.01 260);
-    --destructive: oklch(0.6 0.2 25);
     --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.65 0.25 150);
-    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
 @layer utilities {
   .glass {
-    background-color: oklch(0.15 0.02 260 / 0.3);
-    @apply backdrop-blur-md border border-white/10;
+    background-color: oklch(0.15 0.02 260 / 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid oklch(1 0 0 / 10%);
   }
   .pitch-gradient {
-    background: radial-gradient(circle at center, oklch(0.25 0.1 150) 0%, oklch(0.15 0.05 150) 100%);
+    background: radial-gradient(circle at center, oklch(0.18 0.04 150) 0%, oklch(0.1 0.02 150) 100%);
   }
 }
