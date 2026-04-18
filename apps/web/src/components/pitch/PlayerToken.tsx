@@ -73,25 +73,25 @@ export function PlayerToken({ player }: PlayerTokenProps) {
         {/* Jersey Icon (Purple) */}
         <svg
           viewBox="0 0 100 100"
-          className="w-10 h-10 drop-shadow-xl"
+          className="w-8 h-8 drop-shadow-xl"
         >
           <path
             d="M 20 20 L 35 10 C 40 15 60 15 65 10 L 80 20 L 80 40 L 70 40 L 70 90 L 30 90 L 30 40 L 20 40 Z"
-            fill="#5b21b6" // Deep purple
+            fill="#5b21b6"
             stroke="white"
             strokeWidth="2"
           />
         </svg>
         
         {/* Label Container */}
-        <div className="flex items-center gap-1.5 bg-[#12141a] px-3 py-1 rounded-md border border-white/10 shadow-lg min-w-[70px] justify-center">
-          <span className="text-[10px] font-black uppercase text-white tracking-widest leading-none">
+        <div className="flex items-center gap-1 bg-[#12141a] px-2 py-0.5 rounded-sm border border-white/10 shadow-lg min-w-[60px] justify-center">
+          <span className="text-[9px] font-black uppercase text-white tracking-widest leading-none">
             {getRoleAbbreviation(player.role)} - 
           </span>
-          <span className={cn("text-[10px] font-black uppercase tracking-widest leading-none", getDutyColor(player.duty))}>
+          <span className={cn("text-[9px] font-black uppercase tracking-widest leading-none", getDutyColor(player.duty))}>
             {getDutyAbbreviation(player.duty)}
           </span>
-          <ChevronDown className="w-3 h-3 text-muted-foreground ml-0.5" />
+          <ChevronDown className="w-2.5 h-2.5 text-muted-foreground ml-0.5" />
         </div>
       </div>
     </div>

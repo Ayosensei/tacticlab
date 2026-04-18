@@ -32,8 +32,8 @@ export default function BuilderPage() {
       </div>
 
       {/* Main Pitch Area */}
-      <div className="flex-1 flex gap-6 min-h-0">
-        <div className="flex-1 bg-black/20 rounded-2xl border border-white/5 p-8 flex items-center justify-center relative overflow-hidden">
+      <div className="flex-1 flex gap-4 min-h-0">
+        <div className="flex-1 bg-black/20 rounded-2xl border border-white/5 p-4 flex items-center justify-center relative overflow-hidden">
           {/* Subtle decoration background */}
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_120%,rgba(100,255,100,0.05),transparent)]" />
           <Pitch />

@@ -50,7 +50,7 @@ export function Pitch() {
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div 
         ref={pitchRef}
-        className="relative aspect-[74/105] h-full mx-auto rounded-xl overflow-hidden shadow-2xl border border-white/5 bg-[#050608]"
+        className="relative aspect-[68/105] h-full max-h-[90vh] w-auto mx-auto border border-white/10 bg-[#07090c] shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-lg overflow-hidden"
       >
         {/* Field Lines - More realistic dark green and thin lines */}
         <div className="absolute inset-x-8 inset-y-8 bg-[#0a0f0d] border border-white/5 shadow-inner">
