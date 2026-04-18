@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Next.js
+.next
+out
+build
+
+# Rust
+target
+debug
+release
+*.rs.bk
+
+# WASM
+pkg
+wasm-pack.log
+
+# Env
+.env*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
