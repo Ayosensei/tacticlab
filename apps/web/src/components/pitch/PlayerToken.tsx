@@ -17,14 +17,13 @@ export function PlayerToken({ player }: PlayerTokenProps) {
   const getDutyColor = (duty: string) => {
     switch (duty) {
       case "Attack": return "text-emerald-400";
-      case "Support": return "text-blue-400";
-      case "Defend": return "text-red-400";
+      case "Support": return "text-sky-400";
+      case "Defend": return "text-rose-500";
       default: return "text-emerald-400";
     }
   };
 
   const getRoleAbbreviation = (role: string) => {
-    // Naive abbreviation mapping
     const map: Record<string, string> = {
       "Goalkeeper": "G",
       "Central Defender": "CD",
@@ -36,17 +35,18 @@ export function PlayerToken({ player }: PlayerTokenProps) {
       "Winger": "W",
       "Deep Lying Forward": "DLF",
       "Advanced Forward": "AF",
-      "Center Forward": "CF"
+      "Center Forward": "CF",
+      "Central Midfielder": "CEN"
     };
     return map[role] || role.substring(0, 3).toUpperCase();
   };
 
   const getDutyAbbreviation = (duty: string) => {
     switch (duty) {
-      case "Attack": return "At";
-      case "Support": return "Su";
-      case "Defend": return "De";
-      default: return duty.substring(0, 2);
+      case "Attack": return "AT";
+      case "Support": return "SU";
+      case "Defend": return "DE";
+      default: return duty.substring(0, 2).toUpperCase();
     }
   };
 
@@ -65,33 +65,34 @@ export function PlayerToken({ player }: PlayerTokenProps) {
       {...listeners}
       {...attributes}
       className={cn(
-        "absolute -translate-x-1/2 -translate-y-1/2 touch-none z-20 transition-transform active:scale-110",
-        isDragging ? "z-50 opacity-50 cursor-grabbing" : "cursor-grab"
+        "absolute -translate-x-1/2 -translate-y-1/2 touch-none z-20 transition-all active:scale-110",
+        isDragging ? "z-50 opacity-100 scale-110 cursor-grabbing shadow-2xl" : "cursor-grab"
       )}
     >
-      <div className="relative flex flex-col items-center gap-1.5">
-        {/* Jersey Icon (Purple) */}
+      <div className={cn("relative flex flex-col items-center gap-2", isDragging ? "drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "")}>
+        {/* Modern Jersey Silhouette (Matched to Tactic Builder.png) */}
         <svg
           viewBox="0 0 100 100"
-          className="w-8 h-8 drop-shadow-xl"
+          className="w-8 h-8 filter drop-shadow-md"
         >
           <path
-            d="M 20 20 L 35 10 C 40 15 60 15 65 10 L 80 20 L 80 40 L 70 40 L 70 90 L 30 90 L 30 40 L 20 40 Z"
+            d="M 25 15 L 40 5 C 45 10 55 10 60 5 L 75 15 L 75 35 L 68 35 L 68 95 L 32 95 L 32 35 L 25 35 Z"
             fill="#5b21b6"
-            stroke="white"
-            strokeWidth="2"
+            stroke="rgba(255,255,255,0.2)"
+            strokeWidth="3"
+            strokeLinejoin="round"
           />
         </svg>
         
-        {/* Label Container */}
-        <div className="flex items-center gap-1 bg-[#12141a] px-2 py-0.5 rounded-sm border border-white/10 shadow-lg min-w-[60px] justify-center">
-          <span className="text-[9px] font-black uppercase text-white tracking-widest leading-none">
+        {/* Polished Label Pill */}
+        <div className="flex items-center gap-1.5 bg-[#0d0f14]/90 backdrop-blur-md px-2.5 py-1 rounded w-max border border-white/10 shadow-xl group/label hover:border-emerald-400/30 transition-colors">
+          <span className="text-[10px] font-black uppercase text-white tracking-widest leading-none">
             {getRoleAbbreviation(player.role)} - 
           </span>
-          <span className={cn("text-[9px] font-black uppercase tracking-widest leading-none", getDutyColor(player.duty))}>
+          <span className={cn("text-[10px] font-black uppercase tracking-widest leading-none", getDutyColor(player.duty))}>
             {getDutyAbbreviation(player.duty)}
           </span>
-          <ChevronDown className="w-2.5 h-2.5 text-muted-foreground ml-0.5" />
+          <ChevronDown className="w-3 h-3 text-white/30 ml-0.5 group-hover/label:text-emerald-400 transition-colors" />
         </div>
       </div>
     </div>

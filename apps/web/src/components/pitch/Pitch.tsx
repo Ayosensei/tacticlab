@@ -4,6 +4,7 @@ import { useTacticStore } from "@/store/tacticStore";
 import { PlayerToken } from "./PlayerToken";
 import { DndContext, DragEndEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
 import { useRef, useEffect, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 export function Pitch() {
   const { currentTactic, updatePlayerPosition } = useTacticStore();
@@ -44,43 +45,48 @@ export function Pitch() {
     updatePlayerPosition(playerId, newX, newY);
   };
 
-  if (!isMounted) return <div className="h-full aspect-[74/105] bg-[#050608] rounded-xl animate-pulse" />;
+  if (!isMounted) return <div className="h-full aspect-[68/105] bg-[#0d0f14] rounded-lg animate-pulse" />;
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div 
         ref={pitchRef}
-        className="relative aspect-[68/105] h-full max-h-[90vh] w-auto mx-auto border border-white/10 bg-[#07090c] shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-lg overflow-hidden"
+        className="relative aspect-[68/105] h-full max-h-[92vh] w-auto mx-auto border border-white/10 bg-[#0d0f14] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg overflow-hidden group"
       >
-        {/* Field Lines - More realistic dark green and thin lines */}
-        <div className="absolute inset-x-8 inset-y-8 bg-[#0a0f0d] border border-white/5 shadow-inner">
-           {/* Grass pattern could go here */}
+        {/* Pitch Greenish Dark Background */}
+        <div className="absolute inset-0 bg-[#0d0f14]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.04)_0%,transparent_100%)]" />
         </div>
 
+        {/* Ultra-subtle Field Marks (Matching Frame) */}
         <svg
           viewBox="0 0 100 100"
-          className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
+          className="absolute inset-0 w-full h-full pointer-events-none"
         >
-          {/* Outer line */}
-          <rect x="5" y="5" width="90" height="90" fill="none" stroke="white" strokeWidth="0.2" />
-          
-          {/* Halfway line */}
-          <line x1="5" y1="50" x2="95" y2="50" stroke="white" strokeWidth="0.2" />
-          <circle cx="50" cy="50" r="9.15" fill="none" stroke="white" strokeWidth="0.2" />
-          <circle cx="50" cy="50" r="0.2" fill="white" />
+          <g stroke="rgba(255,255,255,0.06)" strokeWidth="0.15" fill="none">
+            {/* Outer line */}
+            <rect x="5" y="5" width="90" height="90" />
+            
+            {/* Halfway line */}
+            <line x1="5" y1="50" x2="95" y2="50" />
+            <circle cx="50" cy="50" r="9.15" />
+            <circle cx="50" cy="50" r="0.2" fill="rgba(255,255,255,0.1)" />
 
-          {/* Goal Area Top */}
-          <rect x="35" y="5" width="30" height="15" fill="none" stroke="white" strokeWidth="0.2" />
-          <rect x="42" y="5" width="16" height="5" fill="none" stroke="white" strokeWidth="0.2" />
-          <circle cx="50" cy="16" r="0.2" fill="white" />
-
-          {/* Goal Area Bottom */}
-          <rect x="35" y="80" width="30" height="15" fill="none" stroke="white" strokeWidth="0.2" />
-          <rect x="42" y="90" width="16" height="5" fill="none" stroke="white" strokeWidth="0.2" />
-          <circle cx="50" cy="84" r="0.2" fill="white" />
+            {/* Goal Area Top */}
+            <rect x="35" y="5" width="30" height="15" />
+            <rect x="42" y="5" width="16" height="5" />
+            
+            {/* Goal Area Bottom */}
+            <rect x="35" y="80" width="30" height="15" />
+            <rect x="42" y="90" width="16" height="5" />
+            
+            {/* Penalty spots and arcs */}
+            <circle cx="50" cy="16" r="0.2" fill="rgba(255,255,255,0.1)" />
+            <circle cx="50" cy="84" r="0.2" fill="rgba(255,255,255,0.1)" />
+          </g>
         </svg>
 
-        {/* Players Layer - High Z-Index */}
+        {/* Players Layer */}
         <div className="absolute inset-0 z-30">
           <div className="relative w-full h-full">
             {currentTactic.players.map((player) => (
@@ -89,12 +95,14 @@ export function Pitch() {
           </div>
         </div>
 
-        {/* Formation Header Badge */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2">
-          <div className="bg-[#12141a]/90 backdrop-blur-md px-6 py-2 rounded border border-white/10 shadow-2xl flex items-center gap-4">
-            <span className="text-[12px] font-black uppercase text-emerald-400 tracking-widest">{currentTactic.formation} WIDE</span>
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-muted-foreground"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </div>
+        {/* Top Formation Badge (Exact match for Tactic Builder.png) */}
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-40">
+          <button className="bg-[#12141a] hover:bg-[#1a1d25] transition-colors px-6 py-2.5 rounded-sm border border-white/5 flex items-center gap-3 shadow-2xl">
+            <span className="text-[11px] font-black uppercase text-emerald-400 tracking-[0.2em]">
+              {currentTactic.formation} WIDE
+            </span>
+            <ChevronDown className="w-4 h-4 text-muted-foreground opacity-50" />
+          </button>
         </div>
       </div>
     </DndContext>

@@ -12,8 +12,8 @@
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.65 0.25 150);
+    --primary-foreground: oklch(0.1 0.02 260);
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
     --muted: oklch(0.97 0 0);
@@ -24,41 +24,47 @@
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
-    --radius: 0.75rem;
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: oklch(0.12 0.02 260);
-    --foreground: oklch(0.95 0.01 260);
-    --card: oklch(0.15 0.02 260);
-    --card-foreground: oklch(0.95 0.01 260);
-    --primary: oklch(0.65 0.25 150);
-    --primary-foreground: oklch(0.1 0.02 260);
-    --secondary: oklch(0.25 0.04 260);
-    --secondary-foreground: oklch(0.95 0.01 260);
-    --muted: oklch(0.2 0.03 260);
-    --muted-foreground: oklch(0.7 0.02 260);
-    --accent: oklch(0.65 0.25 150 / 0.2);
-    --border: oklch(1 0 0 / 10%);
-    --ring: oklch(0.65 0.25 150);
+    --background: #0d0f14; /* Deep tactical workspace color */
+    --foreground: #f8fafc;
+    --card: #12141a;
+    --card-foreground: #f8fafc;
+    --popover: #0d0f14;
+    --popover-foreground: #f8fafc;
+    --primary: #10b981; /* Emerald-500 */
+    --primary-foreground: #050608;
+    --secondary: #1e293b;
+    --secondary-foreground: #f8fafc;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --accent: #10b98122;
+    --accent-foreground: #10b981;
+    --destructive: #ef4444;
+    --border: #ffffff11;
+    --input: #ffffff11;
+    --ring: #10b981;
   }
+}
 
+@layer base {
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
 }
 
 @layer utilities {
   .glass {
-    background-color: oklch(0.15 0.02 260 / 0.4);
-    backdrop-filter: blur(12px);
-    border: 1px solid oklch(1 0 0 / 10%);
+    background-color: rgba(18, 20, 26, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
   .pitch-gradient {
-    background: radial-gradient(circle at center, oklch(0.18 0.04 150) 0%, oklch(0.1 0.02 150) 100%);
+    background: radial-gradient(circle at center, #131b18 0%, #0d0f14 100%);
   }
 }
