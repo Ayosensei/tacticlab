@@ -15,17 +15,17 @@ export function TopNav() {
   return (
     <nav className="h-20 border-b border-white/5 bg-[#12141a] flex items-center justify-between px-8 z-50">
       <div className="flex items-center gap-12">
-        <h1 className="text-2xl font-black text-emerald-400 tracking-tighter italic">
+        <h1 className="text-2xl font-black text-emerald-400 tracking-tighter">
           TACTICLAB
         </h1>
         
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-8 h-full">
           {links.map((link) => (
             <button
               key={link.label}
               className={cn(
-                "text-[10px] uppercase font-bold tracking-[0.2em] transition-all hover:text-emerald-400",
-                link.active ? "text-emerald-400 border-b-2 border-emerald-400 pb-1 -mb-[2px]" : "text-muted-foreground"
+                "text-[10px] uppercase font-bold tracking-[0.2em] transition-all hover:text-emerald-400 h-20 flex items-center border-b-2",
+                link.active ? "text-emerald-400 border-emerald-400" : "text-muted-foreground border-transparent"
               )}
             >
               {link.label}

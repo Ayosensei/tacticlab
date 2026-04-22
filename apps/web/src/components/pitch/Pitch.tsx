@@ -45,17 +45,17 @@ export function Pitch() {
     updatePlayerPosition(playerId, newX, newY);
   };
 
-  if (!isMounted) return <div className="h-full aspect-[68/105] bg-[#0d0f14] rounded-lg animate-pulse" />;
+  if (!isMounted) return <div className="h-full aspect-[68/105] bg-[#12141a] rounded-lg animate-pulse" />;
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div 
         ref={pitchRef}
-        className="relative aspect-[68/105] h-full max-h-[92vh] w-auto mx-auto border border-white/10 bg-[#0d0f14] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg overflow-hidden group"
+        className="relative flex-none aspect-[68/105] h-full max-h-[92vh] w-auto mx-auto border border-white/10 bg-[#12141a] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group"
       >
         {/* Pitch Greenish Dark Background */}
-        <div className="absolute inset-0 bg-[#0d0f14]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.04)_0%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[#12141a] rounded-lg overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.06)_0%,transparent_100%)]" />
         </div>
 
         {/* Ultra-subtle Field Marks (Matching Frame) */}
@@ -63,7 +63,7 @@ export function Pitch() {
           viewBox="0 0 100 100"
           className="absolute inset-0 w-full h-full pointer-events-none"
         >
-          <g stroke="rgba(255,255,255,0.06)" strokeWidth="0.15" fill="none">
+          <g stroke="rgba(255,255,255,0.15)" strokeWidth="0.2" fill="none">
             {/* Outer line */}
             <rect x="5" y="5" width="90" height="90" />
             
@@ -96,8 +96,8 @@ export function Pitch() {
         </div>
 
         {/* Top Formation Badge (Exact match for Tactic Builder.png) */}
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-40">
-          <button className="bg-[#12141a] hover:bg-[#1a1d25] transition-colors px-6 py-2.5 rounded-sm border border-white/5 flex items-center gap-3 shadow-2xl">
+        <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-50">
+          <button className="bg-[#12141a] hover:bg-[#1a1d25] transition-colors flex items-center justify-center min-w-[120px] h-[34px] px-4 rounded border border-white/5 gap-3 shadow-2xl">
             <span className="text-[11px] font-black uppercase text-emerald-400 tracking-[0.2em]">
               {currentTactic.formation} WIDE
             </span>

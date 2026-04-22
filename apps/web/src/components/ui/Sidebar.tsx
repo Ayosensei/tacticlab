@@ -28,10 +28,10 @@ export function Sidebar() {
             <button
               key={item.id}
               className={cn(
-                "group flex items-center gap-4 px-2 py-3 transition-all duration-200 text-left border-r-2",
+                "group flex items-center gap-4 px-3 py-3 transition-all duration-200 text-left relative",
                 item.active 
-                  ? "text-emerald-400 border-emerald-400 bg-emerald-400/5 font-bold" 
-                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-white/5"
+                  ? "text-emerald-400 bg-emerald-400/5 font-bold after:absolute after:right-0 after:top-0 after:h-full after:w-1 after:bg-emerald-400" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-white/5"
               )}
             >
               <item.icon className={cn(
