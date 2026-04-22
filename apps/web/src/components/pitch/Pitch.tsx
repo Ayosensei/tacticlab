@@ -51,38 +51,40 @@ export function Pitch() {
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <div 
         ref={pitchRef}
-        className="relative flex-none aspect-[68/105] h-full max-h-[92vh] w-auto mx-auto border border-white/10 bg-[#12141a] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group"
+        className="relative flex-none aspect-[68/105] w-full max-w-[800px] mx-auto border border-white/10 bg-[#12141a] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group mt-8 mb-20"
       >
         {/* Pitch Greenish Dark Background */}
         <div className="absolute inset-0 bg-[#12141a] rounded-lg overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.06)_0%,transparent_100%)]" />
         </div>
 
-        {/* Ultra-subtle Field Marks (Matching Frame) */}
+        {/* Mathematically precise Field Marks (viewBox matches 68x105 ratio with margin) */}
         <svg
-          viewBox="0 0 100 100"
-          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="-1 -1 70 107"
+          className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
         >
-          <g stroke="rgba(255,255,255,0.15)" strokeWidth="0.2" fill="none">
+          <g stroke="rgba(255,255,255,0.4)" strokeWidth="0.2" fill="none">
             {/* Outer line */}
-            <rect x="5" y="5" width="90" height="90" />
+            <rect x="0" y="0" width="68" height="105" />
             
             {/* Halfway line */}
-            <line x1="5" y1="50" x2="95" y2="50" />
-            <circle cx="50" cy="50" r="9.15" />
-            <circle cx="50" cy="50" r="0.2" fill="rgba(255,255,255,0.1)" />
+            <line x1="0" y1="52.5" x2="68" y2="52.5" />
+            <circle cx="34" cy="52.5" r="9.15" />
+            <circle cx="34" cy="52.5" r="0.4" fill="rgba(255,255,255,0.4)" />
 
             {/* Goal Area Top */}
-            <rect x="35" y="5" width="30" height="15" />
-            <rect x="42" y="5" width="16" height="5" />
+            <rect x="13.84" y="0" width="40.32" height="16.5" />
+            <rect x="24.84" y="0" width="18.32" height="5.5" />
+            <path d="M 26.69 16.5 A 9.15 9.15 0 0 0 41.31 16.5" />
             
             {/* Goal Area Bottom */}
-            <rect x="35" y="80" width="30" height="15" />
-            <rect x="42" y="90" width="16" height="5" />
+            <rect x="13.84" y="88.5" width="40.32" height="16.5" />
+            <rect x="24.84" y="99.5" width="18.32" height="5.5" />
+            <path d="M 26.69 88.5 A 9.15 9.15 0 0 1 41.31 88.5" />
             
             {/* Penalty spots and arcs */}
-            <circle cx="50" cy="16" r="0.2" fill="rgba(255,255,255,0.1)" />
-            <circle cx="50" cy="84" r="0.2" fill="rgba(255,255,255,0.1)" />
+            <circle cx="34" cy="11" r="0.4" fill="rgba(255,255,255,0.4)" />
+            <circle cx="34" cy="94" r="0.4" fill="rgba(255,255,255,0.4)" />
           </g>
         </svg>
 
