@@ -73,7 +73,7 @@ export function PlayerToken({ player }: PlayerTokenProps) {
         {/* Modern Jersey Silhouette (Matched to Tactic Builder.png) */}
         <svg
           viewBox="0 0 100 100"
-          className="w-10 h-10 filter drop-shadow-md"
+          className="w-14 h-14 filter drop-shadow-md"
         >
           <path
             d="M 20 20 L 35 10 C 40 15 60 15 65 10 L 80 20 L 80 40 L 70 40 L 70 90 L 30 90 L 30 40 L 20 40 Z"
@@ -85,14 +85,14 @@ export function PlayerToken({ player }: PlayerTokenProps) {
         </svg>
         
         {/* Polished Label Pill */}
-        <div className="flex items-center gap-1.5 bg-[#0d0f14]/90 backdrop-blur-md px-3 py-1 rounded-[10px] w-max border border-white/10 shadow-xl group/label hover:border-emerald-400/30 transition-colors">
-          <span className="text-[10px] font-black uppercase text-white tracking-widest leading-none">
+        <div className="flex items-center gap-1.5 bg-[#0d0f14]/90 backdrop-blur-md px-3 py-1.5 rounded-[12px] w-max border border-white/10 shadow-xl group/label hover:border-emerald-400/30 transition-colors">
+          <span className="text-xs font-black uppercase text-white tracking-widest leading-none">
             {getRoleAbbreviation(player.role)} - 
           </span>
-          <span className={cn("text-[10px] font-black tracking-widest leading-none", getDutyColor(player.duty))}>
+          <span className={cn("text-xs font-black tracking-widest leading-none", getDutyColor(player.duty))}>
             {getDutyAbbreviation(player.duty)}
           </span>
-          <ChevronDown className="w-3 h-3 text-white/30 ml-0.5 group-hover/label:text-emerald-400 transition-colors" />
+          <ChevronDown className="w-3.5 h-3.5 text-white/30 ml-0.5 group-hover/label:text-emerald-400 transition-colors" />
         </div>
       </div>
     </div>
