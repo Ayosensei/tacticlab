@@ -21,12 +21,7 @@ export default function RootLayout({
     <html lang="en" className="dark" style={{ colorScheme: "dark" }} suppressHydrationWarning>
       <body className={cn(inter.className, "bg-background text-foreground overflow-hidden h-screen flex flex-col")}>
         <TopNav />
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto relative p-6">
-            {children}
-          </main>
-        </div>
+        {children}
       </body>
     </html>
   );
