@@ -2,12 +2,13 @@
 
 import { useTacticStore } from "@/store/tacticStore";
 import { PlayerToken } from "./PlayerToken";
+import { FORMATIONS } from "@/lib/tacticsData";
 import { DndContext, DragEndEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
 import { useRef, useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export function Pitch() {
-  const { currentTactic, updatePlayerPosition } = useTacticStore();
+  const { currentTactic, updatePlayerPosition, setFormation } = useTacticStore();
   const pitchRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -97,14 +98,35 @@ export function Pitch() {
           </div>
         </div>
 
-        {/* Top Formation Badge (Exact match for Tactic Builder.png) */}
+        {/* Top Formation Badge Dropdown */}
         <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-50">
-          <button className="bg-[#12141a] hover:bg-[#1a1d25] transition-colors flex items-center justify-center min-w-[120px] h-[34px] px-4 rounded border border-white/5 gap-3 shadow-2xl">
-            <span className="text-[11px] font-black uppercase text-emerald-400 tracking-[0.2em]">
-              {currentTactic.formation} WIDE
-            </span>
-            <ChevronDown className="w-4 h-4 text-muted-foreground opacity-50" />
-          </button>
+          <div className="relative group/formation">
+            <button className="bg-[#12141a] hover:bg-[#1a1d25] transition-colors flex items-center justify-center min-w-[120px] h-[34px] px-4 rounded border border-white/5 gap-3 shadow-2xl">
+              <span className="text-[11px] font-black uppercase text-emerald-400 tracking-[0.2em]">
+                {currentTactic.formation}
+              </span>
+              <ChevronDown className="w-4 h-4 text-muted-foreground opacity-50" />
+            </button>
+            
+            {/* Simple CSS Dropdown Formations list */}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover/formation:opacity-100 group-hover/formation:pointer-events-auto transition-all duration-200">
+              <div className="bg-[#0a0c10] border border-white/10 rounded-md shadow-2xl flex flex-col p-1 w-48">
+                {FORMATIONS.map(form => (
+                  <button
+                    key={form.id}
+                    onClick={() => setFormation(form.id)}
+                    className={`text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded transition-colors ${
+                      currentTactic.formation === form.name 
+                        ? "bg-emerald-400/10 text-emerald-400" 
+                        : "text-slate-300 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    {form.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </DndContext>

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { Tactic, AnalysisResult } from "@/types/tactic";
+import { Tactic, AnalysisResult, Duty } from "@/types/tactic";
+import { FORMATIONS, getValidRolesForPosition } from "../lib/tacticsData";
 
 interface TacticState {
   currentTactic: Tactic;
@@ -8,7 +9,9 @@ interface TacticState {
   
   // Actions
   setTactic: (tactic: Tactic) => void;
-  updatePlayerPosition: (playerId: string, x: number, y: number) => void;
+  updatePlayerPosition: (playerId: string, newX: number, newY: number) => void;
+  setFormation: (formationId: string) => void;
+  updatePlayerRole: (playerId: string, role: string, duty: Duty) => void;
   setAnalysis: (analysis: AnalysisResult) => void;
   setLoading: (isLoading: boolean) => void;
 }
@@ -44,15 +47,46 @@ export const useTacticStore = create<TacticState>((set) => ({
 
   setTactic: (tactic) => set({ currentTactic: tactic }),
   
-  updatePlayerPosition: (playerId, x, y) => 
-    set((state) => ({
-      currentTactic: {
-        ...state.currentTactic,
-        players: state.currentTactic.players.map((p) => 
-          p.id === playerId ? { ...p, x, y } : p
-        ),
-      },
-    })),
+  updatePlayerPosition: (playerId, newX, newY) =>
+    set((state) => {
+      const players = state.currentTactic.players.map((p) => {
+        if (p.id === playerId) {
+          const updatedPlayer = { ...p, x: newX, y: newY };
+          
+          // Dynamic Role Switching
+          const validRoles = getValidRolesForPosition(newX, newY);
+          if (!validRoles.includes(updatedPlayer.role)) {
+            updatedPlayer.role = validRoles[0];
+          }
+          
+          return updatedPlayer;
+        }
+        return p;
+      });
+      return { currentTactic: { ...state.currentTactic, players } };
+    }),
+    
+  setFormation: (formationId) =>
+    set((state) => {
+      const formation = FORMATIONS.find(f => f.id === formationId);
+      if (!formation) return state;
+      
+      return {
+        currentTactic: {
+          ...state.currentTactic,
+          formation: formation.name,
+          players: JSON.parse(JSON.stringify(formation.players)) // Deep clone array
+        }
+      };
+    }),
+    
+  updatePlayerRole: (playerId, role, duty) =>
+    set((state) => {
+      const players = state.currentTactic.players.map((p) =>
+        p.id === playerId ? { ...p, role, duty } : p
+      );
+      return { currentTactic: { ...state.currentTactic, players } };
+    }),
 
   setAnalysis: (analysis) => set({ analysis }),
   setLoading: (isLoading) => set({ isLoading }),
