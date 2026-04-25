@@ -1,12 +1,12 @@
 "use client";
 
 import { useTacticStore } from "@/store/tacticStore";
-import { TACTICAL_STYLES, MENTALITIES } from "@/lib/tacticsData";
+import { TACTICAL_STYLES, MENTALITIES, FORMATIONS } from "@/lib/tacticsData";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
 export function ConfigPanel() {
-  const { activeSidebarTab, currentTactic, setStyle, setMentality } = useTacticStore();
+  const { activeSidebarTab, currentTactic, setStyle, setMentality, setFormation } = useTacticStore();
 
   if (!activeSidebarTab) return null;
 
@@ -21,7 +21,8 @@ export function ConfigPanel() {
         <p className="text-xs text-muted-foreground mt-1">
           {activeSidebarTab === "style" && "Select the primary philosophy shaping your team's intent."}
           {activeSidebarTab === "mentality" && "Define the baseline risk and aggression level."}
-          {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && "Configure tactical instructions."}
+          {activeSidebarTab === "formation" && "Choose a structural framework for your team."}
+          {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && "Configure tactical instructions."}
         </p>
       </div>
 
@@ -85,7 +86,33 @@ export function ConfigPanel() {
           );
         })}
 
-        {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && (
+        {activeSidebarTab === "formation" && FORMATIONS.map((formation) => {
+          const isActive = currentTactic.formation === formation.name;
+          return (
+            <button
+              key={formation.id}
+              onClick={() => setFormation(formation.id)}
+              className={cn(
+                "flex flex-col text-left p-4 rounded-lg border transition-all duration-200",
+                isActive 
+                  ? "bg-[#162a22] border-emerald-500/30" 
+                  : "bg-[#12141a] border-white/5 hover:border-white/20 hover:bg-white/5"
+              )}
+            >
+              <div className="flex justify-between items-center w-full">
+                <span className={cn(
+                  "text-[11px] font-black uppercase tracking-widest",
+                  isActive ? "text-emerald-400" : "text-slate-200"
+                )}>
+                  {formation.name}
+                </span>
+                {isActive && <Check className="w-4 h-4 text-emerald-400" />}
+              </div>
+            </button>
+          );
+        })}
+
+        {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && (
           <div className="p-4 bg-[#12141a] rounded border border-white/5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               Panel under construction
