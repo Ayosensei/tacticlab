@@ -67,9 +67,9 @@ export const FORMATIONS = [
     name: "3-4-2-1 Asymmetric",
     players: [
       { id: "1", role: "Sweeper Keeper", duty: "Defend", slot: "GK", ...getGridSlot("GK") },
-      { id: "2", role: "Wide Centre-Back", duty: "Defend", slot: "LB", ...getGridSlot("LB") },
+      { id: "2", role: "Wide Centre-Back", duty: "Defend", slot: "LCB", ...getGridSlot("LCB") },
       { id: "3", role: "Central Defender", duty: "Cover", slot: "CB", ...getGridSlot("CB") },
-      { id: "4", role: "Wide Centre-Back", duty: "Defend", slot: "RB", ...getGridSlot("RB") },
+      { id: "4", role: "Wide Centre-Back", duty: "Defend", slot: "RCB", ...getGridSlot("RCB") },
       { id: "5", role: "Wing Back", duty: "Support", slot: "LWB", ...getGridSlot("LWB") },
       { id: "6", role: "Wing Back", duty: "Attack", slot: "RWB", ...getGridSlot("RWB") },
       { id: "7", role: "Central Midfielder", duty: "Defend", slot: "LCM", ...getGridSlot("LCM") },
