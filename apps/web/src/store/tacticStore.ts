@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Tactic, AnalysisResult, Duty } from "@/types/tactic";
-import { FORMATIONS, getValidRolesForPosition } from "../lib/tacticsData";
+import { FORMATIONS, getValidRolesForPosition, getClosestSlot } from "../lib/tacticsData";
 
 interface TacticState {
   currentTactic: Tactic;
