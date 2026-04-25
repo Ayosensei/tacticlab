@@ -1,4 +1,4 @@
-export type Duty = "Attack" | "Support" | "Defend" | "Automatic";
+export type Duty = "Attack" | "Support" | "Defend" | "Automatic" | "Cover" | "Stopper";
 export type FmVersion = "FM23" | "FM24";
 
 export interface PlayerPosition {

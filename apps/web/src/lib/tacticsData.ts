@@ -176,7 +176,7 @@ export const ROLE_ABBREVIATIONS: Record<string, string> = {
   "False Nine": "F9"
 };
 
-export const DUTIES = ["Defend", "Support", "Attack", "Automatic"];
+export const DUTIES = ["Defend", "Support", "Attack", "Automatic", "Cover", "Stopper"];
 export type DutyType = typeof DUTIES[number];
 
 export const TACTICAL_STYLES = [

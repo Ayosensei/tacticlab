@@ -2,11 +2,12 @@
 
 import { useTacticStore } from "@/store/tacticStore";
 import { TACTICAL_STYLES, MENTALITIES, FORMATIONS } from "@/lib/tacticsData";
+import { ROLES_DB } from "@/lib/rolesData";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
 export function ConfigPanel() {
-  const { activeSidebarTab, currentTactic, setStyle, setMentality, setFormation } = useTacticStore();
+  const { activeSidebarTab, currentTactic, setStyle, setMentality, setFormation, selectedPlayerId } = useTacticStore();
 
   if (!activeSidebarTab) return null;
 
@@ -22,7 +23,8 @@ export function ConfigPanel() {
           {activeSidebarTab === "style" && "Select the primary philosophy shaping your team's intent."}
           {activeSidebarTab === "mentality" && "Define the baseline risk and aggression level."}
           {activeSidebarTab === "formation" && "Choose a structural framework for your team."}
-          {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && "Configure tactical instructions."}
+          {activeSidebarTab === "player_instructions" && "Configure specific tactical behaviors for this role."}
+          {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && activeSidebarTab !== "player_instructions" && "Configure tactical instructions."}
         </p>
       </div>
 
@@ -112,7 +114,85 @@ export function ConfigPanel() {
           );
         })}
 
-        {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && (
+        {activeSidebarTab === "player_instructions" && (() => {
+          const player = currentTactic.players.find(p => p.id === selectedPlayerId);
+          if (!player) return (
+            <div className="p-4 text-center text-xs text-muted-foreground">Select a player on the pitch to view instructions.</div>
+          );
+
+          const roleData = ROLES_DB[player.role];
+          if (!roleData) return (
+            <div className="p-4 text-center text-xs text-muted-foreground">No data found for {player.role}.</div>
+          );
+
+          const dutyOverrides = roleData.duties[player.duty as any] || {};
+          const activeInstructions = [
+            ...roleData.baseInstructions.instructions,
+            ...(dutyOverrides.instructions || [])
+          ];
+          const activeHidden = [
+            ...roleData.baseInstructions.hiddenInstructions,
+            ...(dutyOverrides.hiddenInstructions || [])
+          ];
+
+          return (
+            <div className="flex flex-col gap-4">
+              <div className="bg-[#12141a] p-4 rounded-lg border border-white/5">
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="text-emerald-400 font-black tracking-widest uppercase text-[11px]">{player.role}</h4>
+                  <span className="text-[9px] font-bold text-slate-400 bg-white/5 px-2 py-0.5 rounded uppercase">{player.duty}</span>
+                </div>
+                <p className="text-[10px] text-muted-foreground leading-relaxed">{roleData.description}</p>
+              </div>
+
+              {(activeInstructions.length > 0 || activeHidden.length > 0) && (
+                <div className="bg-[#12141a] p-4 rounded-lg border border-white/5">
+                  <h5 className="text-[9px] text-slate-400 uppercase tracking-widest font-bold mb-3">Tactical Instructions</h5>
+                  <div className="flex flex-col gap-2">
+                    {activeInstructions.map((inst, i) => (
+                      <div key={i} className="flex items-center gap-2 text-[10px] font-bold text-slate-200">
+                        <Check className="w-3 h-3 text-emerald-400" />
+                        {inst}
+                      </div>
+                    ))}
+                    {activeHidden.map((inst, i) => (
+                      <div key={`h-${i}`} className="flex items-center gap-2 text-[10px] font-bold text-slate-400 italic">
+                        <Check className="w-3 h-3 text-emerald-600 opacity-50" />
+                        {inst} (Engine Default)
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {(roleData.baseTraits.complementary.length > 0 || roleData.baseTraits.contrasting.length > 0) && (
+                <div className="bg-[#12141a] p-4 rounded-lg border border-white/5">
+                  <h5 className="text-[9px] text-slate-400 uppercase tracking-widest font-bold mb-3">Player Traits</h5>
+                  
+                  {roleData.baseTraits.complementary.length > 0 && (
+                    <div className="mb-3">
+                      <span className="text-[8px] text-emerald-400 uppercase font-black mb-1 block">Complementary</span>
+                      <ul className="list-disc pl-3 text-[10px] text-muted-foreground flex flex-col gap-1">
+                        {roleData.baseTraits.complementary.map((t, i) => <li key={i}>{t}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {roleData.baseTraits.contrasting.length > 0 && (
+                    <div>
+                      <span className="text-[8px] text-red-400 uppercase font-black mb-1 block">Contrasting</span>
+                      <ul className="list-disc pl-3 text-[10px] text-muted-foreground flex flex-col gap-1">
+                        {roleData.baseTraits.contrasting.map((t, i) => <li key={i}>{t}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
+        {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && activeSidebarTab !== "player_instructions" && (
           <div className="p-4 bg-[#12141a] rounded border border-white/5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               Panel under construction

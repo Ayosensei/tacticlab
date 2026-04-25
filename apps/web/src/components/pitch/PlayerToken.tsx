@@ -15,7 +15,7 @@ interface PlayerTokenProps {
 export function PlayerToken({ player }: PlayerTokenProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const { updatePlayerRole } = useTacticStore();
+  const { updatePlayerRole, setSelectedPlayerId, setActiveSidebarTab } = useTacticStore();
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: player.id,
@@ -90,7 +90,12 @@ export function PlayerToken({ player }: PlayerTokenProps) {
         
         {/* Polished Label Pill serving as Dropdown Trigger */}
         <button
-          onPointerDown={(e) => { e.stopPropagation(); setMenuOpen(!menuOpen); }}
+          onPointerDown={(e) => { 
+            e.stopPropagation(); 
+            setMenuOpen(!menuOpen); 
+            setSelectedPlayerId(player.id);
+            setActiveSidebarTab("player_instructions");
+          }}
           className={cn(
             "flex items-center gap-1.5 bg-[#0d0f14]/90 backdrop-blur-md px-3 py-1.5 rounded-[12px] w-max border shadow-xl group/label transition-colors",
             menuOpen ? "border-emerald-400/50" : "border-white/10 hover:border-emerald-400/30"

@@ -7,6 +7,7 @@ interface TacticState {
   analysis: AnalysisResult | null;
   isLoading: boolean;
   activeSidebarTab: string | null;
+  selectedPlayerId: string | null;
   
   // Actions
   setTactic: (tactic: Tactic) => void;
@@ -18,6 +19,7 @@ interface TacticState {
   setAnalysis: (analysis: AnalysisResult) => void;
   setLoading: (isLoading: boolean) => void;
   setActiveSidebarTab: (tab: string | null) => void;
+  setSelectedPlayerId: (id: string | null) => void;
 }
 
 const initialTactic: Tactic = {
@@ -49,6 +51,7 @@ export const useTacticStore = create<TacticState>((set) => ({
   analysis: null,
   isLoading: false,
   activeSidebarTab: null,
+  selectedPlayerId: null,
 
   setTactic: (tactic) => set({ currentTactic: tactic }),
   
@@ -122,4 +125,5 @@ export const useTacticStore = create<TacticState>((set) => ({
   setAnalysis: (analysis) => set({ analysis }),
   setLoading: (isLoading) => set({ isLoading }),
   setActiveSidebarTab: (tab) => set({ activeSidebarTab: tab }),
+  setSelectedPlayerId: (id) => set({ selectedPlayerId: id }),
 }));

@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutGrid, Sliders, Target, BookOpen, BarChart3 } from "lucide-react";
+import { LayoutGrid, Sliders, Target, BookOpen, BarChart3, UserCog } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTacticStore } from "@/store/tacticStore";
@@ -8,8 +8,9 @@ import { useTacticStore } from "@/store/tacticStore";
 const navItems = [
   { icon: Sliders, label: "Style", id: "style" },
   { icon: Target, label: "Mentality", id: "mentality" },
-  { icon: LayoutGrid, label: "Formation", id: "formation", active: true },
+  { icon: LayoutGrid, label: "Formation", id: "formation" },
   { icon: BookOpen, label: "Instructions", id: "instructions" },
+  { icon: UserCog, label: "Player Instructions", id: "player_instructions" },
 ];
 
 export function Sidebar() {
