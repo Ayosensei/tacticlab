@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { Tactic, AnalysisResult, Duty } from "@/types/tactic";
 import { FORMATIONS, getValidRolesForPosition, getClosestSlot } from "../lib/tacticsData";
+import { ROLES_DB } from "../lib/rolesData";
 
 interface TacticState {
   currentTactic: Tactic;
@@ -106,9 +107,21 @@ export const useTacticStore = create<TacticState>((set) => ({
     
   updatePlayerRole: (playerId, role, duty) =>
     set((state) => {
-      const players = state.currentTactic.players.map((p) =>
-        p.id === playerId ? { ...p, role, duty } : p
-      );
+      const players = state.currentTactic.players.map((p) => {
+        if (p.id === playerId) {
+          let finalDuty = duty;
+          const roleData = ROLES_DB[role];
+          if (roleData && roleData.duties) {
+            // If the new duty isn't valid for the role, pick the first valid duty.
+            const validDuties = Object.keys(roleData.duties) as Duty[];
+            if (!validDuties.includes(finalDuty)) {
+              finalDuty = validDuties[0] || duty;
+            }
+          }
+          return { ...p, role, duty: finalDuty };
+        }
+        return p;
+      });
       return { currentTactic: { ...state.currentTactic, players } };
     }),
 

@@ -7,6 +7,7 @@ import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, Check } from "lucide-react";
 import { useTacticStore } from "@/store/tacticStore";
 import { getValidRolesForPosition, DUTIES, ROLE_ABBREVIATIONS } from "@/lib/tacticsData";
+import { ROLES_DB } from "@/lib/rolesData";
 
 interface PlayerTokenProps {
   player: PlayerPosition;
@@ -119,7 +120,9 @@ export function PlayerToken({ player }: PlayerTokenProps) {
           >
             {/* Duty Segmentation */}
             <div className="flex bg-[#12141a] p-1 border-b border-white/5">
-              {DUTIES.map((duty) => (
+              {(Object.keys(ROLES_DB[player.role]?.duties || {}).length > 0 
+                ? Object.keys(ROLES_DB[player.role].duties) 
+                : DUTIES).map((duty) => (
                 <button
                   key={duty}
                   onClick={() => updatePlayerRole(player.id, player.role, duty as Duty)}
