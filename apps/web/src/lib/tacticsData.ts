@@ -130,6 +130,52 @@ export function getValidRolesForPosition(x: number, y: number): string[] {
   return POSITIONS_DB[slot.band as keyof typeof POSITIONS_DB] || POSITIONS_DB.CM;
 }
 
+export const ROLE_ABBREVIATIONS: Record<string, string> = {
+  "Goalkeeper": "GK",
+  "Sweeper Keeper": "SK",
+  "Central Defender": "CD",
+  "Ball Playing Defender": "BPD",
+  "No-Nonsense Centre-Back": "NCB",
+  "Wide Centre-Back": "WCB",
+  "Libero": "L",
+  "Full Back": "FB",
+  "Wing Back": "WB",
+  "Inverted Wing Back": "IWB",
+  "No-Nonsense Full-Back": "NFB",
+  "Complete Wing-Back": "CWB",
+  "Defensive Midfielder": "DM",
+  "Deep Lying Playmaker": "DLP",
+  "Ball Winning Midfielder": "BWM",
+  "Anchor": "A",
+  "Half Back": "HB",
+  "Regista": "R",
+  "Roaming Playmaker": "RPM",
+  "Segundo Volante": "SV",
+  "Central Midfielder": "CM",
+  "Box To Box Midfielder": "BBM",
+  "Advanced Playmaker": "AP",
+  "Mezzala": "MEZ",
+  "Carrilero": "CAR",
+  "Wide Midfielder": "WM",
+  "Winger": "W",
+  "Inverted Winger": "IW",
+  "Wide Target Forward": "WTF",
+  "Wide Playmaker": "WP",
+  "Attacking Midfielder": "AM",
+  "Trequartista": "T",
+  "Shadow Striker": "SS",
+  "Enganche": "EG",
+  "Inside Forward": "IF",
+  "Raumdeuter": "RMD",
+  "Advanced Forward": "AF",
+  "Deep Lying Forward": "DLF",
+  "Target Forward": "TF",
+  "Poacher": "P",
+  "Complete Forward": "CF",
+  "Pressing Forward": "PF",
+  "False Nine": "F9"
+};
+
 export const DUTIES = ["Defend", "Support", "Attack", "Automatic"];
 export type DutyType = typeof DUTIES[number];
 

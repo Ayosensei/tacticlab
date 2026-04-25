@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, Check } from "lucide-react";
 import { useTacticStore } from "@/store/tacticStore";
-import { getValidRolesForPosition, DUTIES } from "@/lib/tacticsData";
+import { getValidRolesForPosition, DUTIES, ROLE_ABBREVIATIONS } from "@/lib/tacticsData";
 
 interface PlayerTokenProps {
   player: PlayerPosition;
@@ -42,21 +42,7 @@ export function PlayerToken({ player }: PlayerTokenProps) {
   };
 
   const getRoleAbbreviation = (role: string) => {
-    const map: Record<string, string> = {
-      "Goalkeeper": "G",
-      "Central Defender": "CD",
-      "Full Back": "FB",
-      "Ball Playing Defender": "BPD",
-      "Deep Lying Playmaker": "DLP",
-      "Advanced Playmaker": "AP",
-      "Mezzala": "MEZ",
-      "Winger": "W",
-      "Deep Lying Forward": "DLF",
-      "Advanced Forward": "AF",
-      "Center Forward": "CF",
-      "Central Midfielder": "CEN"
-    };
-    return map[role] || role.substring(0, 3).toUpperCase();
+    return ROLE_ABBREVIATIONS[role] || role.substring(0, 3).toUpperCase();
   };
 
   const getDutyAbbreviation = (duty: string) => {
@@ -139,7 +125,7 @@ export function PlayerToken({ player }: PlayerTokenProps) {
                       : "text-muted-foreground hover:text-white"
                   )}
                 >
-                  {duty.substring(0, 3)}
+                  {duty}({getDutyAbbreviation(duty)})
                 </button>
               ))}
             </div>
