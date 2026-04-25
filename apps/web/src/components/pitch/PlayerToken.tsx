@@ -15,7 +15,7 @@ interface PlayerTokenProps {
 
 export function PlayerToken({ player }: PlayerTokenProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { updatePlayerRole, setSelectedPlayerId, setActiveSidebarTab } = useTacticStore();
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -24,13 +24,19 @@ export function PlayerToken({ player }: PlayerTokenProps) {
 
   // Close menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
       }
     };
-    if (menuOpen) document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("touchstart", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, [menuOpen]);
 
   const getDutyColor = (duty: string) => {
@@ -74,7 +80,7 @@ export function PlayerToken({ player }: PlayerTokenProps) {
         isDragging ? "z-50 opacity-100 scale-110 cursor-grabbing shadow-2xl" : "cursor-grab"
       )}
     >
-      <div className={cn("relative flex flex-col items-center gap-2", isDragging ? "drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "")}>
+      <div ref={containerRef} className={cn("relative flex flex-col items-center gap-2", isDragging ? "drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "")}>
         {/* Modern Jersey Silhouette (Matched to Tactic Builder.png) */}
         <svg
           viewBox="0 0 100 100"
@@ -114,7 +120,6 @@ export function PlayerToken({ player }: PlayerTokenProps) {
         {/* Dynamic Context Menu */}
         {menuOpen && (
           <div 
-            ref={menuRef}
             onPointerDown={(e) => e.stopPropagation()} // Prevent DnD dragging while using menu
             className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-56 bg-[#0a0c10] border border-white/10 rounded-lg shadow-2xl z-[100] flex flex-col overflow-hidden"
           >
