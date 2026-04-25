@@ -132,3 +132,14 @@ export function getValidRolesForPosition(x: number, y: number): string[] {
 
 export const DUTIES = ["Defend", "Support", "Attack", "Automatic"];
 export type DutyType = typeof DUTIES[number];
+
+export const TACTICAL_STYLES = [
+  { id: "gegenpress", name: "Gegenpress", desc: "High-intensity pressing system designed to win the ball back immediately after losing possession in advanced areas." },
+  { id: "tiki_taka", name: "Tiki-Taka", desc: "Possession-based approach focusing on short passing, extreme technical control, and patient build-up." },
+  { id: "vertical_tiki_taka", name: "Vertical Tiki-Taka", desc: "A more direct version of Tiki-Taka that aims to penetrate the opposition lines quickly while maintaining possession." },
+  { id: "fluid_counter_attack", name: "Fluid Counter-Attack", desc: "Draws opponents forward before striking quickly using fluid positional interplay during transitions." },
+  { id: "direct_counter_attack", name: "Direct Counter-Attack", desc: "Deep defensive block that rapidly bypasses the midfield to exploit spaces behind the opponent's defense." },
+  { id: "catenaccio", name: "Catenaccio", desc: "Ultra-defensive system prioritizing structural solidity and a sweeper system to nullify opposition attacks." },
+  { id: "park_the_bus", name: "Park the Bus", desc: "Extreme defensive setup focusing solely on keeping a clean sheet with minimal attacking intent." },
+  { id: "custom", name: "Custom", desc: "A bespoke tactical style shaped entirely by your unique instructions and player roles." }
+];

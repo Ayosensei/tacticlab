@@ -6,14 +6,17 @@ interface TacticState {
   currentTactic: Tactic;
   analysis: AnalysisResult | null;
   isLoading: boolean;
+  activeSidebarTab: string | null;
   
   // Actions
   setTactic: (tactic: Tactic) => void;
   updatePlayerPosition: (playerId: string, newX: number, newY: number) => void;
   setFormation: (formationId: string) => void;
   updatePlayerRole: (playerId: string, role: string, duty: Duty) => void;
+  setStyle: (style: string) => void;
   setAnalysis: (analysis: AnalysisResult) => void;
   setLoading: (isLoading: boolean) => void;
+  setActiveSidebarTab: (tab: string | null) => void;
 }
 
 const initialTactic: Tactic = {
@@ -44,6 +47,7 @@ export const useTacticStore = create<TacticState>((set) => ({
   currentTactic: initialTactic,
   analysis: null,
   isLoading: false,
+  activeSidebarTab: null,
 
   setTactic: (tactic) => set({ currentTactic: tactic }),
   
@@ -104,6 +108,12 @@ export const useTacticStore = create<TacticState>((set) => ({
       return { currentTactic: { ...state.currentTactic, players } };
     }),
 
+  setStyle: (styleName) =>
+    set((state) => ({
+      currentTactic: { ...state.currentTactic, style: styleName }
+    })),
+
   setAnalysis: (analysis) => set({ analysis }),
   setLoading: (isLoading) => set({ isLoading }),
+  setActiveSidebarTab: (tab) => set({ activeSidebarTab: tab }),
 }));
