@@ -49,20 +49,36 @@ export const useTacticStore = create<TacticState>((set) => ({
   
   updatePlayerPosition: (playerId, newX, newY) =>
     set((state) => {
-      const players = state.currentTactic.players.map((p) => {
-        if (p.id === playerId) {
-          const updatedPlayer = { ...p, x: newX, y: newY };
-          
-          // Dynamic Role Switching
-          const validRoles = getValidRolesForPosition(newX, newY);
-          if (!validRoles.includes(updatedPlayer.role)) {
-            updatedPlayer.role = validRoles[0];
-          }
-          
-          return updatedPlayer;
+      const closestSlot = getClosestSlot(newX, newY);
+      
+      const players = [...state.currentTactic.players];
+      const draggedIndex = players.findIndex(p => p.id === playerId);
+      if (draggedIndex === -1) return state;
+      
+      const originalX = players[draggedIndex].x;
+      const originalY = players[draggedIndex].y;
+      
+      // Check collision
+      const occupantIndex = players.findIndex(p => p.x === closestSlot.x && p.y === closestSlot.y && p.id !== playerId);
+      
+      // Update dragged player
+      const draggedPlayer = { ...players[draggedIndex], x: closestSlot.x, y: closestSlot.y };
+      const validRoles = getValidRolesForPosition(closestSlot.x, closestSlot.y);
+      if (!validRoles.includes(draggedPlayer.role)) {
+        draggedPlayer.role = validRoles[0];
+      }
+      players[draggedIndex] = draggedPlayer;
+      
+      // Swap occupant
+      if (occupantIndex !== -1) {
+        const occupant = { ...players[occupantIndex], x: originalX, y: originalY };
+        const occupantRoles = getValidRolesForPosition(originalX, originalY);
+        if (!occupantRoles.includes(occupant.role)) {
+          occupant.role = occupantRoles[0];
         }
-        return p;
-      });
+        players[occupantIndex] = occupant;
+      }
+      
       return { currentTactic: { ...state.currentTactic, players } };
     }),
     

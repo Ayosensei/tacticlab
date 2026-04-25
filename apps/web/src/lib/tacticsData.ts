@@ -1,70 +1,99 @@
+export const GRID_SLOTS = [
+  { id: "LST", x: 35, y: 15, band: "ST" },
+  { id: "ST", x: 50, y: 15, band: "ST" },
+  { id: "RST", x: 65, y: 15, band: "ST" },
+  { id: "LW", x: 12, y: 28, band: "AM_W" },
+  { id: "LAM", x: 35, y: 28, band: "AM" },
+  { id: "AM", x: 50, y: 28, band: "AM" },
+  { id: "RAM", x: 65, y: 28, band: "AM" },
+  { id: "RW", x: 88, y: 28, band: "AM_W" },
+  { id: "LM", x: 15, y: 48, band: "WM" },
+  { id: "LCM", x: 35, y: 48, band: "CM" },
+  { id: "CM", x: 50, y: 48, band: "CM" },
+  { id: "RCM", x: 65, y: 48, band: "CM" },
+  { id: "RM", x: 85, y: 48, band: "WM" },
+  { id: "LWB", x: 12, y: 66, band: "WB" },
+  { id: "LDM", x: 35, y: 66, band: "DM" },
+  { id: "DM", x: 50, y: 66, band: "DM" },
+  { id: "RDM", x: 65, y: 66, band: "DM" },
+  { id: "RWB", x: 88, y: 66, band: "WB" },
+  { id: "LB", x: 15, y: 82, band: "FB" },
+  { id: "LCB", x: 35, y: 82, band: "CB" },
+  { id: "CB", x: 50, y: 82, band: "CB" },
+  { id: "RCB", x: 65, y: 82, band: "CB" },
+  { id: "RB", x: 85, y: 82, band: "FB" },
+  { id: "GK", x: 50, y: 96, band: "GK" }
+];
+
+const getGridSlot = (id: string) => GRID_SLOTS.find(s => s.id === id)!;
+
 export const FORMATIONS = [
   {
     id: "4-3-3 WIDE",
     name: "4-3-3 Wide",
     players: [
-      { id: "1", role: "Goalkeeper", duty: "Defend", x: 50, y: 96 },
-      { id: "2", role: "Full Back", duty: "Support", x: 12, y: 80 },
-      { id: "3", role: "Central Defender", duty: "Defend", x: 35, y: 82 },
-      { id: "4", role: "Ball Playing Defender", duty: "Defend", x: 65, y: 82 },
-      { id: "5", role: "Full Back", duty: "Defend", x: 88, y: 80 },
-      { id: "6", role: "Deep Lying Playmaker", duty: "Defend", x: 50, y: 66 },
-      { id: "7", role: "Advanced Playmaker", duty: "Support", x: 35, y: 48 },
-      { id: "8", role: "Mezzala", duty: "Attack", x: 65, y: 48 },
-      { id: "9", role: "Winger", duty: "Support", x: 12, y: 25 },
-      { id: "10", role: "Winger", duty: "Support", x: 88, y: 25 },
-      { id: "11", role: "Center Forward", duty: "Attack", x: 50, y: 15 },
+      { id: "1", role: "Goalkeeper", duty: "Defend", slot: "GK", ...getGridSlot("GK") },
+      { id: "2", role: "Full Back", duty: "Support", slot: "LB", ...getGridSlot("LB") },
+      { id: "3", role: "Central Defender", duty: "Defend", slot: "LCB", ...getGridSlot("LCB") },
+      { id: "4", role: "Ball Playing Defender", duty: "Defend", slot: "RCB", ...getGridSlot("RCB") },
+      { id: "5", role: "Full Back", duty: "Defend", slot: "RB", ...getGridSlot("RB") },
+      { id: "6", role: "Deep Lying Playmaker", duty: "Defend", slot: "DM", ...getGridSlot("DM") },
+      { id: "7", role: "Advanced Playmaker", duty: "Support", slot: "LCM", ...getGridSlot("LCM") },
+      { id: "8", role: "Mezzala", duty: "Attack", slot: "RCM", ...getGridSlot("RCM") },
+      { id: "9", role: "Winger", duty: "Support", slot: "LW", ...getGridSlot("LW") },
+      { id: "10", role: "Winger", duty: "Support", slot: "RW", ...getGridSlot("RW") },
+      { id: "11", role: "Center Forward", duty: "Attack", slot: "ST", ...getGridSlot("ST") },
     ],
   },
   {
     id: "4-2-3-1 WIDE",
     name: "4-2-3-1 Wide",
     players: [
-      { id: "1", role: "Goalkeeper", duty: "Defend", x: 50, y: 96 },
-      { id: "2", role: "Full Back", duty: "Support", x: 12, y: 80 },
-      { id: "3", role: "Central Defender", duty: "Defend", x: 35, y: 82 },
-      { id: "4", role: "Ball Playing Defender", duty: "Defend", x: 65, y: 82 },
-      { id: "5", role: "Full Back", duty: "Defend", x: 88, y: 80 },
-      { id: "6", role: "Deep Lying Playmaker", duty: "Defend", x: 35, y: 66 },
-      { id: "7", role: "Ball Winning Midfielder", duty: "Support", x: 65, y: 66 },
-      { id: "8", role: "Attacking Midfielder", duty: "Support", x: 50, y: 35 },
-      { id: "9", role: "Inside Forward", duty: "Attack", x: 12, y: 25 },
-      { id: "10", role: "Winger", duty: "Support", x: 88, y: 25 },
-      { id: "11", role: "Advanced Forward", duty: "Attack", x: 50, y: 15 },
+      { id: "1", role: "Goalkeeper", duty: "Defend", slot: "GK", ...getGridSlot("GK") },
+      { id: "2", role: "Full Back", duty: "Support", slot: "LB", ...getGridSlot("LB") },
+      { id: "3", role: "Central Defender", duty: "Defend", slot: "LCB", ...getGridSlot("LCB") },
+      { id: "4", role: "Ball Playing Defender", duty: "Defend", slot: "RCB", ...getGridSlot("RCB") },
+      { id: "5", role: "Full Back", duty: "Defend", slot: "RB", ...getGridSlot("RB") },
+      { id: "6", role: "Deep Lying Playmaker", duty: "Defend", slot: "LDM", ...getGridSlot("LDM") },
+      { id: "7", role: "Ball Winning Midfielder", duty: "Support", slot: "RDM", ...getGridSlot("RDM") },
+      { id: "8", role: "Attacking Midfielder", duty: "Support", slot: "AM", ...getGridSlot("AM") },
+      { id: "9", role: "Inside Forward", duty: "Attack", slot: "LW", ...getGridSlot("LW") },
+      { id: "10", role: "Winger", duty: "Support", slot: "RW", ...getGridSlot("RW") },
+      { id: "11", role: "Advanced Forward", duty: "Attack", slot: "ST", ...getGridSlot("ST") },
     ],
   },
   {
     id: "3-4-2-1",
     name: "3-4-2-1 Asymmetric",
     players: [
-      { id: "1", role: "Sweeper Keeper", duty: "Defend", x: 50, y: 96 },
-      { id: "2", role: "Wide Centre-Back", duty: "Defend", x: 25, y: 82 },
-      { id: "3", role: "Central Defender", duty: "Cover", x: 50, y: 82 },
-      { id: "4", role: "Wide Centre-Back", duty: "Defend", x: 75, y: 82 },
-      { id: "5", role: "Wing Back", duty: "Support", x: 12, y: 55 },
-      { id: "6", role: "Wing Back", duty: "Attack", x: 88, y: 55 },
-      { id: "7", role: "Central Midfielder", duty: "Defend", x: 38, y: 55 },
-      { id: "8", role: "Box To Box Midfielder", duty: "Support", x: 62, y: 55 },
-      { id: "9", role: "Advanced Playmaker", duty: "Support", x: 35, y: 35 },
-      { id: "10", role: "Shadow Striker", duty: "Attack", x: 65, y: 35 },
-      { id: "11", role: "Pressing Forward", duty: "Attack", x: 50, y: 15 },
+      { id: "1", role: "Sweeper Keeper", duty: "Defend", slot: "GK", ...getGridSlot("GK") },
+      { id: "2", role: "Wide Centre-Back", duty: "Defend", slot: "LB", ...getGridSlot("LB") },
+      { id: "3", role: "Central Defender", duty: "Cover", slot: "CB", ...getGridSlot("CB") },
+      { id: "4", role: "Wide Centre-Back", duty: "Defend", slot: "RB", ...getGridSlot("RB") },
+      { id: "5", role: "Wing Back", duty: "Support", slot: "LWB", ...getGridSlot("LWB") },
+      { id: "6", role: "Wing Back", duty: "Attack", slot: "RWB", ...getGridSlot("RWB") },
+      { id: "7", role: "Central Midfielder", duty: "Defend", slot: "LCM", ...getGridSlot("LCM") },
+      { id: "8", role: "Box To Box Midfielder", duty: "Support", slot: "RCM", ...getGridSlot("RCM") },
+      { id: "9", role: "Advanced Playmaker", duty: "Support", slot: "LAM", ...getGridSlot("LAM") },
+      { id: "10", role: "Shadow Striker", duty: "Attack", slot: "RAM", ...getGridSlot("RAM") },
+      { id: "11", role: "Pressing Forward", duty: "Attack", slot: "ST", ...getGridSlot("ST") },
     ],
   },
   {
     id: "5-3-2",
     name: "5-3-2 Catenaccio",
     players: [
-      { id: "1", role: "Goalkeeper", duty: "Defend", x: 50, y: 96 },
-      { id: "2", role: "Central Defender", duty: "Defend", x: 30, y: 82 },
-      { id: "3", role: "Central Defender", duty: "Cover", x: 50, y: 84 },
-      { id: "4", role: "Central Defender", duty: "Defend", x: 70, y: 82 },
-      { id: "5", role: "Wing Back", duty: "Defend", x: 10, y: 70 },
-      { id: "6", role: "Wing Back", duty: "Defend", x: 90, y: 70 },
-      { id: "7", role: "Half Back", duty: "Defend", x: 50, y: 64 },
-      { id: "8", role: "Central Midfielder", duty: "Support", x: 35, y: 50 },
-      { id: "9", role: "Carrilero", duty: "Support", x: 65, y: 50 },
-      { id: "10", role: "Advanced Forward", duty: "Attack", x: 38, y: 18 },
-      { id: "11", role: "Target Forward", duty: "Support", x: 62, y: 18 },
+      { id: "1", role: "Goalkeeper", duty: "Defend", slot: "GK", ...getGridSlot("GK") },
+      { id: "2", role: "Central Defender", duty: "Defend", slot: "LCB", ...getGridSlot("LCB") },
+      { id: "3", role: "Central Defender", duty: "Cover", slot: "CB", ...getGridSlot("CB") },
+      { id: "4", role: "Central Defender", duty: "Defend", slot: "RCB", ...getGridSlot("RCB") },
+      { id: "5", role: "Wing Back", duty: "Defend", slot: "LWB", ...getGridSlot("LWB") },
+      { id: "6", role: "Wing Back", duty: "Defend", slot: "RWB", ...getGridSlot("RWB") },
+      { id: "7", role: "Half Back", duty: "Defend", slot: "DM", ...getGridSlot("DM") },
+      { id: "8", role: "Central Midfielder", duty: "Support", slot: "LCM", ...getGridSlot("LCM") },
+      { id: "9", role: "Carrilero", duty: "Support", slot: "RCM", ...getGridSlot("RCM") },
+      { id: "10", role: "Advanced Forward", duty: "Attack", slot: "LST", ...getGridSlot("LST") },
+      { id: "11", role: "Target Forward", duty: "Support", slot: "RST", ...getGridSlot("RST") },
     ],
   }
 ];
@@ -82,34 +111,23 @@ export const POSITIONS_DB = {
   ST: ["Advanced Forward", "Deep Lying Forward", "Target Forward", "Poacher", "Complete Forward", "Pressing Forward", "False Nine", "Trequartista"],
 };
 
+export function getClosestSlot(x: number, y: number) {
+  let closest = GRID_SLOTS[0];
+  let minDistance = Infinity;
+  for (const slot of GRID_SLOTS) {
+    // Pythagorean distance in percent-space
+    const d = Math.pow(slot.x - x, 2) + Math.pow(slot.y - y, 2);
+    if (d < minDistance) {
+      minDistance = d;
+      closest = slot;
+    }
+  }
+  return closest;
+}
+
 export function getValidRolesForPosition(x: number, y: number): string[] {
-  // GK
-  if (y >= 90) return POSITIONS_DB.GK;
-  
-  const isCentral = x >= 25 && x <= 75;
-  
-  // Defenders
-  if (y >= 75 && y < 90) {
-    return isCentral ? POSITIONS_DB.CB : POSITIONS_DB.FB;
-  }
-  // Defensive Mids / Wing Backs
-  if (y >= 60 && y < 75) {
-    return isCentral ? POSITIONS_DB.DM : POSITIONS_DB.WB;
-  }
-  // Central Mids / Wide Mids
-  if (y >= 45 && y < 60) {
-    return isCentral ? POSITIONS_DB.CM : POSITIONS_DB.WM;
-  }
-  // Attacking Mids
-  if (y >= 30 && y < 45) {
-    return isCentral ? POSITIONS_DB.AM : POSITIONS_DB.AM_W;
-  }
-  // Strikers
-  if (y < 30) {
-    return isCentral ? POSITIONS_DB.ST : POSITIONS_DB.AM_W;
-  }
-  
-  return POSITIONS_DB.CM; // fallback
+  const slot = getClosestSlot(x, y);
+  return POSITIONS_DB[slot.band as keyof typeof POSITIONS_DB] || POSITIONS_DB.CM;
 }
 
 export const DUTIES = ["Defend", "Support", "Attack", "Automatic"];
