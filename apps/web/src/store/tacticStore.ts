@@ -14,6 +14,7 @@ interface TacticState {
   setFormation: (formationId: string) => void;
   updatePlayerRole: (playerId: string, role: string, duty: Duty) => void;
   setStyle: (style: string) => void;
+  setMentality: (mentality: Tactic["mentality"]) => void;
   setAnalysis: (analysis: AnalysisResult) => void;
   setLoading: (isLoading: boolean) => void;
   setActiveSidebarTab: (tab: string | null) => void;
@@ -111,6 +112,11 @@ export const useTacticStore = create<TacticState>((set) => ({
   setStyle: (styleName) =>
     set((state) => ({
       currentTactic: { ...state.currentTactic, style: styleName }
+    })),
+
+  setMentality: (mentality) =>
+    set((state) => ({
+      currentTactic: { ...state.currentTactic, mentality }
     })),
 
   setAnalysis: (analysis) => set({ analysis }),

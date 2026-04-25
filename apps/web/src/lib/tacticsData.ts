@@ -143,3 +143,11 @@ export const TACTICAL_STYLES = [
   { id: "park_the_bus", name: "Park the Bus", desc: "Extreme defensive setup focusing solely on keeping a clean sheet with minimal attacking intent." },
   { id: "custom", name: "Custom", desc: "A bespoke tactical style shaped entirely by your unique instructions and player roles." }
 ];
+
+export const MENTALITIES = [
+  { id: "Defensive", name: "Defensive", desc: "Prioritizes defensive solidity above all else, keeping numbers behind the ball and limiting forward runs." },
+  { id: "Cautious", name: "Cautious", desc: "Focuses on maintaining a solid defensive shape while selectively committing players forward on the counter." },
+  { id: "Balanced", name: "Balanced", desc: "A neutral approach adapting to match situations without heavily committing to attack or defense." },
+  { id: "Positive", name: "Positive", desc: "Aims to control the game and dictate play, committing more players forward while managing defensive risk." },
+  { id: "Attacking", name: "Attacking", desc: "Highly aggressive approach focusing on overwhelming the opposition with numbers in the final third." }
+];
