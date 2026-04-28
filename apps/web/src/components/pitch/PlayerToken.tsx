@@ -132,13 +132,13 @@ export function PlayerToken({ player }: PlayerTokenProps) {
                   key={duty}
                   onClick={() => updatePlayerRole(player.id, player.role, duty as Duty)}
                   className={cn(
-                    "flex-1 py-1.5 text-[9px] uppercase font-bold tracking-widest rounded transition-colors",
+                    "flex-1 py-1.5 text-[11px] font-bold tracking-widest rounded transition-colors",
                     player.duty === duty 
                       ? "bg-[#1a1d25] text-white shadow-sm" 
                       : "text-muted-foreground hover:text-white"
                   )}
                 >
-                  {duty}({getDutyAbbreviation(duty)})
+                  {getDutyAbbreviation(duty)}
                 </button>
               ))}
             </div>

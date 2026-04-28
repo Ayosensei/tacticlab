@@ -42,7 +42,7 @@ export const FORMATIONS = [
       { id: "8", role: "Mezzala", duty: "Attack", slot: "RCM", ...getGridSlot("RCM") },
       { id: "9", role: "Winger", duty: "Support", slot: "LW", ...getGridSlot("LW") },
       { id: "10", role: "Winger", duty: "Support", slot: "RW", ...getGridSlot("RW") },
-      { id: "11", role: "Center Forward", duty: "Attack", slot: "ST", ...getGridSlot("ST") },
+      { id: "11", role: "Advanced Forward", duty: "Attack", slot: "ST", ...getGridSlot("ST") },
     ],
   },
   {

@@ -42,7 +42,7 @@ const initialTactic: Tactic = {
     { id: "8", role: "Mezzala", duty: "Attack", x: 65, y: 48 },
     { id: "9", role: "Winger", duty: "Support", x: 12, y: 25 },
     { id: "10", role: "Winger", duty: "Support", x: 88, y: 25 },
-    { id: "11", role: "Center Forward", duty: "Attack", x: 50, y: 15 },
+    { id: "11", role: "Advanced Forward", duty: "Attack", x: 50, y: 15 },
   ],
   arrows: [],
 };
