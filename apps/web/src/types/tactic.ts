@@ -24,9 +24,9 @@ export interface Tactic {
   formation: string;
   style: string;
   mentality: "Defensive" | "Cautious" | "Balanced" | "Positive" | "Attacking";
-  inPossession: string[];
-  inTransition: string[];
-  outOfPossession: string[];
+  inPossession: Record<string, string | boolean>;
+  inTransition: Record<string, string | boolean>;
+  outOfPossession: Record<string, string | boolean>;
   players: PlayerPosition[];
   arrows: TacticArrow[];
   fmVersion?: FmVersion;

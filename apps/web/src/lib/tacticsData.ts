@@ -300,22 +300,100 @@ export const MENTALITIES = [
   { id: "Attacking", name: "Attacking", desc: "Highly aggressive approach focusing on overwhelming the opposition with numbers in the final third." }
 ];
 
-export const TEAM_INSTRUCTIONS = {
+export type InstructionType = "select" | "toggle";
+
+export interface InstructionDef {
+  id: string;
+  name: string;
+  type: InstructionType;
+  options?: string[];
+}
+
+export interface InstructionColumn {
+  id: string;
+  name: string;
+  items: InstructionDef[];
+}
+
+export const TEAM_INSTRUCTIONS: Record<string, InstructionColumn[]> = {
   inPossession: [
-    { id: "attacking_width", name: "Attacking Width", options: ["Extremely Narrow", "Fairly Narrow", "Standard", "Fairly Wide", "Extremely Wide"] },
-    { id: "approach_play", name: "Approach Play", options: ["Pass Into Space", "Play Out Of Defence", "Overlap Left", "Overlap Right", "Underlap Left", "Underlap Right", "Focus Play Through The Middle"] },
-    { id: "passing_directness", name: "Passing Directness", options: ["Much Shorter", "Slightly Shorter", "Standard", "Slightly More Direct", "Much More Direct"] },
-    { id: "tempo", name: "Tempo", options: ["Much Lower", "Slightly Lower", "Standard", "Slightly Higher", "Much Higher"] },
+    {
+      id: "attacking_width_col",
+      name: "Attacking Width",
+      items: [
+        { id: "attacking_width", name: "Attacking Width", type: "select", options: ["Extremely Narrow", "Fairly Narrow", "Standard", "Fairly Wide", "Extremely Wide"] }
+      ]
+    },
+    {
+      id: "approach_play_col",
+      name: "Approach Play",
+      items: [
+        { id: "pass_into_space", name: "Pass Into Space", type: "toggle" },
+        { id: "left_flank", name: "Left Flank", type: "select", options: ["None", "Overlap Left", "Underlap Left"] },
+        { id: "right_flank", name: "Right Flank", type: "select", options: ["None", "Overlap Right", "Underlap Right"] },
+        { id: "play_out_of_defence", name: "Play Out Of Defence", type: "toggle" },
+        { id: "passing_directness", name: "Passing Directness", type: "select", options: ["Much Shorter", "Slightly Shorter", "Standard", "Slightly More Direct", "Much More Direct"] },
+        { id: "tempo", name: "Tempo", type: "select", options: ["Much Lower", "Slightly Lower", "Standard", "Slightly Higher", "Much Higher"] },
+        { id: "time_wasting", name: "Time Wasting", type: "select", options: ["Never", "Sometimes", "Frequently", "Always"] }
+      ]
+    },
+    {
+      id: "final_third_col",
+      name: "Final Third",
+      items: [
+        { id: "work_ball_into_box", name: "Work Ball Into Box", type: "toggle" },
+        { id: "shoot_on_sight", name: "Shoot On Sight", type: "toggle" },
+        { id: "hit_early_crosses", name: "Hit Early Crosses", type: "toggle" },
+        { id: "play_for_set_pieces", name: "Play For Set Pieces", type: "toggle" },
+        { id: "dribbling", name: "Dribbling", type: "select", options: ["None", "Run At Defence", "Dribble Less"] },
+        { id: "creative_freedom", name: "Creative Freedom", type: "select", options: ["None", "Be More Expressive", "Be More Disciplined"] }
+      ]
+    }
   ],
   inTransition: [
-    { id: "when_possession_lost", name: "When Possession Has Been Lost", options: ["Regroup", "Counter-Press"] },
-    { id: "when_possession_won", name: "When Possession Has Been Won", options: ["Hold Shape", "Counter"] },
-    { id: "gk_distribution", name: "GK Distribution", options: ["Distribute Quickly", "Slow Pace Down", "Distribute To Centre-Backs", "Distribute To Full-Backs", "Distribute Over Opposition Defence"] },
+    {
+      id: "possession_lost_col",
+      name: "When Possession Has Been Lost",
+      items: [
+        { id: "when_possession_lost", name: "Action", type: "select", options: ["None", "Counter-Press", "Regroup"] }
+      ]
+    },
+    {
+      id: "possession_won_col",
+      name: "When Possession Has Been Won",
+      items: [
+        { id: "when_possession_won", name: "Action", type: "select", options: ["None", "Counter", "Hold Shape"] }
+      ]
+    },
+    {
+      id: "gk_in_possession_col",
+      name: "Goalkeeper In Possession",
+      items: [
+        { id: "gk_distribution_pace", name: "Distribution Pace", type: "select", options: ["None", "Distribute Quickly", "Slow Pace Down"] },
+        { id: "gk_distribution_area", name: "Distribution Area", type: "select", options: ["None", "Distribute To Centre-Backs", "Distribute To Full-Backs", "Distribute To Playmaker", "Distribute Over Opposition Defence"] },
+        { id: "gk_distribution_type", name: "Distribution Type", type: "select", options: ["None", "Roll It Out", "Throw It Long", "Take Short Kicks", "Take Long Kicks"] }
+      ]
+    }
   ],
   outOfPossession: [
-    { id: "line_of_engagement", name: "Line of Engagement", options: ["Much Lower", "Lower", "Standard", "Higher", "Much Higher"] },
-    { id: "defensive_line", name: "Defensive Line", options: ["Much Lower", "Lower", "Standard", "Higher", "Much Higher"] },
-    { id: "trigger_press", name: "Trigger Press", options: ["Much Less Often", "Less Often", "Standard", "More Often", "Much More Often"] },
-    { id: "tackling", name: "Tackling", options: ["Get Stuck In", "Stay On Feet", "Use Offside Trap", "Drop Off More"] },
-  ],
+    {
+      id: "defensive_shape_col",
+      name: "Defensive Shape",
+      items: [
+        { id: "line_of_engagement", name: "Line of Engagement", type: "select", options: ["Much Lower", "Lower", "Standard", "Higher", "Much Higher"] },
+        { id: "defensive_line", name: "Defensive Line", type: "select", options: ["Much Lower", "Lower", "Standard", "Higher", "Much Higher"] }
+      ]
+    },
+    {
+      id: "defensive_actions_col",
+      name: "Defensive Actions",
+      items: [
+        { id: "trigger_press", name: "Trigger Press", type: "select", options: ["Much Less Often", "Less Often", "Standard", "More Often", "Much More Often"] },
+        { id: "prevent_short_gk_distribution", name: "Prevent Short GK Distribution", type: "toggle" },
+        { id: "tackling", name: "Tackling", type: "select", options: ["None", "Get Stuck In", "Stay On Feet"] },
+        { id: "pressing_trap", name: "Pressing Trap", type: "select", options: ["None", "Trap Inside", "Trap Outside"] },
+        { id: "cross_engagement", name: "Cross Engagement", type: "select", options: ["None", "Stop Crosses", "Invite Crosses"] }
+      ]
+    }
+  ]
 };

@@ -21,7 +21,7 @@ interface TacticState {
   setLoading: (isLoading: boolean) => void;
   setActiveSidebarTab: (tab: string | null) => void;
   setSelectedPlayerId: (id: string | null) => void;
-  toggleInstruction: (phase: "inPossession" | "inTransition" | "outOfPossession", instruction: string) => void;
+  toggleInstruction: (phase: "inPossession" | "inTransition" | "outOfPossession", id: string, value: string | boolean) => void;
 }
 
 const initialTactic: Tactic = {
@@ -29,9 +29,9 @@ const initialTactic: Tactic = {
   formation: "4-3-3",
   style: "Vertical Tiki-Taka",
   mentality: "Attacking",
-  inPossession: [],
-  inTransition: [],
-  outOfPossession: [],
+  inPossession: {},
+  inTransition: {},
+  outOfPossession: {},
   players: [
     { id: "1", role: "Goalkeeper", duty: "Defend", x: 50, y: 96 },
     { id: "2", role: "Full Back", duty: "Support", x: 12, y: 80 },
@@ -141,21 +141,16 @@ export const useTacticStore = create<TacticState>((set) => ({
   setActiveSidebarTab: (tab) => set({ activeSidebarTab: tab }),
   setSelectedPlayerId: (id) => set({ selectedPlayerId: id }),
   
-  toggleInstruction: (phase, instruction) => set((state) => {
-    const phaseArray = state.currentTactic[phase] || [];
-    const isActive = phaseArray.includes(instruction);
-    
-    let newPhaseArray = [...phaseArray];
-    if (isActive) {
-      newPhaseArray = newPhaseArray.filter(i => i !== instruction);
-    } else {
-      newPhaseArray.push(instruction);
-    }
+  toggleInstruction: (phase, id, value) => set((state) => {
+    const phaseRecord = state.currentTactic[phase] || {};
     
     return {
       currentTactic: {
         ...state.currentTactic,
-        [phase]: newPhaseArray
+        [phase]: {
+          ...phaseRecord,
+          [id]: value
+        }
       }
     };
   }),

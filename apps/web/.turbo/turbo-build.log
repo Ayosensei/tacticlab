@@ -1,0 +1,26 @@
+
+
+> web@0.1.0 build /home/saturnsurfer/Documents/PROJECTS/tacticlab/apps/web
+> next build
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+request to https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7W0Q5n-wU.woff2 failed, reason: 
+
+Retrying 1/3...
+ ✓ Compiled successfully
+Failed to compile.
+
+./src/components/pitch/ConfigPanel.tsx:135:37
+Type error: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Partial<Record<Duty, { instructions?: string[] | undefined; hiddenInstructions?: string[] | undefined; traits?: RoleTraits | undefined; }>>'.
+
+[0m [90m 133 |[39m               )[33m;[39m[0m
+[0m [90m 134 |[39m[0m
+[0m[31m[1m>[22m[39m[90m 135 |[39m               [36mconst[39m dutyOverrides [33m=[39m roleData[33m.[39mduties[player[33m.[39mduty [36mas[39m any] [33m||[39m {}[33m;[39m[0m
+[0m [90m     |[39m                                     [31m[1m^[22m[39m[0m
+[0m [90m 136 |[39m               [36mconst[39m activeInstructions [33m=[39m [[0m
+[0m [90m 137 |[39m                 [33m...[39mroleData[33m.[39mbaseInstructions[33m.[39minstructions[33m,[39m[0m
+[0m [90m 138 |[39m                 [33m...[39m(dutyOverrides[33m.[39minstructions [33m||[39m [])[0m
+Next.js build worker exited with code: 1 and signal: null
+ ELIFECYCLE  Command failed with exit code 1.
