@@ -14,10 +14,13 @@ export function ConfigPanel() {
   if (!activeSidebarTab) return null;
 
   return (
-    <div className={cn(
-      "bg-[#0a0c10] border-r border-[#ffffff0a] h-[calc(100vh-80px)] overflow-hidden flex flex-col z-40 shadow-[20px_0_40px_rgba(0,0,0,0.5)] transition-all duration-500 ease-in-out shrink-0",
-      activeSidebarTab === "instructions" ? "w-[calc(100vw-16rem)]" : "w-80"
-    )}>
+    <div 
+      id="config-panel-container"
+      className={cn(
+        "bg-[#0a0c10] border-r border-[#ffffff0a] h-[calc(100vh-80px)] overflow-hidden flex flex-col z-[100] shadow-[20px_0_40px_rgba(0,0,0,0.5)] transition-all duration-500 ease-in-out shrink-0",
+        activeSidebarTab === "instructions" ? "w-[calc(100vw-16rem)]" : "w-80"
+      )}
+    >
       
       {activeSidebarTab !== "instructions" && (
         <div className="flex flex-col h-full overflow-y-auto">
@@ -31,7 +34,6 @@ export function ConfigPanel() {
               {activeSidebarTab === "mentality" && "Define the baseline risk and aggression level."}
               {activeSidebarTab === "formation" && "Choose a structural framework for your team."}
               {activeSidebarTab === "player_instructions" && "Configure specific tactical behaviors for this role."}
-              {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && activeSidebarTab !== "player_instructions" && "Configure tactical instructions."}
             </p>
           </div>
 
@@ -45,8 +47,8 @@ export function ConfigPanel() {
                   onClick={() => setStyle(style.name)}
                   className={cn(
                     "flex flex-col text-left p-4 rounded-lg border transition-all duration-200",
-                    isActive 
-                      ? "bg-[#162a22] border-emerald-500/30" 
+                    isActive
+                      ? "bg-[#162a22] border-emerald-500/30"
                       : "bg-[#12141a] border-white/5 hover:border-white/20 hover:bg-white/5"
                   )}
                 >
@@ -74,8 +76,8 @@ export function ConfigPanel() {
                   onClick={() => setMentality(mentality.name as any)}
                   className={cn(
                     "flex flex-col text-left p-4 rounded-lg border transition-all duration-200",
-                    isActive 
-                      ? "bg-[#162a22] border-emerald-500/30" 
+                    isActive
+                      ? "bg-[#162a22] border-emerald-500/30"
                       : "bg-[#12141a] border-white/5 hover:border-white/20 hover:bg-white/5"
                   )}
                 >
@@ -103,8 +105,8 @@ export function ConfigPanel() {
                   onClick={() => setFormation(formation.id)}
                   className={cn(
                     "flex flex-col text-left p-4 rounded-lg border transition-all duration-200",
-                    isActive 
-                      ? "bg-[#162a22] border-emerald-500/30" 
+                    isActive
+                      ? "bg-[#162a22] border-emerald-500/30"
                       : "bg-[#12141a] border-white/5 hover:border-white/20 hover:bg-white/5"
                   )}
                 >
@@ -132,7 +134,8 @@ export function ConfigPanel() {
                 <div className="p-4 text-center text-xs text-muted-foreground">No data found for {player.role}.</div>
               );
 
-              const dutyOverrides = roleData.duties[player.duty as any] || {};
+              const duties = roleData.duties as any;
+              const dutyOverrides = (duties && duties[player.duty]) || {};
               const activeInstructions = [
                 ...roleData.baseInstructions.instructions,
                 ...(dutyOverrides.instructions || [])
@@ -171,51 +174,43 @@ export function ConfigPanel() {
                       </div>
                     </div>
                   )}
-
-                  {(roleData.baseTraits.complementary.length > 0 || roleData.baseTraits.contrasting.length > 0) && (
-                    <div className="bg-[#12141a] p-4 rounded-lg border border-white/5">
-                      <h5 className="text-[9px] text-slate-400 uppercase tracking-widest font-bold mb-3">Player Traits</h5>
-                      
-                      {roleData.baseTraits.complementary.length > 0 && (
-                        <div className="mb-3">
-                          <span className="text-[8px] text-emerald-400 uppercase font-black mb-1 block">Complementary</span>
-                          <ul className="list-disc pl-3 text-[10px] text-muted-foreground flex flex-col gap-1">
-                            {roleData.baseTraits.complementary.map((t, i) => <li key={i}>{t}</li>)}
-                          </ul>
-                        </div>
-                      )}
-                      
-                      {roleData.baseTraits.contrasting.length > 0 && (
-                        <div>
-                          <span className="text-[8px] text-red-400 uppercase font-black mb-1 block">Contrasting</span>
-                          <ul className="list-disc pl-3 text-[10px] text-muted-foreground flex flex-col gap-1">
-                            {roleData.baseTraits.contrasting.map((t, i) => <li key={i}>{t}</li>)}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
               );
             })()}
-
           </div>
         </div>
       )}
 
       {/* Full-width Instructions Panel */}
       {activeSidebarTab === "instructions" && (
-        <div className="flex flex-col h-full bg-[#0a0c10] opacity-0 animate-in fade-in duration-500 fill-mode-forwards">
+        <div className="flex flex-col h-full bg-[#0a0c10] relative z-[110]">
+          {/* Header */}
+          <div className="p-6 border-b border-white/5 bg-[#0d0f14] flex justify-between items-center shrink-0">
+            <div>
+              <h3 className="text-emerald-400 font-black text-lg tracking-tight uppercase">
+                Team Instructions
+              </h3>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold opacity-50 mt-1">
+                Strategy Configuration
+              </p>
+            </div>
+            <div className="bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20">
+              <span className="text-[10px] text-emerald-400 font-black uppercase tracking-widest">
+                {activeInstructionPhase.replace(/([A-Z])/g, ' $1').trim()}
+              </span>
+            </div>
+          </div>
+
           {/* Phase Sub-tabs */}
-          <div className="flex border-b border-white/5 bg-[#0a0c10]">
+          <div className="flex border-b border-white/5 bg-[#0a0c10] shrink-0">
             {(["inPossession", "inTransition", "outOfPossession"] as const).map((phase) => (
               <button
                 key={phase}
                 onClick={() => setActiveInstructionPhase(phase)}
                 className={cn(
                   "flex-1 py-4 px-6 text-[10px] uppercase font-black tracking-[0.2em] transition-colors text-center border-b-2",
-                  activeInstructionPhase === phase 
-                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5" 
+                  activeInstructionPhase === phase
+                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
                     : "border-transparent text-muted-foreground hover:text-white hover:bg-white/5"
                 )}
               >
@@ -225,9 +220,9 @@ export function ConfigPanel() {
           </div>
 
           {/* 3 Columns Grid */}
-          <div className="flex-1 p-8 grid grid-cols-3 gap-8 overflow-y-auto bg-[#0d0f14] relative">
+          <div className="flex-1 p-8 grid grid-cols-3 gap-8 overflow-y-auto bg-[#0d0f14] relative min-h-0">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.03),transparent)] pointer-events-none" />
-            
+
             {TEAM_INSTRUCTIONS[activeInstructionPhase]?.map((column) => (
               <div key={column.id} className="flex flex-col gap-5 z-10">
                 <div className="border-b-2 border-emerald-500/20 pb-3 mb-2">
@@ -235,12 +230,12 @@ export function ConfigPanel() {
                     {column.name}
                   </h3>
                 </div>
-                
+
                 <div className="flex flex-col gap-3">
                   {column.items.map((item) => {
-                    // @ts-ignore
-                    const value = currentTactic[activeInstructionPhase][item.id];
-                    
+                    const phaseData = (currentTactic[activeInstructionPhase] as any) || {};
+                    const value = phaseData[item.id];
+
                     if (item.type === "toggle") {
                       const isActive = value === true;
                       return (
@@ -249,8 +244,8 @@ export function ConfigPanel() {
                           onClick={() => toggleInstruction(activeInstructionPhase, item.id, !isActive)}
                           className={cn(
                             "flex items-center justify-between text-left px-4 py-3 rounded-lg border transition-all duration-200 group relative overflow-hidden",
-                            isActive 
-                              ? "bg-[#115e3b] border-[#1f8757] shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)]" 
+                            isActive
+                              ? "bg-[#115e3b] border-[#1f8757] shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)]"
                               : "bg-[#161b22] border-white/5 hover:border-white/20 hover:bg-[#1c222b]"
                           )}
                         >
@@ -280,10 +275,9 @@ export function ConfigPanel() {
                               <option key={opt} value={opt}>{opt}</option>
                             ))}
                           </select>
-                          {/* Custom Dropdown Arrow */}
                           <div className="absolute right-4 top-[26px] pointer-events-none opacity-50">
                             <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                           </div>
                         </div>

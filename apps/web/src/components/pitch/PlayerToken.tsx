@@ -127,7 +127,7 @@ export function PlayerToken({ player }: PlayerTokenProps) {
             <div className="flex bg-[#12141a] p-1 border-b border-white/5">
               {(Object.keys(ROLES_DB[player.role]?.duties || {}).length > 0 
                 ? Object.keys(ROLES_DB[player.role].duties) 
-                : DUTIES).map((duty) => (
+                : DUTIES).map((duty: string) => (
                 <button
                   key={duty}
                   onClick={() => updatePlayerRole(player.id, player.role, duty as Duty)}
