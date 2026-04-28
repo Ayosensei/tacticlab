@@ -21,6 +21,7 @@ interface TacticState {
   setLoading: (isLoading: boolean) => void;
   setActiveSidebarTab: (tab: string | null) => void;
   setSelectedPlayerId: (id: string | null) => void;
+  toggleInstruction: (phase: "inPossession" | "inTransition" | "outOfPossession", groupOptions: string[], instruction: string) => void;
 }
 
 const initialTactic: Tactic = {
@@ -139,4 +140,23 @@ export const useTacticStore = create<TacticState>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setActiveSidebarTab: (tab) => set({ activeSidebarTab: tab }),
   setSelectedPlayerId: (id) => set({ selectedPlayerId: id }),
+  
+  toggleInstruction: (phase, groupOptions, instruction) => set((state) => {
+    const phaseArray = state.currentTactic[phase] || [];
+    const isActive = phaseArray.includes(instruction);
+    
+    let newPhaseArray = [...phaseArray];
+    if (isActive) {
+      newPhaseArray = newPhaseArray.filter(i => i !== instruction);
+    } else {
+      newPhaseArray.push(instruction);
+    }
+    
+    return {
+      currentTactic: {
+        ...state.currentTactic,
+        [phase]: newPhaseArray
+      }
+    };
+  }),
 }));

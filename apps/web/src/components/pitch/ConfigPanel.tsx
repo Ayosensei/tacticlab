@@ -1,13 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { useTacticStore } from "@/store/tacticStore";
-import { TACTICAL_STYLES, MENTALITIES, FORMATIONS } from "@/lib/tacticsData";
+import { TACTICAL_STYLES, MENTALITIES, FORMATIONS, TEAM_INSTRUCTIONS } from "@/lib/tacticsData";
 import { ROLES_DB } from "@/lib/rolesData";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
 export function ConfigPanel() {
-  const { activeSidebarTab, currentTactic, setStyle, setMentality, setFormation, selectedPlayerId } = useTacticStore();
+  const { activeSidebarTab, currentTactic, setStyle, setMentality, setFormation, selectedPlayerId, toggleInstruction } = useTacticStore();
+  const [activeInstructionPhase, setActiveInstructionPhase] = useState<"inPossession" | "inTransition" | "outOfPossession">("inPossession");
 
   if (!activeSidebarTab) return null;
 
@@ -192,7 +194,62 @@ export function ConfigPanel() {
           );
         })()}
 
-        {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && activeSidebarTab !== "player_instructions" && (
+        {activeSidebarTab === "instructions" && (
+          <div className="flex flex-col gap-4">
+            {/* Sub-tabs for Phases */}
+            <div className="flex gap-1 p-1 bg-[#12141a] rounded-lg border border-white/5">
+              {(["inPossession", "inTransition", "outOfPossession"] as const).map((phase) => (
+                <button
+                  key={phase}
+                  onClick={() => setActiveInstructionPhase(phase)}
+                  className={cn(
+                    "flex-1 py-2 px-1 text-[9px] uppercase font-bold tracking-widest rounded transition-colors text-center",
+                    activeInstructionPhase === phase 
+                      ? "bg-[#1a1d25] text-emerald-400 shadow-sm" 
+                      : "text-muted-foreground hover:text-white"
+                  )}
+                >
+                  {phase.replace(/([A-Z])/g, ' $1').trim()}
+                </button>
+              ))}
+            </div>
+
+            {/* Instruction Groups */}
+            <div className="flex flex-col gap-4 mt-2">
+              {TEAM_INSTRUCTIONS[activeInstructionPhase].map((group) => (
+                <div key={group.id} className="flex flex-col gap-2">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">
+                    {group.name}
+                  </span>
+                  <div className="flex flex-col gap-1">
+                    {group.options.map((option) => {
+                      const isActive = currentTactic[activeInstructionPhase].includes(option);
+                      return (
+                        <button
+                          key={option}
+                          onClick={() => toggleInstruction(activeInstructionPhase, group.options, option)}
+                          className={cn(
+                            "flex items-center justify-between text-left px-3 py-2.5 rounded border transition-all duration-200",
+                            isActive 
+                              ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
+                              : "bg-[#12141a] border-white/5 hover:border-white/20 hover:bg-white/5 text-slate-300"
+                          )}
+                        >
+                          <span className="text-[11px] font-bold tracking-wide">
+                            {option}
+                          </span>
+                          {isActive && <Check className="w-3.5 h-3.5 text-emerald-400" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSidebarTab !== "style" && activeSidebarTab !== "mentality" && activeSidebarTab !== "formation" && activeSidebarTab !== "player_instructions" && activeSidebarTab !== "instructions" && (
           <div className="p-4 bg-[#12141a] rounded border border-white/5">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               Panel under construction
