@@ -43,7 +43,7 @@ export interface AnalysisResult {
   score: number;                      // 0–100
   penetration: ChannelScores;
   solidity: ChannelScores;
-  support: { left: number; right: number };
+  support: { left: number; right: number; central: number };
   relativeRisk: { inPossession: number; outOfPossession: number; total: number };
   partnerships: Partnership[];
   suggestions: Suggestion[];

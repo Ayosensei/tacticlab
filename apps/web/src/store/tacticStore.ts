@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { Tactic, AnalysisResult, Duty } from "@/types/tactic";
 import { FORMATIONS, getValidRolesForPosition, getClosestSlot } from "../lib/tacticsData";
 import { ROLES_DB } from "../lib/rolesData";
+import { scoreTactic } from "../lib/wasm";
 
 interface TacticState {
   currentTactic: Tactic;
@@ -48,7 +49,7 @@ const initialTactic: Tactic = {
   arrows: [],
 };
 
-export const useTacticStore = create<TacticState>((set) => ({
+export const useTacticStore = create<TacticState>((set, get) => ({
   currentTactic: initialTactic,
   analysis: null,
   isLoading: false,
@@ -89,7 +90,9 @@ export const useTacticStore = create<TacticState>((set) => ({
         players[occupantIndex] = occupant;
       }
       
-      return { currentTactic: { ...state.currentTactic, players } };
+      const newTactic = { ...state.currentTactic, players };
+      scoreTactic(newTactic).then(result => get().setAnalysis(result));
+      return { currentTactic: newTactic };
     }),
     
   setFormation: (formationId) =>
@@ -97,13 +100,13 @@ export const useTacticStore = create<TacticState>((set) => ({
       const formation = FORMATIONS.find(f => f.id === formationId);
       if (!formation) return state;
       
-      return {
-        currentTactic: {
-          ...state.currentTactic,
-          formation: formation.name,
-          players: JSON.parse(JSON.stringify(formation.players)) // Deep clone array
-        }
+      const newTactic = {
+        ...state.currentTactic,
+        formation: formation.name,
+        players: JSON.parse(JSON.stringify(formation.players)) // Deep clone array
       };
+      scoreTactic(newTactic).then(result => get().setAnalysis(result));
+      return { currentTactic: newTactic };
     }),
     
   updatePlayerRole: (playerId, role, duty) =>
@@ -123,18 +126,24 @@ export const useTacticStore = create<TacticState>((set) => ({
         }
         return p;
       });
-      return { currentTactic: { ...state.currentTactic, players } };
+      const newTactic = { ...state.currentTactic, players };
+      scoreTactic(newTactic).then(result => get().setAnalysis(result));
+      return { currentTactic: newTactic };
     }),
 
   setStyle: (styleName) =>
-    set((state) => ({
-      currentTactic: { ...state.currentTactic, style: styleName }
-    })),
+    set((state) => {
+      const newTactic = { ...state.currentTactic, style: styleName };
+      scoreTactic(newTactic).then(result => get().setAnalysis(result));
+      return { currentTactic: newTactic };
+    }),
 
   setMentality: (mentality) =>
-    set((state) => ({
-      currentTactic: { ...state.currentTactic, mentality }
-    })),
+    set((state) => {
+      const newTactic = { ...state.currentTactic, mentality };
+      scoreTactic(newTactic).then(result => get().setAnalysis(result));
+      return { currentTactic: newTactic };
+    }),
 
   setAnalysis: (analysis) => set({ analysis }),
   setLoading: (isLoading) => set({ isLoading }),
@@ -143,15 +152,22 @@ export const useTacticStore = create<TacticState>((set) => ({
   
   toggleInstruction: (phase, id, value) => set((state) => {
     const phaseRecord = state.currentTactic[phase] || {};
-    
-    return {
-      currentTactic: {
-        ...state.currentTactic,
-        [phase]: {
-          ...phaseRecord,
-          [id]: value
-        }
+    const newTactic = {
+      ...state.currentTactic,
+      [phase]: {
+        ...phaseRecord,
+        [id]: value
       }
     };
+    
+    // Trigger analysis
+    scoreTactic(newTactic).then(result => get().setAnalysis(result));
+
+    return { currentTactic: newTactic };
   }),
 }));
+
+// Helper to trigger analysis on store updates
+const triggerAnalysis = (state: TacticState) => {
+  scoreTactic(state.currentTactic).then(result => state.setAnalysis(result));
+};
