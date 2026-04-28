@@ -227,7 +227,7 @@ export function ConfigPanel() {
                       return (
                         <button
                           key={option}
-                          onClick={() => toggleInstruction(activeInstructionPhase, group.options, option)}
+                          onClick={() => toggleInstruction(activeInstructionPhase, option)}
                           className={cn(
                             "flex items-center justify-between text-left px-3 py-2.5 rounded border transition-all duration-200",
                             isActive 
