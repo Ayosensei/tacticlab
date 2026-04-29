@@ -53,7 +53,7 @@ export interface Partnership {
   player1Id: string;
   player2Id: string;
   strength: number;                   // 0–1
-  type: "positive" | "negative" | "neutral";
+  partnership_type: "positive" | "negative" | "neutral";
 }
 
 export interface Suggestion {
