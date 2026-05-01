@@ -1,4 +1,4 @@
-import { Tactic, AnalysisResult, Partnership } from "@/types/tactic";
+import { Tactic, AnalysisResult, PassingTriangle } from "@/types/tactic";
 
 let wasmModule: any = null;
 
@@ -187,72 +187,70 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
     suggestions.push({ severity: "critical", area: "defence", message: "Both Wing-Backs attacking without a holding midfielder creates a massive counter-attack risk." });
   }
 
-  // Mock Partnerships
-  const partnerships: Partnership[] = [];
-  const isCreative = (r: string) => ["Advanced Playmaker", "Deep Lying Playmaker", "Roaming Playmaker", "Trequartista", "Mezzala"].includes(r);
-  const isDefensiveMid = (r: string) => ["Anchor", "Defensive Midfielder", "Ball Winning Midfielder", "Half Back"].includes(r);
-  const isWingBack = (r: string) => ["Full Back", "Wing Back", "Inverted Wing Back", "Complete Wing-Back"].includes(r);
-  const isWinger = (r: string) => ["Winger", "Inside Forward", "Inverted Winger", "Raumdeuter"].includes(r);
-  const isCreatorStriker = (r: string) => ["Deep Lying Forward", "Target Forward", "False Nine", "Complete Forward"].includes(r);
-  const isFinisherStriker = (r: string) => ["Advanced Forward", "Poacher", "Pressing Forward"].includes(r);
+  // Real-World Tactical Metrics
+  let minY = 100;
+  let maxY = 0;
+  tactic.players.forEach(p => {
+    if (p.role !== "Goalkeeper" && p.role !== "Sweeper Keeper") {
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+  });
+  const verticalCompactness = (maxY - minY) * 1.05;
 
-  for (let i = 0; i < tactic.players.length; i++) {
-    for (let j = i + 1; j < tactic.players.length; j++) {
-      const p1 = tactic.players[i];
-      const p2 = tactic.players[j];
-      const dist = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
-      
-      if (dist < 35) {
-        let strength = Math.max(0, 1 - dist / 35);
-        let p_type: "neutral" | "positive" | "negative" = "neutral";
-        
-        // Midfield
-        if (p1.y > 40 && p1.y < 70 && p2.y > 40 && p2.y < 70 && p1.x > 30 && p1.x < 70 && p2.x > 30 && p2.x < 70) {
-            const p1C = isCreative(p1.role); const p2C = isCreative(p2.role);
-            const p1D = isDefensiveMid(p1.role); const p2D = isDefensiveMid(p2.role);
-            if ((p1C && p2D) || (p2C && p1D)) { strength += 0.3; p_type = "positive"; }
-            if (p1C && p2C) { strength -= 0.2; p_type = "negative"; }
-        }
-        
-        // Flanks
-        const sameFlank = (p1.x < 35 && p2.x < 35) || (p1.x > 65 && p2.x > 65);
-        if (sameFlank) {
-            if ((isWingBack(p1.role) && isWinger(p2.role)) || (isWingBack(p2.role) && isWinger(p1.role))) {
-                if ((p1.duty === "Attack" && p2.duty === "Support") || (p2.duty === "Attack" && p1.duty === "Support")) {
-                    strength += 0.3; p_type = "positive";
-                }
-            }
-            if (p1.duty === "Attack" && p2.duty === "Attack") {
-                strength -= 0.3; p_type = "negative";
-            }
-        }
-        
-        // Strikers
-        if (p1.y < 30 && p2.y < 30 && p1.x > 30 && p1.x < 70 && p2.x > 30 && p2.x < 70) {
-            if ((isCreatorStriker(p1.role) && isFinisherStriker(p2.role)) || (isCreatorStriker(p2.role) && isFinisherStriker(p1.role))) {
-                strength += 0.3; p_type = "positive";
-            } else if (isFinisherStriker(p1.role) && isFinisherStriker(p2.role)) {
-                strength -= 0.2; p_type = "negative";
-            }
-        }
-        
-        if (strength > 0) {
-            partnerships.push({
-              player1Id: p1.id,
-              player2Id: p2.id,
-              strength: Math.min(1, strength),
-              partnership_type: p_type
-            });
+  if (verticalCompactness > 55) {
+    suggestions.push({ severity: "critical", area: "central", message: "Stretched Block. Your team is vertically stretched over 55 meters, leaving massive spaces between the lines." });
+  } else if (verticalCompactness < 25) {
+    suggestions.push({ severity: "warning", area: "central", message: "Extremely compact. While defensively solid, you may struggle to transition effectively." });
+  }
+
+  const defenders = tactic.players.filter(p => p.y > 65).length;
+  const deepMids = tactic.players.filter(p => p.y > 45 && p.y <= 65).length;
+  const buildUpStructure = `${defenders}-${deepMids}`;
+
+  if (["4-0", "3-0", "2-0"].includes(buildUpStructure)) {
+    suggestions.push({ severity: "critical", area: "defence", message: "Flat build-up structure with no pivot. You will struggle to play through a press." });
+  }
+
+  const passingTriangles = [];
+  const numPlayers = tactic.players.length;
+  for (let i = 0; i < numPlayers; i++) {
+    for (let j = i + 1; j < numPlayers; j++) {
+      for (let k = j + 1; k < numPlayers; k++) {
+        const p1 = tactic.players[i];
+        const p2 = tactic.players[j];
+        const p3 = tactic.players[k];
+
+        const dist12 = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        const dist23 = Math.sqrt(Math.pow(p2.x - p3.x, 2) + Math.pow(p2.y - p3.y, 2));
+        const dist31 = Math.sqrt(Math.pow(p3.x - p1.x, 2) + Math.pow(p3.y - p1.y, 2));
+
+        if (dist12 > 10 && dist12 < 35 && dist23 > 10 && dist23 < 35 && dist31 > 10 && dist31 < 35) {
+          const avgDist = (dist12 + dist23 + dist31) / 3;
+          const variance = (Math.pow(dist12 - avgDist, 2) + Math.pow(dist23 - avgDist, 2) + Math.pow(dist31 - avgDist, 2)) / 3;
+          const strength = Math.max(0, Math.min(1, 1 - (variance / 100)));
+          
+          passingTriangles.push({
+            player1Id: p1.id,
+            player2Id: p2.id,
+            player3Id: p3.id,
+            strength
+          });
         }
       }
     }
   }
 
+  passingTriangles.sort((a, b) => b.strength - a.strength);
+  const topTriangles = passingTriangles.slice(0, 5);
+
   return {
     phases,
     channelOccupation: channels,
     restDefenceStructure: restDefStructure,
-    partnerships,
+    buildUpStructure,
+    verticalCompactness,
+    passingTriangles: topTriangles,
     suggestions: suggestions as any
   };
 }

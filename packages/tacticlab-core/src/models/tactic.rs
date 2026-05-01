@@ -55,11 +55,12 @@ pub struct ChannelOccupation {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Partnership {
+#[serde(rename_all = "camelCase")]
+pub struct PassingTriangle {
     pub player1_id: String,
     pub player2_id: String,
+    pub player3_id: String,
     pub strength: f32,
-    pub partnership_type: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -75,6 +76,8 @@ pub struct AnalysisResult {
     pub phases: PhaseMetrics,
     pub channel_occupation: ChannelOccupation,
     pub rest_defence_structure: String,
-    pub partnerships: Vec<Partnership>,
+    pub build_up_structure: String,
+    pub vertical_compactness: f32,
+    pub passing_triangles: Vec<PassingTriangle>,
     pub suggestions: Vec<Suggestion>,
 }

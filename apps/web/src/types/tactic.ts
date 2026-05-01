@@ -53,15 +53,17 @@ export interface AnalysisResult {
   phases: PhaseMetrics;
   channelOccupation: ChannelOccupation;
   restDefenceStructure: string;
-  partnerships: Partnership[];
+  buildUpStructure: string;
+  verticalCompactness: number; // distance in meters/units
+  passingTriangles: PassingTriangle[];
   suggestions: Suggestion[];
 }
 
-export interface Partnership {
+export interface PassingTriangle {
   player1Id: string;
   player2Id: string;
-  strength: number;                   // 0–1
-  partnership_type: "positive" | "negative" | "neutral";
+  player3Id: string;
+  strength: number; // Quality of the triangle
 }
 
 export interface Suggestion {

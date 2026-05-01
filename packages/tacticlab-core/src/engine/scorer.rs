@@ -1,4 +1,4 @@
-use crate::models::tactic::{Tactic, AnalysisResult, PhaseMetrics, ChannelOccupation, Suggestion};
+use crate::models::tactic::{Tactic, AnalysisResult, PhaseMetrics, ChannelOccupation, Suggestion, PassingTriangle};
 use std::collections::HashMap;
 
 pub fn score(tactic: &Tactic) -> AnalysisResult {
@@ -194,11 +194,95 @@ pub fn score(tactic: &Tactic) -> AnalysisResult {
         pressing: pressing_intensity.clamp(0.0, 100.0),
     };
 
+    // 4. Real-World Tactical Metrics
+    
+    // Vertical Compactness
+    let mut min_y = 100.0_f32;
+    let mut max_y = 0.0_f32;
+    for p in &tactic.players {
+        if p.role != "Goalkeeper" && p.role != "Sweeper Keeper" {
+            if p.y < min_y { min_y = p.y; }
+            if p.y > max_y { max_y = p.y; }
+        }
+    }
+    let vertical_compactness = (max_y - min_y) * 1.05; // ~meters (assuming 105m pitch length)
+    
+    if vertical_compactness > 55.0 {
+        suggestions.push(Suggestion {
+            severity: "critical".to_string(),
+            area: "central".to_string(),
+            message: "Stretched Block. Your team is vertically stretched over 55 meters, leaving massive spaces between the lines for the opposition to exploit.".to_string(),
+        });
+    } else if vertical_compactness < 25.0 {
+        suggestions.push(Suggestion {
+            severity: "warning".to_string(),
+            area: "central".to_string(),
+            message: "Extremely compact. While defensively solid, you may struggle to transition effectively if players are stepping on each other's toes.".to_string(),
+        });
+    }
+
+    // Build-Up Structure
+    let defenders = tactic.players.iter().filter(|p| p.y > 65.0).count();
+    let deep_mids = tactic.players.iter().filter(|p| p.y > 45.0 && p.y <= 65.0).count();
+    
+    let build_up_structure = format!("{}-{}", defenders, deep_mids);
+    
+    if build_up_structure == "4-0" || build_up_structure == "3-0" || build_up_structure == "2-0" {
+        suggestions.push(Suggestion {
+            severity: "critical".to_string(),
+            area: "defence".to_string(),
+            message: "Flat build-up structure with no pivot. You will struggle to play through the first line of an opposition press.".to_string(),
+        });
+    }
+
+    // Passing Triangles (Basic geometric detection)
+    let mut passing_triangles = Vec::new();
+    let num_players = tactic.players.len();
+    
+    // O(N^3) is fine since N=11
+    for i in 0..num_players {
+        for j in i+1..num_players {
+            for k in j+1..num_players {
+                let p1 = &tactic.players[i];
+                let p2 = &tactic.players[j];
+                let p3 = &tactic.players[k];
+                
+                let dist12 = ((p1.x - p2.x).powi(2) + (p1.y - p2.y).powi(2)).sqrt();
+                let dist23 = ((p2.x - p3.x).powi(2) + (p2.y - p3.y).powi(2)).sqrt();
+                let dist31 = ((p3.x - p1.x).powi(2) + (p3.y - p1.y).powi(2)).sqrt();
+                
+                // A good passing triangle has distances between ~15 and ~35 units
+                if dist12 > 10.0 && dist12 < 35.0 && 
+                   dist23 > 10.0 && dist23 < 35.0 && 
+                   dist31 > 10.0 && dist31 < 35.0 {
+                       
+                    // Rough strength based on how equilateral it is (closer to 1.0 is better)
+                    let avg_dist = (dist12 + dist23 + dist31) / 3.0;
+                    let variance = ((dist12 - avg_dist).powi(2) + (dist23 - avg_dist).powi(2) + (dist31 - avg_dist).powi(2)) / 3.0;
+                    let strength = (1.0 - (variance / 100.0)).clamp(0.0, 1.0);
+                    
+                    passing_triangles.push(PassingTriangle {
+                        player1_id: p1.id.clone(),
+                        player2_id: p2.id.clone(),
+                        player3_id: p3.id.clone(),
+                        strength,
+                    });
+                }
+            }
+        }
+    }
+    
+    // Sort and keep top 5 strongest triangles to avoid visual clutter
+    passing_triangles.sort_by(|a, b| b.strength.partial_cmp(&a.strength).unwrap_or(std::cmp::Ordering::Equal));
+    passing_triangles.truncate(5);
+
     AnalysisResult {
         phases,
         channel_occupation: channels,
         rest_defence_structure: rest_def_structure,
-        partnerships: Vec::new(),
+        build_up_structure,
+        vertical_compactness,
+        passing_triangles,
         suggestions,
     }
 }

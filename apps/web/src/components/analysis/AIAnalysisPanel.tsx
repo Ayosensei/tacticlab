@@ -20,8 +20,10 @@ export function AIAnalysisPanel() {
   const phases = (analysis as any).phases;
   const channelOccupation = (analysis as any).channelOccupation;
   const restDefenceStructure = (analysis as any).restDefenceStructure;
+  const buildUpStructure = (analysis as any).buildUpStructure;
+  const verticalCompactness = (analysis as any).verticalCompactness;
   const suggestions = analysis.suggestions;
-  const partnerships = analysis.partnerships;
+  const passingTriangles = (analysis as any).passingTriangles;
 
   if (!phases || !channelOccupation) {
      return (
@@ -50,19 +52,36 @@ export function AIAnalysisPanel() {
           </div>
         </div>
 
-        {/* Rest Defence Hero */}
-        <div className="bg-[#12141a] p-4 rounded-xl border border-white/5 shadow-lg flex items-center justify-between">
-            <div className="flex flex-col">
+        {/* Structural Metrics */}
+        <div className="grid grid-cols-2 gap-2">
+            <div className="bg-[#12141a] p-4 rounded-xl border border-white/5 shadow-lg flex flex-col justify-between">
                 <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5 mb-1">
                    <ShieldAlert className="w-3 h-3 text-emerald-500" /> Rest Defence
                 </span>
-                <span className="text-3xl font-black text-white tracking-tighter">
+                <span className="text-2xl font-black text-white tracking-tighter">
                     {restDefenceStructure}
                 </span>
             </div>
-            <div className="text-right">
-                <div className="text-[10px] font-bold text-slate-400">Security</div>
-                <div className="text-lg font-black text-emerald-400">{Math.round(phases.restDefence)}%</div>
+            
+            <div className="bg-[#12141a] p-4 rounded-xl border border-white/5 shadow-lg flex flex-col justify-between">
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5 mb-1">
+                   <Navigation className="w-3 h-3 text-indigo-400" /> Build-Up
+                </span>
+                <span className="text-2xl font-black text-white tracking-tighter">
+                    {buildUpStructure}
+                </span>
+            </div>
+
+            <div className="col-span-2 bg-[#12141a] p-3 rounded-xl border border-white/5 shadow-lg flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                   Vertical Compactness
+                </span>
+                <span className={cn(
+                    "text-lg font-black",
+                    verticalCompactness > 55 ? "text-rose-500" : verticalCompactness < 25 ? "text-amber-500" : "text-emerald-400"
+                )}>
+                    {Math.round(verticalCompactness)}m
+                </span>
             </div>
         </div>
 
