@@ -33,18 +33,26 @@ export interface Tactic {
   isPublic?: boolean;
 }
 
-export interface ChannelScores {
-  left: number;
-  right: number;
-  central: number;
+export interface PhaseMetrics {
+  buildUp: number;
+  creation: number;
+  conversion: number;
+  restDefence: number;
+  pressing: number;
+}
+
+export interface ChannelOccupation {
+  wideLeft: number;
+  halfSpaceLeft: number;
+  center: number;
+  halfSpaceRight: number;
+  wideRight: number;
 }
 
 export interface AnalysisResult {
-  score: number;                      // 0–100
-  penetration: ChannelScores;
-  solidity: ChannelScores;
-  support: { left: number; right: number; central: number };
-  relativeRisk: { inPossession: number; outOfPossession: number; total: number };
+  phases: PhaseMetrics;
+  channelOccupation: ChannelOccupation;
+  restDefenceStructure: string;
   partnerships: Partnership[];
   suggestions: Suggestion[];
 }

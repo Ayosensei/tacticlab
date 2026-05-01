@@ -35,18 +35,23 @@ pub struct Tactic {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ChannelScores {
-    pub left: f32,
-    pub right: f32,
-    pub central: f32,
+#[serde(rename_all = "camelCase")]
+pub struct PhaseMetrics {
+    pub build_up: f32,
+    pub creation: f32,
+    pub conversion: f32,
+    pub rest_defence: f32,
+    pub pressing: f32,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct RelativeRisk {
-    pub in_possession: f32,
-    pub out_of_possession: f32,
-    pub total: f32,
+pub struct ChannelOccupation {
+    pub wide_left: f32,
+    pub half_space_left: f32,
+    pub center: f32,
+    pub half_space_right: f32,
+    pub wide_right: f32,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -54,12 +59,12 @@ pub struct Partnership {
     pub player1_id: String,
     pub player2_id: String,
     pub strength: f32,
-    pub partnership_type: String, // rename 'type' to 'partnership_type'
+    pub partnership_type: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Suggestion {
-    pub severity: String, // "critical", "warning", "positive"
+    pub severity: String,
     pub area: String,
     pub message: String,
 }
@@ -67,11 +72,9 @@ pub struct Suggestion {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AnalysisResult {
-    pub score: f32,
-    pub penetration: ChannelScores,
-    pub solidity: ChannelScores,
-    pub support: HashMap<String, f32>, // e.g., {"left": 0.5, "right": 0.8}
-    pub relative_risk: RelativeRisk,
+    pub phases: PhaseMetrics,
+    pub channel_occupation: ChannelOccupation,
+    pub rest_defence_structure: String,
     pub partnerships: Vec<Partnership>,
     pub suggestions: Vec<Suggestion>,
 }

@@ -28,99 +28,105 @@ export async function scoreTactic(tactic: Tactic): Promise<AnalysisResult> {
 }
 
 function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
-  let totalAttackWeight = 0;
-  let totalDefendWeight = 0;
-  
-  let attackDuties = 0;
-  let supportDuties = 0;
-  let defendDuties = 0;
-  
-  let hasBpd = false;
-  let hasTrueWinger = false;
-
-  const getWeights = (role: string, duty: string) => {
-    let base = [0.5, 0.5];
-    if (["Advanced Forward", "Poacher", "Shadow Striker"].includes(role)) base = [1.2, 0.0];
-    else if (["Winger", "Inside Forward", "Inverted Winger"].includes(role)) base = [1.0, 0.2];
-    else if (["Central Defender", "Ball Playing Defender"].includes(role)) base = [0.0, 1.2];
-    else if (["Anchor", "Defensive Midfielder", "Ball Winning Midfielder"].includes(role)) base = [0.1, 1.0];
-    else if (["Full Back", "Wing Back"].includes(role)) base = [0.4, 0.8];
-    
-    const mod = duty === "Attack" ? [1.3, 0.7] : duty === "Defend" ? [0.7, 1.3] : [1.0, 1.0];
-    return [base[0] * mod[0], base[1] * mod[1]];
+  const channels = {
+    wideLeft: 0,
+    halfSpaceLeft: 0,
+    center: 0,
+    halfSpaceRight: 0,
+    wideRight: 0,
   };
 
-  const penetration = { left: 0, right: 0, central: 0 };
-  const solidity = { left: 0, right: 0, central: 0 };
+  let restDefenceCount = 0;
+  let buildUpCount = 0;
+  let creationCount = 0;
+  let conversionCount = 0;
 
-  tactic.players.forEach(p => {
-    const [atk, def] = getWeights(p.role, p.duty);
-    totalAttackWeight += atk;
-    totalDefendWeight += def;
-    
-    if (p.duty === "Attack") attackDuties++;
-    else if (p.duty === "Support") supportDuties++;
-    else if (p.duty === "Defend") defendDuties++;
-    
-    if (p.role === "Ball Playing Defender") hasBpd = true;
-    if (p.role === "Winger") hasTrueWinger = true;
+  let dmsOnDefend = 0;
+  let attackingWbs = 0;
 
-    const isLeft = p.x < 35;
-    const isRight = p.x > 65;
-    const contributionAtk = atk * (1 - p.y / 100);
-    const contributionDef = def * (p.y / 100);
+  tactic.players.forEach(player => {
+    let targetX = player.x;
+    let targetY = player.y;
 
-    if (p.y < 45) {
-      if (isLeft) penetration.left += contributionAtk;
-      else if (isRight) penetration.right += contributionAtk;
-      else penetration.central += contributionAtk;
+    switch (player.role) {
+      case "Inverted Wing Back":
+        targetX = player.x < 50 ? 35 : 65;
+        targetY = 60;
+        break;
+      case "Inverted Winger":
+      case "Inside Forward":
+        targetX = player.x < 50 ? 35 : 65;
+        targetY = 25;
+        break;
+      case "Mezzala":
+        targetX = player.x < 50 ? 20 : 80;
+        break;
+      case "False Nine":
+      case "Deep Lying Forward":
+        targetY = 35;
+        break;
+      default:
+        if (player.duty === "Attack") targetY -= 15;
+        else if (player.duty === "Defend") targetY += 5;
     }
-    if (p.y > 55) {
-      if (isLeft) solidity.left += contributionDef;
-      else if (isRight) solidity.right += contributionDef;
-      else solidity.central += contributionDef;
-    }
+
+    if (targetX < 20) channels.wideLeft += 1;
+    else if (targetX < 40) channels.halfSpaceLeft += 1;
+    else if (targetX < 60) channels.center += 1;
+    else if (targetX < 80) channels.halfSpaceRight += 1;
+    else channels.wideRight += 1;
+
+    if (player.y > 60 && player.duty !== "Attack") restDefenceCount += 1;
+    if (player.y > 70) buildUpCount += 1;
+    if (player.y > 40 && player.y <= 70) creationCount += 1;
+    if (player.y <= 40 || player.duty === "Attack") conversionCount += 1;
+
+    if (["Defensive Midfielder", "Anchor", "Half Back"].includes(player.role) && player.duty === "Defend") dmsOnDefend += 1;
+    if (["Wing Back", "Complete Wing-Back"].includes(player.role) && player.duty === "Attack") attackingWbs += 1;
   });
 
+  const phases = {
+    buildUp: Math.min(100, buildUpCount * 25),
+    creation: Math.min(100, creationCount * 25),
+    conversion: Math.min(100, conversionCount * 20),
+    restDefence: Math.min(100, restDefenceCount * 20),
+    pressing: 50,
+  };
+
   const suggestions = [];
-  
-  if (attackDuties > 4) suggestions.push({ severity: "warning", area: "attack", message: "Too many Attack duties. Players may isolate themselves." });
-  else if (attackDuties < 2) suggestions.push({ severity: "warning", area: "attack", message: "Insufficient Attack duties. You may lack penetration." });
-  
-  if (defendDuties < 3) suggestions.push({ severity: "critical", area: "defence", message: "Critical lack of Defend duties." });
 
-  const passing = tactic.inPossession?.passing_directness as string;
-  if (passing === "Much Shorter" && !hasBpd) {
-    suggestions.push({ severity: "warning", area: "central", message: "Much Shorter passing selected, but no Ball Playing Defenders." });
-  }
-  
-  const width = tactic.inPossession?.attacking_width as string;
-  if (width === "Extremely Wide" && !hasTrueWinger) {
-    suggestions.push({ severity: "warning", area: "attack", message: "Extremely Wide attacking width, but lack true Wingers." });
-  }
-  
-  const loe = tactic.outOfPossession?.line_of_engagement as string;
-  const dl = tactic.outOfPossession?.defensive_line as string;
-  if ((loe === "Higher" || loe === "Much Higher") && (dl === "Lower" || dl === "Much Lower")) {
-    suggestions.push({ severity: "critical", area: "defence", message: "Disconnected shape: High engagement line with low defensive line." });
-    solidity.central *= 0.7;
+  if (channels.wideLeft < 1 && channels.wideRight < 1) {
+    suggestions.push({ severity: "critical", area: "attack", message: "No natural width. Your attacks will be forced entirely through the center." });
+  } else if (channels.wideLeft < 1) {
+    suggestions.push({ severity: "warning", area: "attack", message: "Lack of width on the left flank. Consider a winger or an overlapping wing-back." });
+  } else if (channels.wideRight < 1) {
+    suggestions.push({ severity: "warning", area: "attack", message: "Lack of width on the right flank." });
   }
 
-  const midfieldCount = tactic.players.filter(p => p.y >= 40 && p.y <= 60).length;
-  if (midfieldCount < 2) {
-      suggestions.push({ severity: "warning", area: "central", message: "Midfield gap detected. You may struggle to maintain possession." });
+  if (channels.halfSpaceLeft > 2 || channels.halfSpaceRight > 2) {
+    suggestions.push({ severity: "warning", area: "attack", message: "Half-space congestion. Too many players moving into the same creative channels." });
   }
 
-  const score = Math.min(100, (penetration.central * 40 * 0.3 + solidity.central * 50 * 0.3 + (midfieldCount * 25 * 0.2) + totalAttackWeight * 2));
+  let restDefStructure = "Solid";
+  if (restDefenceCount === 5) restDefStructure = "3-2";
+  else if (restDefenceCount === 4) restDefStructure = dmsOnDefend > 0 ? "3-1" : "2-2";
+  else if (restDefenceCount < 4) restDefStructure = "Vulnerable";
+
+  if (restDefenceCount < 4) {
+    suggestions.push({ severity: "critical", area: "defence", message: "Extremely weak Rest Defence. Leaving fewer than 4 players back exposes your center-backs." });
+  }
+
+  if (attackingWbs > 1 && dmsOnDefend === 0) {
+    suggestions.push({ severity: "critical", area: "defence", message: "Both Wing-Backs attacking without a holding midfielder creates a massive counter-attack risk." });
+  }
 
   // Mock Partnerships
   const partnerships: Partnership[] = [];
-  
   const isCreative = (r: string) => ["Advanced Playmaker", "Deep Lying Playmaker", "Roaming Playmaker", "Trequartista", "Mezzala"].includes(r);
   const isDefensiveMid = (r: string) => ["Anchor", "Defensive Midfielder", "Ball Winning Midfielder", "Half Back"].includes(r);
-  const isWingBack = (r: string) => ["Full Back", "Wing Back", "Inverted Wing Back"].includes(r);
-  const isWinger = (r: string) => ["Winger", "Inside Forward", "Inverted Winger"].includes(r);
-  const isCreatorStriker = (r: string) => ["Deep Lying Forward", "Target Forward", "False Nine"].includes(r);
+  const isWingBack = (r: string) => ["Full Back", "Wing Back", "Inverted Wing Back", "Complete Wing-Back"].includes(r);
+  const isWinger = (r: string) => ["Winger", "Inside Forward", "Inverted Winger", "Raumdeuter"].includes(r);
+  const isCreatorStriker = (r: string) => ["Deep Lying Forward", "Target Forward", "False Nine", "Complete Forward"].includes(r);
   const isFinisherStriker = (r: string) => ["Advanced Forward", "Poacher", "Pressing Forward"].includes(r);
 
   for (let i = 0; i < tactic.players.length; i++) {
@@ -176,15 +182,9 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   }
 
   return {
-    score,
-    penetration: { left: Math.min(100, penetration.left * 40), right: Math.min(100, penetration.right * 40), central: Math.min(100, penetration.central * 40) },
-    solidity: { left: Math.min(100, solidity.left * 50), right: Math.min(100, solidity.right * 50), central: Math.min(100, solidity.central * 50) },
-    support: { left: Math.min(100, midfieldCount * 25 * 0.8), right: Math.min(100, midfieldCount * 25 * 0.8), central: Math.min(100, midfieldCount * 25) },
-    relativeRisk: {
-      inPossession: Math.min(100, totalAttackWeight * 12),
-      outOfPossession: Math.max(0, 100 - totalDefendWeight * 15),
-      total: score
-    },
+    phases,
+    channelOccupation: channels,
+    restDefenceStructure: restDefStructure,
     partnerships,
     suggestions: suggestions as any
   };
