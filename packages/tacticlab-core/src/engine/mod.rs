@@ -1,2 +1,2 @@
 pub mod scorer;
-pub mod partnerships;
+pub mod synergy;

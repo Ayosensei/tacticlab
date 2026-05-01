@@ -64,6 +64,23 @@ pub struct PassingTriangle {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Synergy {
+    pub player1_id: String,
+    pub player2_id: String,
+    pub r#type: String,
+    pub message: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct RiskFactor {
+    pub area: String,
+    pub severity: String,
+    pub message: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Suggestion {
     pub severity: String,
     pub area: String,
@@ -78,5 +95,7 @@ pub struct AnalysisResult {
     pub rest_defence_structure: String,
     pub build_up_structure: String,
     pub passing_triangles: Vec<PassingTriangle>,
+    pub synergies: Vec<Synergy>,
+    pub risk_factors: Vec<RiskFactor>,
     pub suggestions: Vec<Suggestion>,
 }

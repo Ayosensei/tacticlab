@@ -12,8 +12,9 @@ export function Pitch() {
   const pitchRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Extract passing triangles from analysis
+  // Extract metrics from analysis
   const passingTriangles = (analysis as any)?.passingTriangles || [];
+  const synergies = (analysis as any)?.synergies || [];
 
   useEffect(() => {
     setIsMounted(true);
@@ -107,12 +108,38 @@ export function Pitch() {
               
               return (
                 <polygon 
-                  key={idx}
+                  key={`tri-${idx}`}
                   points={`${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`}
                   fill={`rgba(16, 185, 129, ${opacity * 0.3})`}
                   stroke={`rgba(16, 185, 129, ${opacity})`}
                   strokeWidth="0.5"
                   strokeDasharray="1,1"
+                  className="transition-all duration-700 ease-out"
+                />
+              );
+            })}
+
+            {/* Role Synergies */}
+            {synergies.map((syn: any, idx: number) => {
+              const p1 = currentTactic.players.find(p => p.id === syn.player1Id);
+              const p2 = currentTactic.players.find(p => p.id === syn.player2Id);
+              if (!p1 || !p2) return null;
+              
+              const isPositive = syn.type === "positive";
+              const strokeColor = isPositive ? "rgba(99, 102, 241, 0.6)" : "rgba(244, 63, 94, 0.6)"; // Indigo for positive, Rose for negative
+              const strokeDash = isPositive ? "none" : "2,2"; // Jagged/dashed for negative
+              const strokeWidth = isPositive ? "0.8" : "1.2";
+              
+              return (
+                <line 
+                  key={`syn-${idx}`}
+                  x1={p1.x}
+                  y1={p1.y}
+                  x2={p2.x}
+                  y2={p2.y}
+                  stroke={strokeColor}
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={strokeDash}
                   className="transition-all duration-700 ease-out"
                 />
               );

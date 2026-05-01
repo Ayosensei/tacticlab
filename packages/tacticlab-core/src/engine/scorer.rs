@@ -1,4 +1,5 @@
-use crate::models::tactic::{Tactic, AnalysisResult, PhaseMetrics, ChannelOccupation, Suggestion, PassingTriangle};
+use crate::models::tactic::{Tactic, AnalysisResult, PhaseMetrics, ChannelOccupation, Suggestion, PassingTriangle, Synergy, RiskFactor};
+use crate::engine::synergy;
 use std::collections::HashMap;
 
 pub fn score(tactic: &Tactic) -> AnalysisResult {
@@ -251,12 +252,17 @@ pub fn score(tactic: &Tactic) -> AnalysisResult {
     passing_triangles.sort_by(|a, b| b.strength.partial_cmp(&a.strength).unwrap_or(std::cmp::Ordering::Equal));
     passing_triangles.truncate(5);
 
+    // 5. Synergies and Risks
+    let (synergies, risk_factors) = synergy::analyze(tactic);
+
     AnalysisResult {
         phases,
         channel_occupation: channels,
         rest_defence_structure: rest_def_structure,
         build_up_structure,
         passing_triangles,
+        synergies,
+        risk_factors,
         suggestions,
     }
 }

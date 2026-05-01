@@ -23,6 +23,8 @@ export function AIAnalysisPanel() {
   const buildUpStructure = (analysis as any).buildUpStructure;
   const suggestions = analysis.suggestions;
   const passingTriangles = (analysis as any).passingTriangles;
+  const synergies = (analysis as any).synergies || [];
+  const riskFactors = (analysis as any).riskFactors || [];
 
   if (!phases || !channelOccupation) {
      return (
@@ -107,11 +109,49 @@ export function AIAnalysisPanel() {
              <PhaseBox label="Pressing" value={phases.pressing} />
           </div>
         </div>
+        {/* Risk Factors */}
+        {riskFactors.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <h3 className="text-[10px] font-bold text-rose-500 uppercase tracking-[0.2em] flex items-center gap-1.5">
+              <AlertTriangle className="w-3.5 h-3.5" /> Structural Risks
+            </h3>
+            <div className="flex flex-col gap-2">
+              {riskFactors.map((r: any, i: number) => (
+                <div key={i} className="bg-rose-500/10 p-3 rounded-lg border border-rose-500/20 flex gap-3 shadow-[0_0_15px_rgba(244,63,94,0.1)]">
+                  <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                  <p className="text-[10px] text-rose-200 leading-relaxed font-bold tracking-tight">
+                    {r.message}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Role Synergies */}
+        {synergies.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Role Compatibility</h3>
+            <div className="flex flex-col gap-2">
+              {synergies.slice(0, 3).map((s: any, i: number) => (
+                <div key={i} className="bg-[#12141a] p-3 rounded-lg border border-white/5 flex items-center gap-3 shadow-lg">
+                  {s.type === "positive" 
+                    ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    : <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                  }
+                  <p className="text-[10px] text-slate-300 font-bold tracking-tight">
+                    {s.message}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* AI Insights */}
         {suggestions.length > 0 && (
           <div className="flex flex-col gap-4">
-            <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Tactical Feedback</h3>
+            <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">General Feedback</h3>
             <div className="flex flex-col gap-2">
               {suggestions.map((s: any, i: number) => (
                 <div key={i} className="bg-[#12141a] p-3 rounded-lg border border-white/5 flex gap-3 shadow-lg group hover:border-white/10 transition-colors">

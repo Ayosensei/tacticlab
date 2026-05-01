@@ -49,12 +49,27 @@ export interface ChannelOccupation {
   wideRight: number;
 }
 
+export interface Synergy {
+  player1Id: string;
+  player2Id: string;
+  type: "positive" | "negative";
+  message: string;
+}
+
+export interface RiskFactor {
+  area: "left_flank" | "right_flank" | "central" | "defence" | "attack";
+  severity: "critical" | "warning";
+  message: string;
+}
+
 export interface AnalysisResult {
   phases: PhaseMetrics;
   channelOccupation: ChannelOccupation;
   restDefenceStructure: string;
   buildUpStructure: string;
   passingTriangles: PassingTriangle[];
+  synergies: Synergy[];
+  riskFactors: RiskFactor[];
   suggestions: Suggestion[];
 }
 
