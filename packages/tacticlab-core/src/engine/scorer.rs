@@ -74,67 +74,125 @@ pub fn score(tactic: &Tactic) -> AnalysisResult {
         }
     }
 
-    // 2. Phase Metrics Calculation (0-100)
-    let phases = PhaseMetrics {
+    // Transition & Defensive Instructions Analysis
+    let mut pressing_intensity = 50.0;
+    
+    // Counter-Press vs Rest Defence
+    if let Some(pos_lost) = tactic.in_transition.get("when_possession_lost") {
+        if let Some(action) = pos_lost.as_str() {
+            if action == "Counter-Press" {
+                pressing_intensity += 20.0;
+                if rest_defence_count < 4 {
+                    suggestions.push(Suggestion {
+                        severity: "critical".to_string(),
+                        area: "defence".to_string(),
+                        message: "Counter-Press selected with a vulnerable Rest Defence. If the initial press is beaten, your center-backs are completely exposed.".to_string(),
+                    });
+                }
+            } else if action == "Regroup" {
+                pressing_intensity -= 20.0;
+            }
+        }
+    }
+
+    // Counter-Attack Intent
+    if let Some(pos_won) = tactic.in_transition.get("when_possession_won") {
+        if let Some(action) = pos_won.as_str() {
+            if action == "Counter" {
+                let attack_duties = tactic.players.iter().filter(|p| p.duty == "Attack").count();
+                if attack_duties < 2 {
+                    suggestions.push(Suggestion {
+                        severity: "warning".to_string(),
+                        area: "attack".to_string(),
+                        message: "Counter-attack selected, but you have very few Attack duties to provide sprinting outlets.".to_string(),
+                    });
+                }
+            }
+        }
+    }
+
+    // GK Distribution
+    if let Some(gk_dist) = tactic.in_transition.get("gk_distribution_area") {
+        if let Some(area) = gk_dist.as_str() {
+            if area == "Distribute Over Opposition Defence" {
+                let has_pace_forward = tactic.players.iter().any(|p| p.role == "Advanced Forward" || p.role == "Poacher");
+                if !has_pace_forward {
+                    suggestions.push(Suggestion {
+                        severity: "warning".to_string(),
+                        area: "attack".to_string(),
+                        message: "Distribute over defence selected, but you lack a pacey forward (e.g., Advanced Forward) to chase those long balls.".to_string(),
+                    });
+                }
+            }
+        }
+    }
+
+    // Out of Possession Logic
+    let mut high_line = false;
+    let mut low_loe = false;
+    
+    if let Some(dl) = tactic.out_of_possession.get("defensive_line") {
+        if let Some(dl_str) = dl.as_str() {
+            if dl_str == "Higher" || dl_str == "Much Higher" {
+                high_line = true;
+                let has_sweeper_keeper = tactic.players.iter().any(|p| p.role == "Sweeper Keeper");
+                if !has_sweeper_keeper {
+                    suggestions.push(Suggestion {
+                        severity: "warning".to_string(),
+                        area: "defence".to_string(),
+                        message: "High defensive line selected without a Sweeper Keeper. You are vulnerable to balls over the top.".to_string(),
+                    });
+                }
+            }
+        }
+    }
+
+    if let Some(loe) = tactic.out_of_possession.get("line_of_engagement") {
+        if let Some(loe_str) = loe.as_str() {
+            if loe_str == "Lower" || loe_str == "Much Lower" {
+                low_loe = true;
+            }
+        }
+    }
+
+    if let Some(press) = tactic.out_of_possession.get("trigger_press") {
+        if let Some(press_str) = press.as_str() {
+            if press_str == "Much More Often" {
+                pressing_intensity += 30.0;
+                if low_loe {
+                    suggestions.push(Suggestion {
+                        severity: "warning".to_string(),
+                        area: "defence".to_string(),
+                        message: "Trigger Press Much More Often selected alongside a Low Line of Engagement. Your pressing strategy is disconnected and easily bypassed.".to_string(),
+                    });
+                }
+            } else if press_str == "Much Less Often" {
+                pressing_intensity -= 30.0;
+            }
+        }
+    }
+    
+    if let Some(prev_short) = tactic.out_of_possession.get("prevent_short_gk_distribution") {
+        // prevent_short is a toggle, represented as bool in the record
+        if prev_short.as_bool().unwrap_or(false) {
+             let forward_count = tactic.players.iter().filter(|p| p.y < 35.0).count();
+             if forward_count < 2 {
+                 suggestions.push(Suggestion {
+                    severity: "warning".to_string(),
+                    area: "defence".to_string(),
+                    message: "Prevent Short GK Distribution selected with only one forward. They will be easily bypassed while trying to press alone.".to_string(),
+                });
+             }
+        }
+    }
+    
+    let mut phases = PhaseMetrics {
         build_up: (build_up_count as f32 * 25.0).min(100.0),
         creation: (creation_count as f32 * 25.0).min(100.0),
         conversion: (conversion_count as f32 * 20.0).min(100.0),
         rest_defence: (rest_defence_count as f32 * 20.0).min(100.0),
-        pressing: 50.0, // Default, updated by instructions later
+        pressing: pressing_intensity.clamp(0.0, 100.0),
     };
-
-    // 3. FM-Specific Insights
-    
-    // Channel Occupation Checks
-    if channels.wide_left < 1.0 && channels.wide_right < 1.0 {
-        suggestions.push(Suggestion {
-            severity: "critical".to_string(),
-            area: "attack".to_string(),
-            message: "No natural width. Your attacks will be forced entirely through the center, making you easy to defend against.".to_string(),
-        });
-    } else if channels.wide_left < 1.0 {
-        suggestions.push(Suggestion {
-            severity: "warning".to_string(),
-            area: "attack".to_string(),
-            message: "Lack of width on the left flank. Consider a winger or an overlapping wing-back to stretch the opposition.".to_string(),
-        });
-    }
-    
-    // Half-Space Overcrowding
-    if channels.half_space_left > 2.0 || channels.half_space_right > 2.0 {
-        suggestions.push(Suggestion {
-            severity: "warning".to_string(),
-            area: "attack".to_string(),
-            message: "Half-space congestion. You have too many players moving into the same creative channels, stepping on each other's toes.".to_string(),
-        });
-    }
-
-    // Rest Defence Evaluation
-    let rest_def_structure = if rest_defence_count == 5 {
-        "3-2".to_string()
-    } else if rest_defence_count == 4 {
-        if dms_on_defend > 0 { "3-1".to_string() } else { "2-2".to_string() }
-    } else if rest_defence_count < 4 {
-        "Vulnerable".to_string()
-    } else {
-        "Solid".to_string()
-    };
-    
-    if rest_defence_count < 4 {
-        suggestions.push(Suggestion {
-            severity: "critical".to_string(),
-            area: "defence".to_string(),
-            message: "Extremely weak Rest Defence. Leaving fewer than 4 players back exposes your center-backs to dangerous counter-attacks.".to_string(),
-        });
-    }
-    
-    if attacking_wbs > 1 && dms_on_defend == 0 {
-         suggestions.push(Suggestion {
-            severity: "critical".to_string(),
-            area: "defence".to_string(),
-            message: "Both Wing-Backs are attacking, but there is no holding midfielder (Anchor/Half-Back) to drop in and form a back three. Huge counter-attack risk.".to_string(),
-        });
-    }
 
     AnalysisResult {
         phases,

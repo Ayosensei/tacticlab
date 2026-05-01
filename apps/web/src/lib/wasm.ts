@@ -85,15 +85,82 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
     if (["Wing Back", "Complete Wing-Back"].includes(player.role) && player.duty === "Attack") attackingWbs += 1;
   });
 
+  let pressingIntensity = 50;
+  const suggestions = [];
+
+  // Counter-Press vs Rest Defence
+  const posLost = tactic.inTransition?.when_possession_lost as string;
+  if (posLost === "Counter-Press") {
+    pressingIntensity += 20;
+    if (restDefenceCount < 4) {
+      suggestions.push({ severity: "critical", area: "defence", message: "Counter-Press selected with a vulnerable Rest Defence. If the initial press is beaten, your center-backs are completely exposed." });
+    }
+  } else if (posLost === "Regroup") {
+    pressingIntensity -= 20;
+  }
+
+  // Counter-Attack Intent
+  const posWon = tactic.inTransition?.when_possession_won as string;
+  if (posWon === "Counter") {
+    const attackDuties = tactic.players.filter(p => p.duty === "Attack").length;
+    if (attackDuties < 2) {
+      suggestions.push({ severity: "warning", area: "attack", message: "Counter-attack selected, but you have very few Attack duties to provide sprinting outlets." });
+    }
+  }
+
+  // GK Distribution
+  const gkDist = tactic.inTransition?.gk_distribution_area as string;
+  if (gkDist === "Distribute Over Opposition Defence") {
+    const hasPaceForward = tactic.players.some(p => p.role === "Advanced Forward" || p.role === "Poacher");
+    if (!hasPaceForward) {
+      suggestions.push({ severity: "warning", area: "attack", message: "Distribute over defence selected, but you lack a pacey forward to chase long balls." });
+    }
+  }
+
+  // Out of Possession
+  let highLine = false;
+  let lowLoe = false;
+
+  const dl = tactic.outOfPossession?.defensive_line as string;
+  if (dl === "Higher" || dl === "Much Higher") {
+    highLine = true;
+    const hasSweeperKeeper = tactic.players.some(p => p.role === "Sweeper Keeper");
+    if (!hasSweeperKeeper) {
+      suggestions.push({ severity: "warning", area: "defence", message: "High defensive line selected without a Sweeper Keeper. You are vulnerable to balls over the top." });
+    }
+  }
+
+  const loe = tactic.outOfPossession?.line_of_engagement as string;
+  if (loe === "Lower" || loe === "Much Lower") {
+    lowLoe = true;
+  }
+
+  const triggerPress = tactic.outOfPossession?.trigger_press as string;
+  if (triggerPress === "Much More Often") {
+    pressingIntensity += 30;
+    if (lowLoe) {
+      suggestions.push({ severity: "warning", area: "defence", message: "Trigger Press Much More Often selected alongside a Low Line of Engagement. Your pressing strategy is disconnected." });
+    }
+  } else if (triggerPress === "Much Less Often") {
+    pressingIntensity -= 30;
+  }
+
+  const prevShort = tactic.outOfPossession?.prevent_short_gk_distribution as boolean;
+  if (prevShort) {
+    const forwardCount = tactic.players.filter(p => p.y < 35).length;
+    if (forwardCount < 2) {
+      suggestions.push({ severity: "warning", area: "defence", message: "Prevent Short GK Distribution selected with only one forward. They will be easily bypassed." });
+    }
+  }
+
   const phases = {
     buildUp: Math.min(100, buildUpCount * 25),
     creation: Math.min(100, creationCount * 25),
     conversion: Math.min(100, conversionCount * 20),
     restDefence: Math.min(100, restDefenceCount * 20),
-    pressing: 50,
+    pressing: Math.max(0, Math.min(100, pressingIntensity)),
   };
 
-  const suggestions = [];
 
   if (channels.wideLeft < 1 && channels.wideRight < 1) {
     suggestions.push({ severity: "critical", area: "attack", message: "No natural width. Your attacks will be forced entirely through the center." });
