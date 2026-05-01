@@ -188,22 +188,6 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   }
 
   // Real-World Tactical Metrics
-  let minY = 100;
-  let maxY = 0;
-  tactic.players.forEach(p => {
-    if (p.role !== "Goalkeeper" && p.role !== "Sweeper Keeper") {
-      if (p.y < minY) minY = p.y;
-      if (p.y > maxY) maxY = p.y;
-    }
-  });
-  const verticalCompactness = (maxY - minY) * 1.05;
-
-  if (verticalCompactness > 55) {
-    suggestions.push({ severity: "critical", area: "central", message: "Stretched Block. Your team is vertically stretched over 55 meters, leaving massive spaces between the lines." });
-  } else if (verticalCompactness < 25) {
-    suggestions.push({ severity: "warning", area: "central", message: "Extremely compact. While defensively solid, you may struggle to transition effectively." });
-  }
-
   const defenders = tactic.players.filter(p => p.y > 65).length;
   const deepMids = tactic.players.filter(p => p.y > 45 && p.y <= 65).length;
   const buildUpStructure = `${defenders}-${deepMids}`;
@@ -249,7 +233,6 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
     channelOccupation: channels,
     restDefenceStructure: restDefStructure,
     buildUpStructure,
-    verticalCompactness,
     passingTriangles: topTriangles,
     suggestions: suggestions as any
   };

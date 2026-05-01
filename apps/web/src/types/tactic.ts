@@ -54,7 +54,6 @@ export interface AnalysisResult {
   channelOccupation: ChannelOccupation;
   restDefenceStructure: string;
   buildUpStructure: string;
-  verticalCompactness: number; // distance in meters/units
   passingTriangles: PassingTriangle[];
   suggestions: Suggestion[];
 }

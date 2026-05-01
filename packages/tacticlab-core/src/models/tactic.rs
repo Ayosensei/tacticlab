@@ -77,7 +77,6 @@ pub struct AnalysisResult {
     pub channel_occupation: ChannelOccupation,
     pub rest_defence_structure: String,
     pub build_up_structure: String,
-    pub vertical_compactness: f32,
     pub passing_triangles: Vec<PassingTriangle>,
     pub suggestions: Vec<Suggestion>,
 }

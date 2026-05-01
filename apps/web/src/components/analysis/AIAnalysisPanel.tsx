@@ -21,7 +21,6 @@ export function AIAnalysisPanel() {
   const channelOccupation = (analysis as any).channelOccupation;
   const restDefenceStructure = (analysis as any).restDefenceStructure;
   const buildUpStructure = (analysis as any).buildUpStructure;
-  const verticalCompactness = (analysis as any).verticalCompactness;
   const suggestions = analysis.suggestions;
   const passingTriangles = (analysis as any).passingTriangles;
 
@@ -76,21 +75,6 @@ export function AIAnalysisPanel() {
                 </span>
                 <span className="text-2xl font-black text-white tracking-tighter">
                     {buildUpStructure}
-                </span>
-            </div>
-
-            <div className="col-span-2 bg-[#12141a] p-3 rounded-xl border border-white/5 shadow-lg flex items-center justify-between relative group cursor-help">
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2 bg-[#0a0c10] border border-white/10 rounded shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 text-center">
-                    <p className="text-[10px] text-slate-300 font-medium">Distance between your highest attacker and deepest defender. Ideal mid-block is ~25-30m. &gt;55m is too stretched.</p>
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-                   Vertical Compactness
-                </span>
-                <span className={cn(
-                    "text-lg font-black",
-                    verticalCompactness > 55 ? "text-rose-500" : verticalCompactness < 25 ? "text-amber-500" : "text-emerald-400"
-                )}>
-                    {Math.round(verticalCompactness)}m
                 </span>
             </div>
         </div>

@@ -14,18 +14,6 @@ export function Pitch() {
 
   // Extract passing triangles from analysis
   const passingTriangles = (analysis as any)?.passingTriangles || [];
-  
-  // Calculate vertical compactness bounding box for visualization
-  let minY = 100;
-  let maxY = 0;
-  if (currentTactic) {
-    currentTactic.players.forEach(p => {
-      if (p.role !== "Goalkeeper" && p.role !== "Sweeper Keeper") {
-        if (p.y < minY) minY = p.y;
-        if (p.y > maxY) maxY = p.y;
-      }
-    });
-  }
 
   useEffect(() => {
     setIsMounted(true);
@@ -107,21 +95,6 @@ export function Pitch() {
         {/* Tactical Analysis Overlays Layer */}
         <div className="absolute inset-0 z-20 pointer-events-none">
           <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
-            {/* Vertical Compactness Zone */}
-            {minY < 100 && maxY > 0 && (
-              <rect
-                x="0"
-                y={minY}
-                width="100"
-                height={maxY - minY}
-                fill="rgba(59, 130, 246, 0.05)"
-                stroke="rgba(59, 130, 246, 0.2)"
-                strokeWidth="0.5"
-                strokeDasharray="2,2"
-                className="transition-all duration-700 ease-out"
-              />
-            )}
-
             {/* Passing Triangles */}
             {passingTriangles.map((tri: any, idx: number) => {
               const p1 = currentTactic.players.find(p => p.id === tri.player1Id);

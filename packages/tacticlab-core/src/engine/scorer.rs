@@ -195,31 +195,6 @@ pub fn score(tactic: &Tactic) -> AnalysisResult {
     };
 
     // 4. Real-World Tactical Metrics
-    
-    // Vertical Compactness
-    let mut min_y = 100.0_f32;
-    let mut max_y = 0.0_f32;
-    for p in &tactic.players {
-        if p.role != "Goalkeeper" && p.role != "Sweeper Keeper" {
-            if p.y < min_y { min_y = p.y; }
-            if p.y > max_y { max_y = p.y; }
-        }
-    }
-    let vertical_compactness = (max_y - min_y) * 1.05; // ~meters (assuming 105m pitch length)
-    
-    if vertical_compactness > 55.0 {
-        suggestions.push(Suggestion {
-            severity: "critical".to_string(),
-            area: "central".to_string(),
-            message: "Stretched Block. Your team is vertically stretched over 55 meters, leaving massive spaces between the lines for the opposition to exploit.".to_string(),
-        });
-    } else if vertical_compactness < 25.0 {
-        suggestions.push(Suggestion {
-            severity: "warning".to_string(),
-            area: "central".to_string(),
-            message: "Extremely compact. While defensively solid, you may struggle to transition effectively if players are stepping on each other's toes.".to_string(),
-        });
-    }
 
     // Build-Up Structure
     let defenders = tactic.players.iter().filter(|p| p.y > 65.0).count();
@@ -281,7 +256,6 @@ pub fn score(tactic: &Tactic) -> AnalysisResult {
         channel_occupation: channels,
         rest_defence_structure: rest_def_structure,
         build_up_structure,
-        vertical_compactness,
         passing_triangles,
         suggestions,
     }
