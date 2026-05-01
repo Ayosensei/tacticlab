@@ -36,16 +36,6 @@ pub struct Tactic {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct PhaseMetrics {
-    pub build_up: f32,
-    pub creation: f32,
-    pub conversion: f32,
-    pub rest_defence: f32,
-    pub pressing: f32,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "camelCase")]
 pub struct ChannelOccupation {
     pub wide_left: f32,
     pub half_space_left: f32,
@@ -89,11 +79,24 @@ pub struct Suggestion {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
+pub struct DutyBalance {
+    pub defend: u32,
+    pub support: u32,
+    pub attack: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct AnalysisResult {
-    pub phases: PhaseMetrics,
+    pub tactical_narrative: String,
+    pub in_possession_rating: f32,
+    pub out_of_possession_rating: f32,
     pub channel_occupation: ChannelOccupation,
     pub rest_defence_structure: String,
     pub build_up_structure: String,
+    pub duty_balance: DutyBalance,
+    pub penetration: f32,
+    pub solidity: f32,
     pub passing_triangles: Vec<PassingTriangle>,
     pub synergies: Vec<Synergy>,
     pub risk_factors: Vec<RiskFactor>,

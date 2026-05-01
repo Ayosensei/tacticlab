@@ -33,14 +33,6 @@ export interface Tactic {
   isPublic?: boolean;
 }
 
-export interface PhaseMetrics {
-  buildUp: number;
-  creation: number;
-  conversion: number;
-  restDefence: number;
-  pressing: number;
-}
-
 export interface ChannelOccupation {
   wideLeft: number;
   halfSpaceLeft: number;
@@ -63,14 +55,25 @@ export interface RiskFactor {
 }
 
 export interface AnalysisResult {
-  phases: PhaseMetrics;
+  tacticalNarrative: string;
+  inPossessionRating: number;
+  outOfPossessionRating: number;
   channelOccupation: ChannelOccupation;
   restDefenceStructure: string;
   buildUpStructure: string;
+  dutyBalance: DutyBalance;
+  penetration: number;
+  solidity: number;
   passingTriangles: PassingTriangle[];
   synergies: Synergy[];
   riskFactors: RiskFactor[];
   suggestions: Suggestion[];
+}
+
+export interface DutyBalance {
+  defend: number;
+  support: number;
+  attack: number;
 }
 
 export interface PassingTriangle {
