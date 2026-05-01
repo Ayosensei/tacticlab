@@ -6,14 +6,35 @@ pub fn score(tactic: &Tactic) -> AnalysisResult {
     let mut solidity = ChannelScores { left: 0.0, right: 0.0, central: 0.0 };
     let mut suggestions = Vec::new();
 
-    // 1. Calculate Role Weights
+    // 1. Calculate Role Weights and Duty Counts
     let mut total_attack_weight = 0.0;
     let mut total_defend_weight = 0.0;
+    
+    let mut attack_duties = 0;
+    let mut support_duties = 0;
+    let mut defend_duties = 0;
+    
+    let mut has_bpd = false;
+    let mut has_true_winger = false;
 
     for player in &tactic.players {
         let (atk_w, def_w) = get_role_weights(&player.role, &player.duty);
         total_attack_weight += atk_w;
         total_defend_weight += def_w;
+        
+        match player.duty.as_str() {
+            "Attack" => attack_duties += 1,
+            "Support" => support_duties += 1,
+            "Defend" => defend_duties += 1,
+            _ => {}
+        }
+        
+        if player.role == "Ball Playing Defender" {
+            has_bpd = true;
+        }
+        if player.role == "Winger" {
+            has_true_winger = true;
+        }
 
         let is_left = player.x < 35.0;
         let is_right = player.x > 65.0;
@@ -38,30 +59,83 @@ pub fn score(tactic: &Tactic) -> AnalysisResult {
         }
     }
 
-    // Normalize scores
-    penetration.left = (penetration.left * 40.0).min(100.0);
-    penetration.right = (penetration.right * 40.0).min(100.0);
-    penetration.central = (penetration.central * 40.0).min(100.0);
-
-    solidity.left = (solidity.left * 50.0).min(100.0);
-    solidity.right = (solidity.right * 50.0).min(100.0);
-    solidity.central = (solidity.central * 50.0).min(100.0);
-
-    // 2. Rule-based Suggestions (Smarter)
-    if total_attack_weight > 7.0 {
+    // 2. Duty Balance Checks
+    if attack_duties > 4 {
         suggestions.push(Suggestion {
             severity: "warning".to_string(),
             area: "attack".to_string(),
-            message: "Highly aggressive setup. Ensure you have enough transition cover.".to_string(),
+            message: "Too many Attack duties. Players may isolate themselves and fail to link play.".to_string(),
+        });
+    } else if attack_duties < 2 {
+        suggestions.push(Suggestion {
+            severity: "warning".to_string(),
+            area: "attack".to_string(),
+            message: "Insufficient Attack duties. You may lack penetration and movement off the ball.".to_string(),
         });
     }
-
-    if total_defend_weight < 4.0 {
+    
+    if defend_duties < 3 {
         suggestions.push(Suggestion {
             severity: "critical".to_string(),
             area: "defence".to_string(),
-            message: "Critical lack of defensive roles. Your back line is significantly under-protected.".to_string(),
+            message: "Critical lack of Defend duties. Your defensive structure is compromised.".to_string(),
         });
+    }
+
+    // 3. Instruction Integration
+    // Check passing directness
+    if let Some(passing) = tactic.in_possession.get("passing_directness") {
+        if let Some(passing_str) = passing.as_str() {
+            if passing_str == "Much Shorter" && !has_bpd {
+                suggestions.push(Suggestion {
+                    severity: "warning".to_string(),
+                    area: "central".to_string(),
+                    message: "Much Shorter passing selected, but no Ball Playing Defenders to initiate build-up safely.".to_string(),
+                });
+            }
+        }
+    }
+    
+    // Check attacking width
+    if let Some(width) = tactic.in_possession.get("attacking_width") {
+        if let Some(width_str) = width.as_str() {
+            if width_str == "Extremely Wide" && !has_true_winger {
+                suggestions.push(Suggestion {
+                    severity: "warning".to_string(),
+                    area: "attack".to_string(),
+                    message: "Extremely Wide attacking width selected, but you lack true Wingers to stretch the play effectively.".to_string(),
+                });
+            }
+        }
+    }
+
+    // Check defensive lines
+    let mut high_engagement = false;
+    if let Some(loe) = tactic.out_of_possession.get("line_of_engagement") {
+        if let Some(loe_str) = loe.as_str() {
+            if loe_str == "Much Higher" || loe_str == "Higher" {
+                high_engagement = true;
+            }
+        }
+    }
+    
+    let mut low_defensive_line = false;
+    if let Some(dl) = tactic.out_of_possession.get("defensive_line") {
+        if let Some(dl_str) = dl.as_str() {
+            if dl_str == "Much Lower" || dl_str == "Lower" {
+                low_defensive_line = true;
+            }
+        }
+    }
+    
+    if high_engagement && low_defensive_line {
+        suggestions.push(Suggestion {
+            severity: "critical".to_string(),
+            area: "defence".to_string(),
+            message: "Disconnected shape: High line of engagement with a low defensive line creates massive space between the lines.".to_string(),
+        });
+        // Penalize solidity for this structural flaw
+        solidity.central *= 0.7;
     }
 
     // Check for "Hole" in midfield
@@ -73,6 +147,15 @@ pub fn score(tactic: &Tactic) -> AnalysisResult {
             message: "Midfield gap detected. You may struggle to maintain possession and stop counters.".to_string(),
         });
     }
+
+    // Normalize scores
+    penetration.left = (penetration.left * 40.0).min(100.0);
+    penetration.right = (penetration.right * 40.0).min(100.0);
+    penetration.central = (penetration.central * 40.0).min(100.0);
+
+    solidity.left = (solidity.left * 50.0).min(100.0);
+    solidity.right = (solidity.right * 50.0).min(100.0);
+    solidity.central = (solidity.central * 50.0).min(100.0);
 
     let mut support = HashMap::new();
     let support_score = (midfield_count as f32 * 25.0).min(100.0);
