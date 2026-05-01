@@ -54,6 +54,12 @@ export interface RiskFactor {
   message: string;
 }
 
+export interface DutyBalance {
+  defend: number;
+  support: number;
+  attack: number;
+}
+
 export interface AnalysisResult {
   tacticalNarrative: string;
   inPossessionRating: number;
@@ -68,12 +74,6 @@ export interface AnalysisResult {
   synergies: Synergy[];
   riskFactors: RiskFactor[];
   suggestions: Suggestion[];
-}
-
-export interface DutyBalance {
-  defend: number;
-  support: number;
-  attack: number;
 }
 
 export interface PassingTriangle {
