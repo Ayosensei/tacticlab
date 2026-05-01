@@ -1,17 +1,56 @@
 "use client";
 
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Cpu, Info, AlertTriangle, CheckCircle2, ShieldAlert, Navigation, Swords, Shield, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTacticStore } from "@/store/tacticStore";
 
+const MIN_WIDTH = 240;
+const MAX_WIDTH = 600;
+const DEFAULT_WIDTH = 320;
+
 export function AIAnalysisPanel() {
   const { analysis, isLoading } = useTacticStore();
+  const [width, setWidth] = useState(DEFAULT_WIDTH);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const startWidth = useRef(DEFAULT_WIDTH);
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    isDragging.current = true;
+    startX.current = e.clientX;
+    startWidth.current = width;
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }, [width]);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    const delta = startX.current - e.clientX; // dragging left = wider
+    const newWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, startWidth.current + delta));
+    setWidth(newWidth);
+  }, []);
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    isDragging.current = false;
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  }, []);
 
   if (!analysis) {
     return (
-      <aside className="w-80 border-l border-white/5 bg-[#0a0c10] flex flex-col h-[calc(100vh-80px)] overflow-y-auto shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] items-center justify-center p-8 text-center">
+      <aside
+        className="border-l border-white/5 bg-[#0a0c10] flex flex-col h-[calc(100vh-80px)] overflow-y-auto shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] items-center justify-center p-8 text-center relative"
+        style={{ width }}
+      >
         <Cpu className="w-8 h-8 text-emerald-500/20 mb-4 animate-pulse" />
         <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest opacity-50">Initializing Tactical Engine...</p>
+        {/* Drag Handle */}
+        <div
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          className="absolute left-0 top-0 h-full w-1.5 cursor-col-resize hover:bg-indigo-500/40 active:bg-indigo-500/60 transition-colors group"
+          title="Drag to resize"
+        />
       </aside>
     );
   }
@@ -39,7 +78,25 @@ export function AIAnalysisPanel() {
   }
 
   return (
-    <aside className="w-80 border-l border-white/5 bg-[#0a0c10] flex flex-col h-[calc(100vh-80px)] overflow-y-auto shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)]">
+    <aside
+      className="border-l border-white/5 bg-[#0a0c10] flex flex-col h-[calc(100vh-80px)] overflow-y-auto shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] relative"
+      style={{ width }}
+    >
+      {/* Drag Handle — left edge */}
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        className="absolute left-0 top-0 h-full w-1.5 cursor-col-resize hover:bg-indigo-500/40 active:bg-indigo-500/60 transition-colors z-50 group"
+        title="Drag to resize"
+      >
+        {/* Visual indicator dots */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="w-0.5 h-1 rounded-full bg-indigo-400" />
+          <div className="w-0.5 h-1 rounded-full bg-indigo-400" />
+          <div className="w-0.5 h-1 rounded-full bg-indigo-400" />
+        </div>
+      </div>
       <div className="p-6 flex flex-col gap-7 h-full">
 
         {/* Header */}
