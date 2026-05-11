@@ -44,8 +44,19 @@ export interface ChannelOccupation {
 export interface Synergy {
   player1Id: string;
   player2Id: string;
-  type: "positive" | "negative";
-  message: string;
+  type: "positive" | "negative" | "tension";
+  score: number;
+  label: string;
+  message: string; // The description text
+}
+
+export interface CompatibilityTriangle {
+  player1Id: string;
+  player2Id: string;
+  player3Id: string;
+  score: number;
+  label: string;
+  description: string;
 }
 
 export interface RiskFactor {
@@ -70,21 +81,14 @@ export interface AnalysisResult {
   dutyBalance: DutyBalance;
   penetration: number;
   solidity: number;
-  passingTriangles: PassingTriangle[];
   synergies: Synergy[];
+  compatibilityTriangles: CompatibilityTriangle[];
   riskFactors: RiskFactor[];
   suggestions: Suggestion[];
 }
 
-export interface PassingTriangle {
-  player1Id: string;
-  player2Id: string;
-  player3Id: string;
-  strength: number; // Quality of the triangle
-}
-
 export interface Suggestion {
   severity: "critical" | "warning" | "positive";
-  area: "left_flank" | "right_flank" | "central" | "defence" | "attack";
+  area: "left_flank" | "right_flank" | "central" | "defence" | "attack" | "team";
   message: string;
 }

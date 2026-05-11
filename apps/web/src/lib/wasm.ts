@@ -1,4 +1,4 @@
-import { Tactic, AnalysisResult, PassingTriangle, Synergy, RiskFactor, DutyBalance } from "@/types/tactic";
+import { Tactic, AnalysisResult, CompatibilityTriangle, Synergy, RiskFactor, DutyBalance } from "@/types/tactic";
 
 let wasmModule: any = null;
 
@@ -175,107 +175,200 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   if (rightAttackWb && rightInsideFwd && !rightFlankCover) riskFactors.push({ area: "right_flank", severity: "critical", message: "Right Flank Exposed. Wing-Back attacking, winger cutting inside, no covering midfielder. Extreme counter-attack risk." });
   if (attackStrikers === 1 && ams === 0) riskFactors.push({ area: "attack", severity: "warning", message: "Striker Isolation. Lone striker on Attack duty with no attacking midfielder behind them." });
 
-  // ─── Synergies + Passing Triangles ───────────────────────────────
+  // ─── Synergies + Compatibility Triangles ───────────────────────────────
   const synergies: Synergy[] = [];
-  const passingTriangles: PassingTriangle[] = [];
+  const compTriangles: CompatibilityTriangle[] = [];
   const numPlayers = tactic.players.length;
 
   for (let i = 0; i < numPlayers; i++) {
     for (let j = i + 1; j < numPlayers; j++) {
       const p1 = tactic.players[i], p2 = tactic.players[j];
-      const dist = Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
-      if (dist < 35) {
-        // Midfield playmakers
-        if (p1.y > 40 && p1.y < 70 && p2.y > 40 && p2.y < 70 && p1.x > 30 && p1.x < 70 && p2.x > 30 && p2.x < 70) {
-          const p1P = isPlaymaker(p1.role), p2P = isPlaymaker(p2.role), p1D = isDestroyer(p1.role), p2D = isDestroyer(p2.role);
-          if ((p1P && p2D) || (p2P && p1D)) synergies.push({ player1Id: p1.id, player2Id: p2.id, type: "positive", message: "Classic Pivot Synergy (Creator + Destroyer)" });
-          if (p1P && p2P) synergies.push({ player1Id: p1.id, player2Id: p2.id, type: "negative", message: "Playmaker Congestion (Demanding same space)" });
-        }
-        // Wide overlaps
-        const sameFlank = (p1.x < 35 && p2.x < 35) || (p1.x > 65 && p2.x > 65);
-        if (sameFlank) {
-          if ((isWingBack(p1.role) && isInsideFwd(p2.role)) || (isWingBack(p2.role) && isInsideFwd(p1.role))) {
-            const wbA = (isWingBack(p1.role) && p1.duty === "Attack") || (isWingBack(p2.role) && p2.duty === "Attack");
-            if (wbA) synergies.push({ player1Id: p1.id, player2Id: p2.id, type: "positive", message: "Devastating Wide Overlap" });
-          }
-          if (isWinger(p1.role) && isWingBack(p2.role) && p1.duty === p2.duty) synergies.push({ player1Id: p1.id, player2Id: p2.id, type: "negative", message: "Flank Crowding (Same vertical channel)" });
-        }
-        // Strikers
-        if (p1.y < 30 && p2.y < 30 && p1.x > 30 && p1.x < 70 && p2.x > 30 && p2.x < 70) {
-          if ((isCreatorST(p1.role) && isFinisherST(p2.role)) || (isCreatorST(p2.role) && isFinisherST(p1.role))) synergies.push({ player1Id: p1.id, player2Id: p2.id, type: "positive", message: "Classic Striker Duo (Creator + Finisher)" });
-          else if (isFinisherST(p1.role) && isFinisherST(p2.role)) synergies.push({ player1Id: p1.id, player2Id: p2.id, type: "negative", message: "Disconnected Forwards (No drop-in link player)" });
-        }
+      const dist = Math.sqrt((p1.x-p2.x)**2 + (p1.y-p2.y)**2);
+      
+      // Distance gate - players must be close enough to interact
+      if (dist > 40) continue;
+
+      let score = 50; // Default neutral score
+      let label = "";
+      let desc = "";
+      let type: "positive" | "negative" | "tension" = "tension";
+
+      const r1 = p1.role, d1 = p1.duty;
+      const r2 = p2.role, d2 = p2.duty;
+
+      // Positive Bonds
+      if (
+        (r1 === "Deep Lying Playmaker" && ["Support", "Defend"].includes(d1) && r2 === "Anchor" && d2 === "Defend") ||
+        (r2 === "Deep Lying Playmaker" && ["Support", "Defend"].includes(d2) && r1 === "Anchor" && d1 === "Defend")
+      ) { score = 95; label = "Elite Pivot"; desc = "Perfect balance of deep creation and ultimate defensive security."; }
+      else if (
+        (r1 === "Deep Lying Playmaker" && ["Support", "Defend"].includes(d1) && r2 === "Defensive Midfielder" && d2 === "Defend") ||
+        (r2 === "Deep Lying Playmaker" && ["Support", "Defend"].includes(d2) && r1 === "Defensive Midfielder" && d1 === "Defend")
+      ) { score = 90; label = "Classic Double Pivot"; desc = "Solid defensive base with reliable ball progression."; }
+      else if (
+        (r1 === "Regista" && d1 === "Support" && r2 === "Anchor" && d2 === "Defend") ||
+        (r2 === "Regista" && d2 === "Support" && r1 === "Anchor" && d1 === "Defend")
+      ) { score = 95; label = "Regista Shield"; desc = "The Anchor provides the absolute defensive cover needed for the Regista to roam."; }
+      else if (
+        (r1 === "Inside Forward" && d1 === "Attack" && r2 === "Wing Back" && d2 === "Attack") ||
+        (r2 === "Inside Forward" && d2 === "Attack" && r1 === "Wing Back" && d1 === "Attack")
+      ) { score = 92; label = "Devastating Overlap"; desc = "The IF empties the flank, perfectly paving the way for the attacking Wing-Back."; }
+      else if (
+        (r1 === "Target Forward" && r2 === "Deep Lying Forward" && d2 === "Support") ||
+        (r2 === "Target Forward" && r1 === "Deep Lying Forward" && d1 === "Support")
+      ) { score = 90; label = "Big-Small Partnership"; desc = "Classic physical focal point paired with an intelligent mobile creator."; }
+      else if (
+        (r1 === "Complete Forward" && r2 === "Trequartista" && d2 === "Support") ||
+        (r2 === "Complete Forward" && r1 === "Trequartista" && d1 === "Support")
+      ) { score = 87; label = "Free Pair"; desc = "Elite, unstructured attacking interchange that is impossible to man-mark."; }
+      else if (
+        (r1 === "Mezzala" && d1 === "Attack" && r2 === "Deep Lying Playmaker" && d2 === "Support") ||
+        (r2 === "Mezzala" && d2 === "Attack" && r1 === "Deep Lying Playmaker" && d1 === "Support")
+      ) { score = 85; label = "Half-Space Chain"; desc = "DLP dictates the tempo while the Mezzala exploits the half-space ahead of him."; }
+      else if (
+        (r1 === "Poacher" && d1 === "Attack" && r2 === "Advanced Playmaker" && d2 === "Support") ||
+        (r2 === "Poacher" && d2 === "Attack" && r1 === "Advanced Playmaker" && d1 === "Support")
+      ) { score = 85; label = "Poacher + Creator"; desc = "The AP constantly seeks the through-ball that the Poacher thrives on."; }
+      else if (
+        (r1 === "Ball Playing Defender" && d1 === "Defend" && r2 === "Deep Lying Playmaker" && d2 === "Support") ||
+        (r2 === "Ball Playing Defender" && d2 === "Defend" && r1 === "Deep Lying Playmaker" && d1 === "Support")
+      ) { score = 85; label = "Build-From-Back Chain"; desc = "BPD steps up to confidently find the DLP, bypassing the first line of press."; }
+
+      // Negative Bonds (Clashes)
+      else if (isPlaymaker(r1) && isPlaymaker(r2) && dist < 20) {
+        score = 20; label = "Playmaker Congestion"; desc = "Two primary creators occupying the exact same zone, demanding the same ball.";
       }
-      // Passing triangles
+      else if (r1 === "Poacher" && r2 === "Poacher") {
+        score = 20; label = "Disconnected Forwards"; desc = "Two purely finishing strikers with nobody linking the midfield to the attack.";
+      }
+      else if (isWinger(r1) && d1 === d2 && isWinger(r2) && (Math.abs(p1.x - p2.x) < 20)) {
+        score = 25; label = "Flank Crowding"; desc = "Both players want to stay wide and cross, stealing each other's space.";
+      }
+      else if (r1 === "Target Forward" && r2 === "Poacher") {
+        score = 35; label = "No Link-Up"; desc = "Physical presence and a runner, but neither drops deep to connect the play.";
+      }
+
+      if (score >= 70) {
+        type = "positive";
+        synergies.push({ player1Id: p1.id, player2Id: p2.id, type, score, label, message: desc });
+      } else if (score <= 40) {
+        type = "negative";
+        synergies.push({ player1Id: p1.id, player2Id: p2.id, type, score, label, message: desc });
+      }
+    }
+  }
+
+  // Find 3-player compatibility triangles
+  // A valid triangle requires all 3 edges (synergies) to have score >= 50
+  for (let i = 0; i < numPlayers; i++) {
+    for (let j = i + 1; j < numPlayers; j++) {
       for (let k = j + 1; k < numPlayers; k++) {
-        const p3 = tactic.players[k];
-        const d12 = Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
-        const d23 = Math.sqrt((p2.x - p3.x) ** 2 + (p2.y - p3.y) ** 2);
-        const d31 = Math.sqrt((p3.x - p1.x) ** 2 + (p3.y - p1.y) ** 2);
-        if (d12 > 10 && d12 < 35 && d23 > 10 && d23 < 35 && d31 > 10 && d31 < 35) {
-          const avg = (d12 + d23 + d31) / 3, v = ((d12 - avg) ** 2 + (d23 - avg) ** 2 + (d31 - avg) ** 2) / 3;
-          passingTriangles.push({ player1Id: p1.id, player2Id: p2.id, player3Id: p3.id, strength: Math.max(0, Math.min(1, 1 - (v / 100))) });
+        const p1 = tactic.players[i], p2 = tactic.players[j], p3 = tactic.players[k];
+        
+        // Find pairwise scores. If no explicit synergy exists, assume base score of 50.
+        const s12 = synergies.find(s => (s.player1Id === p1.id && s.player2Id === p2.id) || (s.player1Id === p2.id && s.player2Id === p1.id))?.score ?? 50;
+        const s23 = synergies.find(s => (s.player1Id === p2.id && s.player2Id === p3.id) || (s.player1Id === p3.id && s.player2Id === p2.id))?.score ?? 50;
+        const s31 = synergies.find(s => (s.player1Id === p3.id && s.player2Id === p1.id) || (s.player1Id === p1.id && s.player2Id === p3.id))?.score ?? 50;
+
+        if (s12 >= 50 && s23 >= 50 && s31 >= 50) {
+          const compScore = Math.round((s12 + s23 + s31) / 3);
+          
+          let patternLabel = "";
+          let patternDesc = "";
+
+          const roles = [p1.role, p2.role, p3.role];
+          const hasDLP = roles.includes("Deep Lying Playmaker");
+          const hasAnchorDM = roles.includes("Anchor") || roles.includes("Defensive Midfielder");
+          const hasCM = roles.some(r => r.includes("Midfielder") || r === "Mezzala" || r === "Carrilero");
+          const hasWB = roles.includes("Wing Back") || roles.includes("Complete Wing-Back");
+          const hasIF = roles.includes("Inside Forward") || roles.includes("Inverted Winger");
+          const hasAM = roles.includes("Advanced Playmaker") || roles.includes("Attacking Midfielder");
+          
+          if (hasAnchorDM && hasDLP && hasCM) {
+            patternLabel = "Double Pivot Hub";
+            patternDesc = "Ultimate central control unit blending protection and playmaking.";
+          } else if (hasWB && hasIF && hasAM) {
+            patternLabel = "Wide Overlap Triangle";
+            patternDesc = "Classic wide progression unit. AM feeds the IF cutting inside, while WB overlaps.";
+          } else if (compScore > 65) {
+             patternLabel = "Cohesive Unit";
+             patternDesc = "Strong collective understanding between these roles.";
+          }
+
+          if (patternLabel !== "") {
+              compTriangles.push({
+                player1Id: p1.id, player2Id: p2.id, player3Id: p3.id,
+                score: compScore, label: patternLabel, description: patternDesc
+              });
+          }
         }
       }
     }
   }
-  passingTriangles.sort((a, b) => b.strength - a.strength);
-  const topTriangles = passingTriangles.slice(0, 5);
+
+  // Sort synergies by impact (highest positive or lowest negative first)
+  synergies.sort((a, b) => {
+    const impactA = Math.abs(a.score - 50);
+    const impactB = Math.abs(b.score - 50);
+    return impactB - impactA;
+  });
+
+  compTriangles.sort((a, b) => b.score - a.score);
 
   // ─── Mentality modifiers ─────────────────────────────────────────
-  const mentalityBonus: Record<string, number> = { Defensive: -20, Cautious: -10, Balanced: 0, Positive: 10, Attacking: 20 };
+  const mentalityBonus: Record<string,number> = { Defensive:-20, Cautious:-10, Balanced:0, Positive:10, Attacking:20 };
   const mBonus = mentalityBonus[mentality] ?? 0;
 
   // ─── Penetration score ───────────────────────────────────────────
-  let penetration = 30 + Math.min(attack, 4) * 10 + mBonus;
+  let penetration = 30 + Math.min(attack,4)*10 + mBonus;
   synergies.forEach(s => {
-    if (s.type === "positive" && s.message.includes("Overlap")) penetration += 10;
-    if (s.type === "positive" && s.message.includes("Striker")) penetration += 10;
+    if (s.type==="positive"&&s.label.includes("Overlap")) penetration += 10;
+    if (s.type==="positive"&&s.label.includes("Pair")) penetration += 10;
   });
 
   // ─── Solidity score ──────────────────────────────────────────────
-  let solidity = 30 + Math.min(defend, 5) * 8 - mBonus;
-  if (restDefStructure === "3-2" || restDefStructure === "3-1") solidity += 15;
-  synergies.forEach(s => { if (s.type === "positive" && s.message.includes("Pivot")) solidity += 10; });
-  riskFactors.forEach(r => { if (r.severity === "critical") solidity -= 15; });
-  if (highLine && !tactic.players.some(p => p.role === "Sweeper Keeper")) solidity -= 10;
+  let solidity = 30 + Math.min(defend,5)*8 - mBonus;
+  if (restDefStructure==="3-2"||restDefStructure==="3-1") solidity += 15;
+  synergies.forEach(s => { if (s.type==="positive"&&s.label.includes("Pivot")) solidity += 10; });
+  riskFactors.forEach(r => { if (r.severity==="critical") solidity -= 15; });
+  if (highLine&&!tactic.players.some(p=>p.role==="Sweeper Keeper")) solidity -= 10;
 
   // ─── Phase ratings ────────────────────────────────────────────────
   const hasPlaymakerRole = tactic.players.some(p => isPlaymaker(p.role));
-  const channelSpread = [channels.wideLeft > 0, channels.halfSpaceLeft > 0, channels.center > 0, channels.halfSpaceRight > 0, channels.wideRight > 0].filter(Boolean).length;
+  const channelSpread = [channels.wideLeft>0, channels.halfSpaceLeft>0, channels.center>0, channels.halfSpaceRight>0, channels.wideRight>0].filter(Boolean).length;
   let inPossessionRating = 30
-    + Math.min(support, 5) * 7
-    + channelSpread * 5
+    + Math.min(support,5)*7
+    + channelSpread*5
     + (hasPlaymakerRole ? 10 : 0)
-    + (!["4-0", "3-0", "2-0"].includes(buildUpStructure) ? 10 : 0)
-    + mBonus * 0.5;
+    + (!["4-0","3-0","2-0"].includes(buildUpStructure) ? 10 : 0)
+    + mBonus*0.5;
 
   let outOfPossessionRating = 30
-    + Math.min(defend, 5) * 7
-    + (restDefenceCount >= 4 ? 15 : 0)
-    + (dmsOnDefend > 0 ? 10 : 0)
-    + (highPress && !lowLoe ? 10 : 0)
-    - (highLine && !tactic.players.some(p => p.role === "Sweeper Keeper") ? 10 : 0)
-    - mBonus * 0.5;
-  riskFactors.forEach(r => { if (r.severity === "critical") outOfPossessionRating -= 10; });
+    + Math.min(defend,5)*7
+    + (restDefenceCount>=4 ? 15 : 0)
+    + (dmsOnDefend>0 ? 10 : 0)
+    + (highPress&&!lowLoe ? 10 : 0)
+    - (highLine&&!tactic.players.some(p=>p.role==="Sweeper Keeper") ? 10 : 0)
+    - mBonus*0.5;
+  riskFactors.forEach(r => { if (r.severity==="critical") outOfPossessionRating -= 10; });
 
   // ─── Tactical Narrative ──────────────────────────────────────────
-  const styleAdj: Record<string, string> = {
-    Defensive: "A resolute, defensive", Cautious: "A cautious, controlled",
-    Balanced: "A balanced", Positive: "A progressive, attacking", Attacking: "A bold, high-octane"
+  const styleAdj: Record<string,string> = {
+    Defensive:"A resolute, defensive", Cautious:"A cautious, controlled",
+    Balanced:"A balanced", Positive:"A progressive, attacking", Attacking:"A bold, high-octane"
   };
   const patterns: string[] = [];
-  if (highLine && highPress) patterns.push("high-press, high-line shape");
-  else if (lowLoe && (dl === "Lower" || dl === "Much Lower")) patterns.push("deep low-block");
-  else if (posWon === "Counter") patterns.push("counter-attacking system");
+  if (highLine&&highPress) patterns.push("high-press, high-line shape");
+  else if (lowLoe&&(dl==="Lower"||dl==="Much Lower")) patterns.push("deep low-block");
+  else if (posWon==="Counter") patterns.push("counter-attacking system");
   if (hasPlaymakerRole) patterns.push("built around a deep playmaker");
-  if (synergies.some(s => s.type === "positive" && s.message.includes("Overlap"))) patterns.push("wide overloads on the flanks");
-  if (restDefStructure === "3-2" || restDefStructure === "3-1") patterns.push("a compact resting defence");
+  if (synergies.some(s=>s.type==="positive"&&s.label.includes("Overlap"))) patterns.push("wide overloads on the flanks");
+  if (restDefStructure==="3-2"||restDefStructure==="3-1") patterns.push("a compact resting defence");
   const patternStr = patterns.length ? ` with ${patterns.join(", ")}` : "";
-  const strengthStr = penetration > solidity ? "Best suited for attacking transitions." : "Defensively structured to be difficult to break down.";
-  const critCount = riskFactors.filter(r => r.severity === "critical").length;
-  const riskStr = critCount > 0 ? ` ${critCount} critical structural risk${critCount > 1 ? "s" : ""} detected.` : " Structurally sound.";
-  const tacticalNarrative = `${styleAdj[mentality] ?? "A"} ${tactic.formation}${patternStr}. ${strengthStr}${riskStr}`;
+  const strengthStr = penetration>solidity ? "Best suited for attacking transitions." : "Defensively structured to be difficult to break down.";
+  const critCount = riskFactors.filter(r=>r.severity==="critical").length;
+  const riskStr = critCount>0 ? ` ${critCount} critical structural risk${critCount>1?"s":""} detected.` : " Structurally sound.";
+  const tacticalNarrative = `${styleAdj[mentality]??"A"} ${tactic.formation}${patternStr}. ${strengthStr}${riskStr}`;
 
   return {
     tacticalNarrative,
@@ -287,7 +380,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
     dutyBalance,
     penetration: Math.max(0, Math.min(100, penetration)),
     solidity: Math.max(0, Math.min(100, solidity)),
-    passingTriangles: topTriangles,
+    compatibilityTriangles: compTriangles,
     synergies,
     riskFactors,
     suggestions: suggestions as any,
