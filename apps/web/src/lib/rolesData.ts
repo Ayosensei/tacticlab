@@ -420,5 +420,46 @@ export const ROLES_DB: Record<string, RoleData> = {
     duties: {
       Support: { instructions: [], hiddenInstructions: [] }
     }
+  },
+  "Shadow Striker": {
+    id: "shadow_striker",
+    name: "Shadow Striker",
+    description: "Operates as one of the team's main goalscoring threats. Aggressively pushes up into goalscoring positions as the ball moves into the final third.",
+    baseInstructions: { instructions: ["Get Further Forward", "Take More Risks", "Dribble More"], hiddenInstructions: ["Move into channels", "Shoot more often"] },
+    baseTraits: { complementary: ["Gets Into Opposition Area", "Moves Into Channels"], contrasting: ["Comes Deep To Get Ball", "Plays With Back To Goal"] },
+    duties: {
+      Attack: { instructions: [], hiddenInstructions: [] }
+    }
+  },
+  "Attacking Midfielder": {
+    id: "attacking_midfielder",
+    name: "Attacking Midfielder",
+    description: "Operates higher up the pitch than a standard central midfielder, tasked with creating chances and supporting the forwards.",
+    baseInstructions: { instructions: [], hiddenInstructions: [] },
+    baseTraits: { complementary: ["Plays One-Twos", "Tries Killer Balls Often"], contrasting: [] },
+    duties: {
+      Support: { instructions: ["Take More Risks"], hiddenInstructions: [] },
+      Attack: { instructions: ["Get Further Forward", "Take More Risks"], hiddenInstructions: [] }
+    }
+  },
+  "Trequartista": {
+    id: "trequartista",
+    name: "Trequartista",
+    description: "Operates in the holes between the opposition's midfield and defence. Similar to an Advanced Playmaker but drops defensive responsibilities to roam freely.",
+    baseInstructions: { instructions: ["Roam From Position", "Take More Risks", "Dribble More"], hiddenInstructions: ["Close down much less", "Move into channels"] },
+    baseTraits: { complementary: ["Tries Killer Balls Often", "Dictates Tempo", "Plays One-Twos"], contrasting: [] },
+    duties: {
+      Attack: { instructions: [], hiddenInstructions: [] }
+    }
+  },
+  "Enganche": {
+    id: "enganche",
+    name: "Enganche",
+    description: "The side's prime creator. A completely stationary playmaker who operates behind the strikers and relies on others to move around them.",
+    baseInstructions: { instructions: ["Take More Risks", "Hold Position"], hiddenInstructions: ["Close down much less", "Dribble less"] },
+    baseTraits: { complementary: ["Tries Killer Balls Often", "Dictates Tempo", "Plays With Back To Goal"], contrasting: ["Moves Into Channels", "Runs With Ball Often"] },
+    duties: {
+      Support: { instructions: [], hiddenInstructions: [] }
+    }
   }
 };
