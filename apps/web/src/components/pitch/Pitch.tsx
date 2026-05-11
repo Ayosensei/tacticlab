@@ -6,11 +6,21 @@ import { FORMATIONS } from "@/lib/tacticsData";
 import { DndContext, DragEndEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
 import { useRef, useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { Tactic, AnalysisResult } from "@/types/tactic";
 
-export function Pitch() {
-  const { currentTactic, analysis, updatePlayerPosition, setFormation } = useTacticStore();
+interface PitchProps {
+  tactic?: Tactic | null;
+  analysis?: AnalysisResult | null;
+  readOnly?: boolean;
+}
+
+export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = false }: PitchProps = {}) {
+  const { currentTactic, analysis: storeAnalysis, updatePlayerPosition, setFormation } = useTacticStore();
   const pitchRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
+  
+  const currentTacticData = propTactic || currentTactic;
+  const currentAnalysisData = propAnalysis !== undefined ? propAnalysis : storeAnalysis;
   const [hoveredOverlay, setHoveredOverlay] = useState<{
     x: number;
     y: number;
@@ -25,8 +35,8 @@ export function Pitch() {
   const [showClashes, setShowClashes] = useState(true);
 
   // Extract metrics from analysis
-  const compTriangles = (analysis as any)?.compatibilityTriangles || [];
-  const synergies = (analysis as any)?.synergies || [];
+  const compTriangles = (currentAnalysisData as any)?.compatibilityTriangles || [];
+  const synergies = (currentAnalysisData as any)?.synergies || [];
 
   useEffect(() => {
     setIsMounted(true);
@@ -41,13 +51,14 @@ export function Pitch() {
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
+    if (readOnly) return;
     const { active, delta } = event;
     const playerId = active.id as string;
 
     if (!pitchRef.current) return;
 
     const rect = pitchRef.current.getBoundingClientRect();
-    const player = currentTactic.players.find(p => p.id === playerId);
+    const player = currentTacticData.players.find(p => p.id === playerId);
     if (!player) return;
 
     const deltaXPercent = (delta.x / rect.width) * 100;
@@ -111,9 +122,9 @@ export function Pitch() {
           <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-auto" preserveAspectRatio="none">
             {/* Compatibility Triangles */}
             {showTriangles && compTriangles.map((tri: any, idx: number) => {
-              const p1 = currentTactic.players.find(p => p.id === tri.player1Id);
-              const p2 = currentTactic.players.find(p => p.id === tri.player2Id);
-              const p3 = currentTactic.players.find(p => p.id === tri.player3Id);
+              const p1 = currentTacticData.players.find(p => p.id === tri.player1Id);
+              const p2 = currentTacticData.players.find(p => p.id === tri.player2Id);
+              const p3 = currentTacticData.players.find(p => p.id === tri.player3Id);
               if (!p1 || !p2 || !p3) return null;
               
               // Color based on score thresholds
@@ -158,8 +169,8 @@ export function Pitch() {
               // Filter out clashes if toggled off
               if (!showClashes && !isPositive) return null;
 
-              const p1 = currentTactic.players.find(p => p.id === syn.player1Id);
-              const p2 = currentTactic.players.find(p => p.id === syn.player2Id);
+              const p1 = currentTacticData.players.find(p => p.id === syn.player1Id);
+              const p2 = currentTacticData.players.find(p => p.id === syn.player2Id);
               if (!p1 || !p2) return null;
               
               // Scale intensity: score 70->0.4 opacity, 100->0.9 opacity. 
@@ -207,8 +218,8 @@ export function Pitch() {
         {/* Players Layer */}
         <div className="absolute inset-0 z-30">
           <div className="relative w-full h-full">
-            {currentTactic.players.map((player) => (
-              <PlayerToken key={player.id} player={player} />
+            {currentTacticData.players.map((player) => (
+              <PlayerToken key={player.id} player={player} readOnly={readOnly} />
             ))}
           </div>
         </div>
@@ -218,29 +229,31 @@ export function Pitch() {
           <div className="relative group/formation">
             <button className="bg-[#12141a] hover:bg-[#1a1d25] transition-colors flex items-center justify-center min-w-[120px] h-[34px] px-4 rounded border border-white/5 gap-3 shadow-2xl">
               <span className="text-[11px] font-black uppercase text-emerald-400 tracking-[0.2em]">
-                {currentTactic.formation}
+                {currentTacticData.formation}
               </span>
-              <ChevronDown className="w-4 h-4 text-muted-foreground opacity-50" />
+              {!readOnly && <ChevronDown className="w-4 h-4 text-muted-foreground opacity-50" />}
             </button>
             
             {/* Simple CSS Dropdown Formations list */}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover/formation:opacity-100 group-hover/formation:pointer-events-auto transition-all duration-200">
-              <div className="bg-[#0a0c10] border border-white/10 rounded-md shadow-2xl flex flex-col p-1 w-48">
-                {FORMATIONS.map(form => (
-                  <button
-                    key={form.id}
-                    onClick={() => setFormation(form.id)}
-                    className={`text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded transition-colors ${
-                      currentTactic.formation === form.name 
-                        ? "bg-emerald-400/10 text-emerald-400" 
-                        : "text-slate-300 hover:bg-white/5 hover:text-white"
-                    }`}
-                  >
-                    {form.name}
-                  </button>
-                ))}
+            {!readOnly && (
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover/formation:opacity-100 group-hover/formation:pointer-events-auto transition-all duration-200">
+                <div className="bg-[#0a0c10] border border-white/10 rounded-md shadow-2xl flex flex-col p-1 w-48">
+                  {FORMATIONS.map(form => (
+                    <button
+                      key={form.id}
+                      onClick={() => setFormation(form.id)}
+                      className={`text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded transition-colors ${
+                        currentTacticData.formation === form.name 
+                          ? "bg-emerald-400/10 text-emerald-400" 
+                          : "text-slate-300 hover:bg-white/5 hover:text-white"
+                      }`}
+                    >
+                      {form.name}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 

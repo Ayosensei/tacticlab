@@ -11,9 +11,10 @@ import { ROLES_DB } from "@/lib/rolesData";
 
 interface PlayerTokenProps {
   player: PlayerPosition;
+  readOnly?: boolean;
 }
 
-export function PlayerToken({ player }: PlayerTokenProps) {
+export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { updatePlayerRole, setSelectedPlayerId, setActiveSidebarTab } = useTacticStore();
@@ -73,11 +74,12 @@ export function PlayerToken({ player }: PlayerTokenProps) {
         left: `${player.x}%`,
         top: `${player.y}%`,
       }}
-      {...listeners}
-      {...attributes}
+      {...(readOnly ? {} : listeners)}
+      {...(readOnly ? {} : attributes)}
       className={cn(
-        "absolute -translate-x-1/2 -translate-y-1/2 touch-none z-20 transition-all active:scale-110",
-        isDragging ? "z-50 opacity-100 scale-110 cursor-grabbing shadow-2xl" : "cursor-grab"
+        "absolute -translate-x-1/2 -translate-y-1/2 touch-none z-20 transition-all",
+        !readOnly && "active:scale-110",
+        isDragging && !readOnly ? "z-50 opacity-100 scale-110 cursor-grabbing shadow-2xl" : (readOnly ? "cursor-default" : "cursor-grab")
       )}
     >
       <div ref={containerRef} className={cn("relative flex flex-col items-center gap-2", isDragging ? "drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "")}>
@@ -99,6 +101,7 @@ export function PlayerToken({ player }: PlayerTokenProps) {
         <button
           onPointerDown={(e) => { 
             e.stopPropagation(); 
+            if (readOnly) return;
             setMenuOpen(!menuOpen); 
             setSelectedPlayerId(player.id);
             setActiveSidebarTab("player_instructions");
@@ -114,7 +117,9 @@ export function PlayerToken({ player }: PlayerTokenProps) {
           <span className={cn("text-xs font-black tracking-widest leading-none", getDutyColor(player.duty))}>
             {getDutyAbbreviation(player.duty)}
           </span>
-          <ChevronDown className={`w-3.5 h-3.5 ml-0.5 transition-transform ${menuOpen ? 'text-emerald-400 rotate-180' : 'text-white/30 group-hover/label:text-emerald-400'}`} />
+          {!readOnly && (
+            <ChevronDown className={`w-3.5 h-3.5 ml-0.5 transition-transform ${menuOpen ? 'text-emerald-400 rotate-180' : 'text-white/30 group-hover/label:text-emerald-400'}`} />
+          )}
         </button>
 
         {/* Dynamic Context Menu */}

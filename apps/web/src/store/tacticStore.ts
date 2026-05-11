@@ -7,12 +7,15 @@ import { scoreTactic } from "../lib/wasm";
 interface TacticState {
   currentTactic: Tactic;
   analysis: AnalysisResult | null;
+  comparisonTactic: Tactic | null;
+  comparisonAnalysis: AnalysisResult | null;
   isLoading: boolean;
   activeSidebarTab: string | null;
   selectedPlayerId: string | null;
   
   // Actions
   setTactic: (tactic: Tactic) => void;
+  setComparisonTactic: (tactic: Tactic | null) => void;
   updatePlayerPosition: (playerId: string, newX: number, newY: number) => void;
   setFormation: (formationId: string) => void;
   updatePlayerRole: (playerId: string, role: string, duty: Duty) => void;
@@ -52,11 +55,22 @@ const initialTactic: Tactic = {
 export const useTacticStore = create<TacticState>((set, get) => ({
   currentTactic: initialTactic,
   analysis: null,
+  comparisonTactic: null,
+  comparisonAnalysis: null,
   isLoading: false,
   activeSidebarTab: null,
   selectedPlayerId: null,
 
   setTactic: (tactic) => set({ currentTactic: tactic }),
+  
+  setComparisonTactic: (tactic) => {
+    set({ comparisonTactic: tactic });
+    if (tactic) {
+      scoreTactic(tactic).then(result => set({ comparisonAnalysis: result }));
+    } else {
+      set({ comparisonAnalysis: null });
+    }
+  },
   
   updatePlayerPosition: (playerId, newX, newY) =>
     set((state) => {
