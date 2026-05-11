@@ -9,6 +9,7 @@ import { scoreTactic } from "@/lib/wasm";
 
 export default function ComparePage() {
   const { currentTactic, analysis: currentAnalysis, comparisonTactic, comparisonAnalysis, setComparisonTactic } = useTacticStore();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const loadComparison = async (formationId: string) => {
     if (formationId === "none") {
@@ -30,6 +31,7 @@ export default function ComparePage() {
       };
       setComparisonTactic(tactic as any);
     }
+    setIsDropdownOpen(false);
   };
 
   const StatBar = ({ label, val1, val2 }: { label: string; val1: number; val2: number }) => (
@@ -67,58 +69,67 @@ export default function ComparePage() {
         </div>
 
         {/* Right Side Header */}
-        <div className="flex-1 p-4 flex items-center justify-center relative group/selector">
-          <button className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] transition-colors hover:text-white text-indigo-400">
+        <div className="flex-1 p-4 flex items-center justify-center relative">
+          <button 
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] transition-colors hover:text-white text-indigo-400"
+          >
             {comparisonTactic ? comparisonTactic.formation : "Select Tactic to Compare"}
-            <ChevronDown className="w-4 h-4 opacity-50" />
+            <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180 opacity-100' : 'opacity-50'}`} />
           </button>
 
-          <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover/selector:opacity-100 group-hover/selector:pointer-events-auto transition-all duration-200 z-50">
-            <div className="bg-[#0a0c10] border border-white/10 rounded-md shadow-2xl flex flex-col p-1 w-56 max-h-[300px] overflow-y-auto">
-              <button
-                onClick={() => loadComparison("none")}
-                className="text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded text-slate-500 hover:bg-white/5 hover:text-white"
-              >
-                Clear Comparison
-              </button>
-              <div className="h-[1px] w-full bg-white/5 my-1" />
-              {FORMATIONS.map(form => (
+          {isDropdownOpen && (
+            <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
+              <div className="bg-[#0a0c10] border border-white/10 rounded-md shadow-2xl flex flex-col p-1 w-56 max-h-[300px] overflow-y-auto">
                 <button
-                  key={form.id}
-                  onClick={() => loadComparison(form.id)}
-                  className={`text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded transition-colors ${
-                    comparisonTactic?.formation === form.name 
-                      ? "bg-indigo-500/10 text-indigo-400" 
-                      : "text-slate-300 hover:bg-white/5 hover:text-white"
-                  }`}
+                  onClick={() => loadComparison("none")}
+                  className="text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded text-slate-500 hover:bg-white/5 hover:text-white"
                 >
-                  {form.name}
+                  Clear Comparison
                 </button>
-              ))}
+                <div className="h-[1px] w-full bg-white/5 my-1" />
+                {FORMATIONS.map(form => (
+                  <button
+                    key={form.id}
+                    onClick={() => loadComparison(form.id)}
+                    className={`text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded transition-colors ${
+                      comparisonTactic?.formation === form.name 
+                        ? "bg-indigo-500/10 text-indigo-400" 
+                        : "text-slate-300 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    {form.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
       {/* Split Pitches */}
-      <div className="flex flex-1 relative z-10 min-h-[600px]">
+      <div className="flex flex-1 relative z-10 py-6 px-4">
         {/* Left Pitch */}
-        <div className="flex-1 p-8 border-r border-white/5 flex flex-col relative scale-[0.85] origin-top">
-          <Pitch tactic={currentTactic} analysis={currentAnalysis} />
+        <div className="flex-1 border-r border-white/5 flex justify-center items-start">
+          <div className="w-full max-w-[420px]">
+            <Pitch tactic={currentTactic} analysis={currentAnalysis} />
+          </div>
         </div>
 
         {/* Right Pitch */}
-        <div className="flex-1 p-8 flex flex-col relative scale-[0.85] origin-top">
-          {comparisonTactic ? (
-            <Pitch tactic={comparisonTactic} analysis={comparisonAnalysis} readOnly={true} />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center opacity-30 flex flex-col items-center gap-4">
-                <BarChart2 className="w-16 h-16" />
-                <span className="text-[11px] uppercase font-bold tracking-widest">Select a tactic from the dropdown above</span>
+        <div className="flex-1 flex justify-center items-start relative">
+          <div className="w-full max-w-[420px]">
+            {comparisonTactic ? (
+              <Pitch tactic={comparisonTactic} analysis={comparisonAnalysis} readOnly={true} />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="text-center opacity-30 flex flex-col items-center gap-4">
+                  <BarChart2 className="w-16 h-16" />
+                  <span className="text-[11px] uppercase font-bold tracking-widest">Select a tactic from the dropdown above</span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
