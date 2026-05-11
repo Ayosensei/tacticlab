@@ -11,6 +11,13 @@ export function Pitch() {
   const { currentTactic, analysis, updatePlayerPosition, setFormation } = useTacticStore();
   const pitchRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [hoveredOverlay, setHoveredOverlay] = useState<{
+    x: number;
+    y: number;
+    label: string;
+    description: string;
+    score: number;
+  } | null>(null);
 
   // Extract metrics from analysis
   const compTriangles = (analysis as any)?.compatibilityTriangles || [];
@@ -115,6 +122,16 @@ export function Pitch() {
                 stroke = "rgba(99, 102, 241, 0.5)";
               }
               
+              const handleMove = (e: React.PointerEvent) => {
+                setHoveredOverlay({
+                  x: e.clientX,
+                  y: e.clientY,
+                  label: tri.label,
+                  description: tri.description,
+                  score: tri.score
+                });
+              };
+
               return (
                 <polygon 
                   key={`tri-${idx}`}
@@ -123,6 +140,8 @@ export function Pitch() {
                   stroke={stroke}
                   strokeWidth="0.5"
                   className="transition-all duration-700 ease-out cursor-help"
+                  onPointerMove={handleMove}
+                  onPointerLeave={() => setHoveredOverlay(null)}
                 />
               );
             })}
@@ -148,6 +167,16 @@ export function Pitch() {
               const strokeDash = isPositive ? "none" : "2,2"; // Dashed for negative
               const strokeWidth = 0.5 + (intensity * 1.5); // 0.5px to 2px
               
+              const handleMove = (e: React.PointerEvent) => {
+                setHoveredOverlay({
+                  x: e.clientX,
+                  y: e.clientY,
+                  label: syn.label,
+                  description: syn.message,
+                  score: syn.score
+                });
+              };
+
               return (
                 <line 
                   key={`syn-${idx}`}
@@ -159,6 +188,8 @@ export function Pitch() {
                   strokeWidth={strokeWidth}
                   strokeDasharray={strokeDash}
                   className="transition-all duration-700 ease-out cursor-help"
+                  onPointerMove={handleMove}
+                  onPointerLeave={() => setHoveredOverlay(null)}
                 />
               );
             })}
@@ -204,6 +235,33 @@ export function Pitch() {
             </div>
           </div>
         </div>
+
+        {/* Hover Tooltip Overlay */}
+        {hoveredOverlay && (
+          <div 
+            className="fixed z-[100] pointer-events-none w-64 bg-[#0a0c10] border border-white/10 rounded-xl shadow-2xl p-3 flex flex-col gap-1.5"
+            style={{ 
+              left: hoveredOverlay.x + 15, 
+              top: hoveredOverlay.y + 15 
+            }}
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-black text-white uppercase tracking-widest truncate">{hoveredOverlay.label}</span>
+              <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                hoveredOverlay.score >= 80 ? "bg-emerald-500/20 text-emerald-400" :
+                hoveredOverlay.score >= 60 ? "bg-indigo-500/20 text-indigo-400" :
+                hoveredOverlay.score >= 40 ? "bg-amber-500/20 text-amber-400" :
+                "bg-rose-500/20 text-rose-400"
+              }`}>
+                {hoveredOverlay.score}/100
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-400 leading-relaxed font-medium">
+              {hoveredOverlay.description}
+            </p>
+          </div>
+        )}
+
       </div>
     </DndContext>
   );
