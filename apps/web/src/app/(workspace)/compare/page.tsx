@@ -112,7 +112,7 @@ export default function ComparePage() {
         {/* Left Pitch */}
         <div className="flex-1 border-r border-white/5 flex justify-center items-start">
           <div className="w-full max-w-[420px]">
-            <Pitch tactic={currentTactic} analysis={currentAnalysis} />
+            <Pitch tactic={currentTactic} analysis={currentAnalysis} hideOverlays={true} />
           </div>
         </div>
 
@@ -120,7 +120,7 @@ export default function ComparePage() {
         <div className="flex-1 flex justify-center items-start relative">
           <div className="w-full max-w-[420px]">
             {comparisonTactic ? (
-              <Pitch tactic={comparisonTactic} analysis={comparisonAnalysis} readOnly={true} />
+              <Pitch tactic={comparisonTactic} analysis={comparisonAnalysis} readOnly={true} hideOverlays={true} />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="text-center opacity-30 flex flex-col items-center gap-4">

@@ -12,9 +12,10 @@ interface PitchProps {
   tactic?: Tactic | null;
   analysis?: AnalysisResult | null;
   readOnly?: boolean;
+  hideOverlays?: boolean;
 }
 
-export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = false }: PitchProps = {}) {
+export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = false, hideOverlays = false }: PitchProps = {}) {
   const { currentTactic, analysis: storeAnalysis, updatePlayerPosition, setFormation } = useTacticStore();
   const pitchRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -117,10 +118,11 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
         </svg>
 
         {/* Tactical Analysis Overlays Layer */}
-        <div className="absolute inset-0 z-20 pointer-events-none">
-          {/* pointer-events-auto on the SVG so lines and triangles can be hovered later */}
-          <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-auto" preserveAspectRatio="none">
-            {/* Compatibility Triangles */}
+        {!hideOverlays && (
+          <div className="absolute inset-0 z-20 pointer-events-none">
+            {/* pointer-events-auto on the SVG so lines and triangles can be hovered later */}
+            <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-auto" preserveAspectRatio="none">
+              {/* Compatibility Triangles */}
             {showTriangles && compTriangles.map((tri: any, idx: number) => {
               const p1 = currentTacticData.players.find(p => p.id === tri.player1Id);
               const p2 = currentTacticData.players.find(p => p.id === tri.player2Id);
@@ -214,6 +216,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
             })}
           </svg>
         </div>
+        )}
 
         {/* Players Layer */}
         <div className="absolute inset-0 z-30">
@@ -258,8 +261,9 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
         </div>
 
         {/* Overlay Toggles */}
-        <div className="absolute bottom-4 right-4 z-50 flex flex-col gap-1.5 opacity-40 hover:opacity-100 transition-opacity">
-          <button 
+        {!hideOverlays && (
+          <div className="absolute bottom-4 right-4 z-50 flex flex-col gap-1.5 opacity-40 hover:opacity-100 transition-opacity">
+            <button 
             onClick={() => setShowLines(!showLines)}
             className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showLines ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
           >
@@ -279,6 +283,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
             Show Clashes
           </button>
         </div>
+        )}
 
         {/* Hover Tooltip Overlay */}
         {hoveredOverlay && (
