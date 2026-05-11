@@ -60,7 +60,7 @@ export default function ComparePage() {
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(16,185,129,0.03),transparent)] pointer-events-none" />
       
       {/* Compare Header */}
-      <div className="w-full flex border-b border-white/5 relative z-10 shrink-0">
+      <div className="w-full flex border-b border-white/5 relative z-30 shrink-0">
         {/* Left Side Header */}
         <div className="flex-1 p-4 flex items-center justify-center border-r border-white/5">
           <span className="text-[12px] font-black uppercase text-emerald-400 tracking-[0.2em]">
