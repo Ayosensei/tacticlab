@@ -41,30 +41,11 @@ export interface ChannelOccupation {
   wideRight: number;
 }
 
-/** A pairwise chemistry relationship between two players */
 export interface Synergy {
   player1Id: string;
   player2Id: string;
-  /** positive = green bond, negative = clash, tension = amber warning */
-  type: "positive" | "negative" | "tension";
-  /** 0–100 chemistry score */
-  score: number;
-  /** Short name, e.g. "Elite Pivot" */
-  label: string;
-  /** Full coaching description for tooltip */
-  description: string;
-}
-
-/** A named three-player tactical unit */
-export interface CompatibilityTriangle {
-  player1Id: string;
-  player2Id: string;
-  player3Id: string;
-  /** Composite score = average of three pair scores */
-  score: number;
-  /** Pattern name, e.g. "Wide Overlap Triangle" */
-  label: string;
-  description: string;
+  type: "positive" | "negative";
+  message: string;
 }
 
 export interface RiskFactor {
@@ -89,16 +70,21 @@ export interface AnalysisResult {
   dutyBalance: DutyBalance;
   penetration: number;
   solidity: number;
-  /** Pairwise role chemistry bonds */
+  passingTriangles: PassingTriangle[];
   synergies: Synergy[];
-  /** Named three-player tactical units */
-  compatibilityTriangles: CompatibilityTriangle[];
   riskFactors: RiskFactor[];
   suggestions: Suggestion[];
 }
 
+export interface PassingTriangle {
+  player1Id: string;
+  player2Id: string;
+  player3Id: string;
+  strength: number; // Quality of the triangle
+}
+
 export interface Suggestion {
   severity: "critical" | "warning" | "positive";
-  area: "left_flank" | "right_flank" | "central" | "defence" | "attack" | "team";
+  area: "left_flank" | "right_flank" | "central" | "defence" | "attack";
   message: string;
 }

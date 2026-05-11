@@ -17,7 +17,7 @@ pub struct TacticArrow {
     pub id: String,
     pub from_player_id: String,
     pub to_player_id: String,
-    pub arrow_type: String,
+    pub arrow_type: String, // rename 'type' to 'arrow_type' for rust keywords
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -46,24 +46,20 @@ pub struct ChannelOccupation {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct Synergy {
+pub struct PassingTriangle {
     pub player1_id: String,
     pub player2_id: String,
-    pub r#type: String,   // "positive" | "negative" | "tension"
-    pub score: u32,       // 0–100
-    pub label: String,
-    pub description: String,
+    pub player3_id: String,
+    pub strength: f32,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct CompatibilityTriangle {
+pub struct Synergy {
     pub player1_id: String,
     pub player2_id: String,
-    pub player3_id: String,
-    pub score: u32,
-    pub label: String,
-    pub description: String,
+    pub r#type: String,
+    pub message: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -101,8 +97,8 @@ pub struct AnalysisResult {
     pub duty_balance: DutyBalance,
     pub penetration: f32,
     pub solidity: f32,
+    pub passing_triangles: Vec<PassingTriangle>,
     pub synergies: Vec<Synergy>,
-    pub compatibility_triangles: Vec<CompatibilityTriangle>,
     pub risk_factors: Vec<RiskFactor>,
     pub suggestions: Vec<Suggestion>,
 }
