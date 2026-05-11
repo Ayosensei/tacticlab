@@ -19,6 +19,11 @@ export function Pitch() {
     score: number;
   } | null>(null);
 
+  // Overlay Controls
+  const [showLines, setShowLines] = useState(true);
+  const [showTriangles, setShowTriangles] = useState(true);
+  const [showClashes, setShowClashes] = useState(true);
+
   // Extract metrics from analysis
   const compTriangles = (analysis as any)?.compatibilityTriangles || [];
   const synergies = (analysis as any)?.synergies || [];
@@ -105,7 +110,7 @@ export function Pitch() {
           {/* pointer-events-auto on the SVG so lines and triangles can be hovered later */}
           <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-auto" preserveAspectRatio="none">
             {/* Compatibility Triangles */}
-            {compTriangles.map((tri: any, idx: number) => {
+            {showTriangles && compTriangles.map((tri: any, idx: number) => {
               const p1 = currentTactic.players.find(p => p.id === tri.player1Id);
               const p2 = currentTactic.players.find(p => p.id === tri.player2Id);
               const p3 = currentTactic.players.find(p => p.id === tri.player3Id);
@@ -147,12 +152,15 @@ export function Pitch() {
             })}
 
             {/* Role Chemistry Lines */}
-            {synergies.map((syn: any, idx: number) => {
+            {showLines && synergies.map((syn: any, idx: number) => {
+              const isPositive = syn.type === "positive";
+              
+              // Filter out clashes if toggled off
+              if (!showClashes && !isPositive) return null;
+
               const p1 = currentTactic.players.find(p => p.id === syn.player1Id);
               const p2 = currentTactic.players.find(p => p.id === syn.player2Id);
               if (!p1 || !p2) return null;
-              
-              const isPositive = syn.type === "positive";
               
               // Scale intensity: score 70->0.4 opacity, 100->0.9 opacity. 
               // For negative: score 40->0.4, 0->0.9
@@ -234,6 +242,29 @@ export function Pitch() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Overlay Toggles */}
+        <div className="absolute bottom-4 right-4 z-50 flex flex-col gap-1.5 opacity-40 hover:opacity-100 transition-opacity">
+          <button 
+            onClick={() => setShowLines(!showLines)}
+            className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showLines ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
+          >
+            Chemistry Lines
+          </button>
+          <button 
+            onClick={() => setShowTriangles(!showTriangles)}
+            className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showTriangles ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
+          >
+            Triangles
+          </button>
+          <button 
+            onClick={() => setShowClashes(!showClashes)}
+            disabled={!showLines}
+            className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showClashes ? "bg-rose-500/10 text-rose-400 border-rose-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"} ${!showLines ? "opacity-30 cursor-not-allowed" : ""}`}
+          >
+            Show Clashes
+          </button>
         </div>
 
         {/* Hover Tooltip Overlay */}
