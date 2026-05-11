@@ -13,7 +13,7 @@ export function Pitch() {
   const [isMounted, setIsMounted] = useState(false);
 
   // Extract metrics from analysis
-  const passingTriangles = (analysis as any)?.passingTriangles || [];
+  const compTriangles = (analysis as any)?.compatibilityTriangles || [];
   const synergies = (analysis as any)?.synergies || [];
 
   useEffect(() => {
@@ -95,40 +95,58 @@ export function Pitch() {
 
         {/* Tactical Analysis Overlays Layer */}
         <div className="absolute inset-0 z-20 pointer-events-none">
-          <svg viewBox="0 0 100 100" className="w-full h-full" preserveAspectRatio="none">
-            {/* Passing Triangles */}
-            {passingTriangles.map((tri: any, idx: number) => {
+          {/* pointer-events-auto on the SVG so lines and triangles can be hovered later */}
+          <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-auto" preserveAspectRatio="none">
+            {/* Compatibility Triangles */}
+            {compTriangles.map((tri: any, idx: number) => {
               const p1 = currentTactic.players.find(p => p.id === tri.player1Id);
               const p2 = currentTactic.players.find(p => p.id === tri.player2Id);
               const p3 = currentTactic.players.find(p => p.id === tri.player3Id);
               if (!p1 || !p2 || !p3) return null;
               
-              // Calculate opacity based on triangle strength (0-1)
-              const opacity = 0.1 + (tri.strength * 0.3);
+              // Color based on score thresholds
+              let color = "rgba(245, 158, 11, 0.15)"; // Amber (tension/okay)
+              let stroke = "rgba(245, 158, 11, 0.4)";
+              if (tri.score >= 80) {
+                color = "rgba(16, 185, 129, 0.15)"; // Emerald (elite)
+                stroke = "rgba(16, 185, 129, 0.5)";
+              } else if (tri.score >= 60) {
+                color = "rgba(99, 102, 241, 0.15)"; // Indigo (good)
+                stroke = "rgba(99, 102, 241, 0.5)";
+              }
               
               return (
                 <polygon 
                   key={`tri-${idx}`}
                   points={`${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`}
-                  fill={`rgba(16, 185, 129, ${opacity * 0.3})`}
-                  stroke={`rgba(16, 185, 129, ${opacity})`}
+                  fill={color}
+                  stroke={stroke}
                   strokeWidth="0.5"
-                  strokeDasharray="1,1"
-                  className="transition-all duration-700 ease-out"
+                  className="transition-all duration-700 ease-out cursor-help"
                 />
               );
             })}
 
-            {/* Role Synergies */}
+            {/* Role Chemistry Lines */}
             {synergies.map((syn: any, idx: number) => {
               const p1 = currentTactic.players.find(p => p.id === syn.player1Id);
               const p2 = currentTactic.players.find(p => p.id === syn.player2Id);
               if (!p1 || !p2) return null;
               
               const isPositive = syn.type === "positive";
-              const strokeColor = isPositive ? "rgba(99, 102, 241, 0.6)" : "rgba(244, 63, 94, 0.6)"; // Indigo for positive, Rose for negative
-              const strokeDash = isPositive ? "none" : "2,2"; // Jagged/dashed for negative
-              const strokeWidth = isPositive ? "0.8" : "1.2";
+              
+              // Scale intensity: score 70->0.4 opacity, 100->0.9 opacity. 
+              // For negative: score 40->0.4, 0->0.9
+              const intensity = isPositive 
+                ? Math.max(0.3, (syn.score - 50) / 50)
+                : Math.max(0.3, (50 - syn.score) / 50);
+
+              const strokeColor = isPositive 
+                ? `rgba(16, 185, 129, ${intensity + 0.1})` // Emerald
+                : `rgba(244, 63, 94, ${intensity + 0.1})`; // Rose
+
+              const strokeDash = isPositive ? "none" : "2,2"; // Dashed for negative
+              const strokeWidth = 0.5 + (intensity * 1.5); // 0.5px to 2px
               
               return (
                 <line 
@@ -140,7 +158,7 @@ export function Pitch() {
                   stroke={strokeColor}
                   strokeWidth={strokeWidth}
                   strokeDasharray={strokeDash}
-                  className="transition-all duration-700 ease-out"
+                  className="transition-all duration-700 ease-out cursor-help"
                 />
               );
             })}
