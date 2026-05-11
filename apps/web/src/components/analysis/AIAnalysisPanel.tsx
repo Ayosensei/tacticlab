@@ -253,18 +253,36 @@ export function AIAnalysisPanel() {
           <div className="flex flex-col gap-3">
             <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Role Compatibility</h3>
             <div className="flex flex-col gap-2">
-              {synergies.slice(0, 4).map((s: any, i: number) => (
-                <div key={i} className={cn(
-                  "p-2.5 rounded-lg border flex items-center gap-2.5",
-                  s.type === "positive" ? "bg-emerald-500/5 border-emerald-500/20" : "bg-amber-500/5 border-amber-500/20"
-                )}>
-                  {s.type === "positive"
-                    ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    : <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  }
-                  <p className="text-[10px] text-slate-300 font-semibold tracking-tight">{s.message}</p>
-                </div>
-              ))}
+              {synergies.slice(0, 6).map((s: any, i: number) => {
+                const isPositive = s.score >= 70;
+                const isWarning = s.score > 40 && s.score < 70;
+                return (
+                  <div key={i} className={cn(
+                    "p-2.5 rounded-lg border flex flex-col gap-1.5",
+                    isPositive ? "bg-emerald-500/5 border-emerald-500/20" : 
+                    isWarning ? "bg-amber-500/5 border-amber-500/20" : 
+                    "bg-rose-500/5 border-rose-500/20"
+                  )}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {isPositive ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> : 
+                         isWarning ? <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" /> : 
+                         <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />}
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white">{s.label}</span>
+                      </div>
+                      <span className={cn(
+                        "text-[9px] font-bold px-1.5 py-0.5 rounded",
+                        isPositive ? "bg-emerald-500/20 text-emerald-400" :
+                        isWarning ? "bg-amber-500/20 text-amber-400" :
+                        "bg-rose-500/20 text-rose-400"
+                      )}>
+                        {s.score}/100
+                      </span>
+                    </div>
+                    <p className="text-[9.5px] text-slate-400 leading-relaxed font-medium pl-5">{s.message}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
