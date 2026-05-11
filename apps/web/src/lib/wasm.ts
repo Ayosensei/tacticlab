@@ -230,9 +230,21 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
         (r2 === "Poacher" && d2 === "Attack" && r1 === "Advanced Playmaker" && d1 === "Support")
       ) { score = 85; label = "Poacher + Creator"; desc = "The AP constantly seeks the through-ball that the Poacher thrives on."; }
       else if (
-        (r1 === "Ball Playing Defender" && d1 === "Defend" && r2 === "Deep Lying Playmaker" && d2 === "Support") ||
-        (r2 === "Ball Playing Defender" && d2 === "Defend" && r1 === "Deep Lying Playmaker" && d1 === "Support")
+        (r1 === "Advanced Playmaker" && d1 === "Support" && r2 === "Mezzala" && d2 === "Attack") ||
+        (r2 === "Advanced Playmaker" && d2 === "Support" && r1 === "Mezzala" && d1 === "Attack")
+      ) { score = 82; label = "Box-to-Box Creative"; desc = "AP dictates from deep while Mezzala finds pockets of space higher up."; }
+      else if (
+        (r1 === "Advanced Playmaker" && d1 === "Support" && r2 === "Advanced Forward" && d2 === "Attack") ||
+        (r2 === "Advanced Playmaker" && d2 === "Support" && r1 === "Advanced Forward" && d1 === "Attack")
+      ) { score = 80; label = "Creator + Runner"; desc = "Classic combination of a through-ball specialist and a willing runner."; }
+      else if (
+        (r1 === "Ball Playing Defender" && d1 === "Defend" && r2 === "Deep Lying Playmaker" && ["Support", "Defend"].includes(d2)) ||
+        (r2 === "Ball Playing Defender" && d2 === "Defend" && r1 === "Deep Lying Playmaker" && ["Support", "Defend"].includes(d1))
       ) { score = 85; label = "Build-From-Back Chain"; desc = "BPD steps up to confidently find the DLP, bypassing the first line of press."; }
+      else if (
+        (r1 === "Winger" && r2 === "Full Back" && (Math.abs(p1.x - p2.x) < 20)) ||
+        (r2 === "Winger" && r1 === "Full Back" && (Math.abs(p1.x - p2.x) < 20))
+      ) { score = 78; label = "Classic Flank"; desc = "Traditional wide pairing providing width and overlapping support."; }
 
       // Negative Bonds (Clashes)
       else if (isPlaymaker(r1) && isPlaymaker(r2) && dist < 20) {
