@@ -1,5 +1,6 @@
 import { Tactic } from "@/types/tactic";
 import { ROLES_DB } from "./rolesData";
+import { TEAM_INSTRUCTIONS } from "./tacticsData";
 
 interface PlayerExport {
   slot: number;
@@ -8,6 +9,11 @@ interface PlayerExport {
   position: { x: number; y: number };
   instructions: string[];
   hiddenInstructions: string[];
+}
+
+interface ResolvedInstruction {
+  label: string;
+  value: string | boolean;
 }
 
 interface TacticExport {
@@ -24,17 +30,44 @@ interface TacticExport {
     style: string;
     players: PlayerExport[];
     teamInstructions: {
-      inPossession: Record<string, string | boolean>;
-      inTransition: Record<string, string | boolean>;
-      outOfPossession: Record<string, string | boolean>;
+      inPossession: ResolvedInstruction[];
+      inTransition: ResolvedInstruction[];
+      outOfPossession: ResolvedInstruction[];
     };
   };
+}
+
+/** Resolve raw key-value instruction records into labelled, human-readable pairs.
+ *  Filters out inactive entries (false, "None", undefined). */
+function resolveInstructions(
+  phase: "inPossession" | "inTransition" | "outOfPossession",
+  record: Record<string, string | boolean>
+): ResolvedInstruction[] {
+  const result: ResolvedInstruction[] = [];
+
+  // Build a flat lookup from instruction id -> name
+  const lookup: Record<string, string> = {};
+  for (const column of TEAM_INSTRUCTIONS[phase] ?? []) {
+    for (const item of column.items) {
+      lookup[item.id] = item.name;
+    }
+  }
+
+  for (const [key, value] of Object.entries(record)) {
+    if (value === false || value === "None" || value === undefined) continue;
+    const label = lookup[key] ?? key; // fall back to raw key if not found
+    result.push({ label, value });
+  }
+
+  return result;
 }
 
 export function exportTactic(tactic: Tactic): TacticExport {
   const players: PlayerExport[] = tactic.players.map((p, i) => {
     const roleData = ROLES_DB[p.role];
-    const dutyData = roleData ? (roleData.duties as Record<string, { instructions?: string[]; hiddenInstructions?: string[] }>)[p.duty] : undefined;
+    const dutyData = roleData
+      ? (roleData.duties as Record<string, { instructions?: string[]; hiddenInstructions?: string[] }>)[p.duty]
+      : undefined;
 
     const instructions = [
       ...(roleData?.baseInstructions.instructions ?? []),
@@ -66,8 +99,7 @@ export function exportTactic(tactic: Tactic): TacticExport {
         "and manually replicate the roles, duties, and team instructions listed below.",
         "The 'instructions' field per player maps directly to Player Instructions in-game.",
         "The 'hiddenInstructions' are engine defaults applied automatically by FM for this role.",
-        "Team instructions (inPossession, inTransition, outOfPossession) correspond to",
-        "the Team Instructions panel in FM's tactics screen.",
+        "teamInstructions list only active (non-default) settings per phase.",
       ],
     },
     tactic: {
@@ -77,9 +109,9 @@ export function exportTactic(tactic: Tactic): TacticExport {
       style: tactic.style,
       players,
       teamInstructions: {
-        inPossession: tactic.inPossession,
-        inTransition: tactic.inTransition,
-        outOfPossession: tactic.outOfPossession,
+        inPossession: resolveInstructions("inPossession", tactic.inPossession),
+        inTransition: resolveInstructions("inTransition", tactic.inTransition),
+        outOfPossession: resolveInstructions("outOfPossession", tactic.outOfPossession),
       },
     },
   };
