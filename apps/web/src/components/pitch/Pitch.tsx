@@ -35,7 +35,6 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
   const [showLines, setShowLines] = useState(true);
   const [showTriangles, setShowTriangles] = useState(true);
   const [showClashes, setShowClashes] = useState(true);
-  const [showHeatmaps, setShowHeatmaps] = useState(true);
   const [showMovements, setShowMovements] = useState(true);
 
   // Extract metrics from analysis
@@ -140,23 +139,6 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
                   <feGaussianBlur stdDeviation="3" />
                 </filter>
               </defs>
-
-              {/* Player Heatmaps */}
-              {showHeatmaps && currentTacticData.players.map(p => {
-                const viz = getVisualizationData(p.role, p.duty, p.x, p.y);
-                return viz.heatmaps.map(hm => (
-                  <ellipse
-                    key={`${p.id}-${hm.id}`}
-                    cx={p.x + hm.cx}
-                    cy={p.y + hm.cy}
-                    rx={hm.rx}
-                    ry={hm.ry}
-                    fill={`rgba(${hm.color}, ${hm.opacity})`}
-                    filter="url(#heatmap-blur)"
-                    className="transition-all duration-700 ease-out"
-                  />
-                ));
-              })}
 
               {/* Player Movements */}
               {showMovements && currentTacticData.players.map(p => {
@@ -340,12 +322,6 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
               className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showClashes ? "bg-rose-500/10 text-rose-400 border-rose-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"} ${!showLines ? "opacity-30 cursor-not-allowed" : ""}`}
             >
               Show Clashes
-            </button>
-            <button
-              onClick={() => setShowHeatmaps(!showHeatmaps)}
-              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showHeatmaps ? "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
-            >
-              Heatmaps
             </button>
             <button
               onClick={() => setShowMovements(!showMovements)}
