@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 
 export default function CommunityPage() {
   return (
-    <div className="h-full w-full bg-[#0a0c10] overflow-y-auto text-white">
+    <div className="relative h-full w-full bg-[#0a0c10] overflow-y-auto text-white">
+      {/* Coming Soon Watermark */}
+      <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none bg-black/60 backdrop-blur-sm">
+        <div className="transform -rotate-12 border-8 border-white/20 p-8 rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]">
+          <h1 className="text-6xl md:text-8xl font-black text-white/40 uppercase tracking-[0.2em] drop-shadow-2xl">Coming Soon</h1>
+        </div>
+      </div>
       {/* Page Header */}
       <div className="max-w-7xl mx-auto px-8 pt-12 pb-8">
         <div className="flex items-end justify-between mb-16">
