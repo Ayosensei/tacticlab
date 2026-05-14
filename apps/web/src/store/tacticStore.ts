@@ -3,6 +3,7 @@ import { Tactic, AnalysisResult, Duty } from "@/types/tactic";
 import { FORMATIONS, getValidRolesForPosition, getClosestSlot } from "../lib/tacticsData";
 import { ROLES_DB } from "../lib/rolesData";
 import { scoreTactic } from "../lib/wasm";
+import { evaluateChemistry, ChemistryResult } from "../lib/chemistry";
 
 interface TacticState {
   currentTactic: Tactic;
@@ -12,6 +13,8 @@ interface TacticState {
   isLoading: boolean;
   activeSidebarTab: string | null;
   selectedPlayerId: string | null;
+  chemistry: ChemistryResult | null;
+  showChemistry: boolean;
   
   // Actions
   setTactic: (tactic: Tactic) => void;
@@ -26,6 +29,7 @@ interface TacticState {
   setActiveSidebarTab: (tab: string | null) => void;
   setSelectedPlayerId: (id: string | null) => void;
   toggleInstruction: (phase: "inPossession" | "inTransition" | "outOfPossession", id: string, value: string | boolean) => void;
+  setShowChemistry: (show: boolean) => void;
 }
 
 const initialTactic: Tactic = {
@@ -60,8 +64,10 @@ export const useTacticStore = create<TacticState>((set, get) => ({
   isLoading: false,
   activeSidebarTab: null,
   selectedPlayerId: null,
+  chemistry: evaluateChemistry(initialTactic.players),
+  showChemistry: true,
 
-  setTactic: (tactic) => set({ currentTactic: tactic }),
+  setTactic: (tactic) => set({ currentTactic: tactic, chemistry: evaluateChemistry(tactic.players) }),
   
   setComparisonTactic: (tactic) => {
     set({ comparisonTactic: tactic });
@@ -106,7 +112,7 @@ export const useTacticStore = create<TacticState>((set, get) => ({
       
       const newTactic = { ...state.currentTactic, players };
       scoreTactic(newTactic).then(result => get().setAnalysis(result));
-      return { currentTactic: newTactic };
+      return { currentTactic: newTactic, chemistry: evaluateChemistry(players) };
     }),
     
   setFormation: (formationId) =>
@@ -120,7 +126,7 @@ export const useTacticStore = create<TacticState>((set, get) => ({
         players: JSON.parse(JSON.stringify(formation.players)) // Deep clone array
       };
       scoreTactic(newTactic).then(result => get().setAnalysis(result));
-      return { currentTactic: newTactic };
+      return { currentTactic: newTactic, chemistry: evaluateChemistry(newTactic.players) };
     }),
     
   updatePlayerRole: (playerId, role, duty) =>
@@ -142,7 +148,7 @@ export const useTacticStore = create<TacticState>((set, get) => ({
       });
       const newTactic = { ...state.currentTactic, players };
       scoreTactic(newTactic).then(result => get().setAnalysis(result));
-      return { currentTactic: newTactic };
+      return { currentTactic: newTactic, chemistry: evaluateChemistry(players) };
     }),
 
   setStyle: (styleName) =>
@@ -179,6 +185,8 @@ export const useTacticStore = create<TacticState>((set, get) => ({
 
     return { currentTactic: newTactic };
   }),
+  
+  setShowChemistry: (show) => set({ showChemistry: show }),
 }));
 
 // Helper to trigger analysis on store updates
