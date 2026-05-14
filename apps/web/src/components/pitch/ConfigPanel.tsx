@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
 export function ConfigPanel() {
-  const { activeSidebarTab, currentTactic, setStyle, setMentality, setFormation, selectedPlayerId, toggleInstruction } = useTacticStore();
+  const { activeSidebarTab, currentTactic, setStyle, setMentality, setFormation, selectedPlayerId, toggleInstruction, chemistry, showChemistry, setShowChemistry } = useTacticStore();
   const [activeInstructionPhase, setActiveInstructionPhase] = useState<"inPossession" | "inTransition" | "outOfPossession">("inPossession");
 
   if (!activeSidebarTab) return null;
@@ -178,6 +178,58 @@ export function ConfigPanel() {
               );
             })()}
           </div>
+
+          {/* Chemistry Footer */}
+          {showChemistry && chemistry && (
+            <div className="p-4 border-t border-white/5 bg-[#0d0f14] shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.2)] z-20">
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="text-emerald-400 font-black text-xs uppercase tracking-widest flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  </span>
+                  Team Chemistry
+                </h4>
+                <div className={cn(
+                  "px-2 py-1 rounded font-bold text-xs",
+                  chemistry.score >= 80 ? "bg-emerald-500/20 text-emerald-400" :
+                  chemistry.score >= 50 ? "bg-yellow-500/20 text-yellow-400" :
+                  "bg-red-500/20 text-red-400"
+                )}>
+                  {chemistry.score} / 100
+                </div>
+              </div>
+              <div className="max-h-40 overflow-y-auto pr-1 flex flex-col gap-2 custom-scrollbar">
+                {chemistry.warnings.map((w, i) => (
+                  <div key={`w-${i}`} className="text-[10px] text-red-400 bg-red-950/30 p-2.5 rounded-lg border border-red-500/20 leading-relaxed font-medium">
+                    <span className="mr-1">⚠</span> {w}
+                  </div>
+                ))}
+                {chemistry.tips.map((t, i) => (
+                  <div key={`t-${i}`} className="text-[10px] text-emerald-400 bg-emerald-950/30 p-2.5 rounded-lg border border-emerald-500/20 leading-relaxed font-medium">
+                    <span className="mr-1">✓</span> {t}
+                  </div>
+                ))}
+                {chemistry.warnings.length === 0 && chemistry.tips.length === 0 && (
+                  <div className="text-[10px] text-slate-400 text-center italic py-2">
+                    Start combining roles to see chemistry insights.
+                  </div>
+                )}
+              </div>
+              <div className="mt-3 text-center">
+                <button onClick={() => setShowChemistry(false)} className="text-[9px] text-slate-500 uppercase tracking-widest font-bold hover:text-slate-400 transition-colors">
+                  Hide Chemistry
+                </button>
+              </div>
+            </div>
+          )}
+          {!showChemistry && (
+            <div className="p-3 border-t border-white/5 bg-[#0d0f14] shrink-0 text-center shadow-[0_-10px_20px_rgba(0,0,0,0.2)] z-20">
+              <button onClick={() => setShowChemistry(true)} className="text-[10px] text-emerald-400 uppercase tracking-widest font-black hover:text-emerald-300 transition-colors">
+                Show Chemistry Insights
+              </button>
+            </div>
+          )}
         </div>
       )}
 
