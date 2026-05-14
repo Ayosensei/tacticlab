@@ -1,9 +1,11 @@
 "use client";
 
-import { Bell, Settings, User } from "lucide-react";
+import { useState } from "react";
+import { Bell, Settings, User, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
+import { useTacticStore } from "@/store/tacticStore";
+import { downloadTacticJson } from "@/lib/exportTactic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -16,6 +18,14 @@ const links = [
 
 export function TopNav() {
   const pathname = usePathname();
+  const { currentTactic } = useTacticStore();
+  const [exported, setExported] = useState(false);
+
+  const handleExport = () => {
+    downloadTacticJson(currentTactic);
+    setExported(true);
+    setTimeout(() => setExported(false), 2000);
+  };
   
   return (
     <nav className="h-20 border-b border-white/5 bg-[#12141a] flex items-center justify-between px-8 z-50">
@@ -44,8 +54,19 @@ export function TopNav() {
       </div>
 
       <div className="flex items-center gap-6">
-        <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-[#0a0c10] font-bold text-[10px] uppercase tracking-widest px-6 h-10">
-          Deploy Tactic
+        <Button
+          id="deploy-tactic-btn"
+          size="sm"
+          onClick={handleExport}
+          className={cn(
+            "font-bold text-[10px] uppercase tracking-widest px-6 h-10 gap-2 transition-all duration-300",
+            exported
+              ? "bg-emerald-400 text-[#0a0c10] scale-95"
+              : "bg-emerald-500 hover:bg-emerald-600 text-[#0a0c10]"
+          )}
+        >
+          <Download className="w-3.5 h-3.5" />
+          {exported ? "Exported!" : "Export Tactic"}
         </Button>
         
         <div className="flex items-center gap-4 text-muted-foreground">
