@@ -7,6 +7,7 @@ import { DndContext, DragEndEvent, useSensor, useSensors, PointerSensor } from "
 import { useRef, useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Tactic, AnalysisResult } from "@/types/tactic";
+import { getVisualizationData } from "@/lib/visualizations";
 
 interface PitchProps {
   tactic?: Tactic | null;
@@ -34,6 +35,8 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
   const [showLines, setShowLines] = useState(true);
   const [showTriangles, setShowTriangles] = useState(true);
   const [showClashes, setShowClashes] = useState(true);
+  const [showHeatmaps, setShowHeatmaps] = useState(true);
+  const [showMovements, setShowMovements] = useState(true);
 
   // Extract metrics from analysis
   const compTriangles = (currentAnalysisData as any)?.compatibilityTriangles || [];
@@ -122,6 +125,63 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
           <div className="absolute inset-0 z-20 pointer-events-none">
             {/* pointer-events-auto on the SVG so lines and triangles can be hovered later */}
             <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-auto" preserveAspectRatio="none">
+              
+              <defs>
+                <marker id="arrowhead-attack" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M 0 0 L 6 3 L 0 6 z" fill="rgba(16, 185, 129, 0.7)" />
+                </marker>
+                <marker id="arrowhead-support" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M 0 0 L 6 3 L 0 6 z" fill="rgba(96, 165, 250, 0.7)" />
+                </marker>
+                <marker id="arrowhead-defend" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <path d="M 0 0 L 6 3 L 0 6 z" fill="rgba(248, 113, 113, 0.7)" />
+                </marker>
+                <filter id="heatmap-blur" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3" />
+                </filter>
+              </defs>
+
+              {/* Player Heatmaps */}
+              {showHeatmaps && currentTacticData.players.map(p => {
+                const viz = getVisualizationData(p.role, p.duty, p.x, p.y);
+                return viz.heatmaps.map(hm => (
+                  <ellipse
+                    key={`${p.id}-${hm.id}`}
+                    cx={p.x + hm.cx}
+                    cy={p.y + hm.cy}
+                    rx={hm.rx}
+                    ry={hm.ry}
+                    fill={`rgba(${hm.color}, ${hm.opacity})`}
+                    filter="url(#heatmap-blur)"
+                    className="transition-all duration-700 ease-out"
+                  />
+                ));
+              })}
+
+              {/* Player Movements */}
+              {showMovements && currentTacticData.players.map(p => {
+                const viz = getVisualizationData(p.role, p.duty, p.x, p.y);
+                return viz.movements.map(mov => {
+                  let markerId = "arrowhead-attack";
+                  if (mov.color.includes("96, 165")) markerId = "arrowhead-support";
+                  if (mov.color.includes("248, 113")) markerId = "arrowhead-defend";
+
+                  return (
+                    <g key={`${p.id}-${mov.id}`} transform={`translate(${p.x}, ${p.y})`}>
+                      <path
+                        d={mov.path}
+                        fill="none"
+                        stroke={mov.color}
+                        strokeWidth="0.8"
+                        strokeLinecap="round"
+                        markerEnd={`url(#${markerId})`}
+                        className="transition-all duration-700 ease-out drop-shadow-md"
+                      />
+                    </g>
+                  );
+                });
+              })}
+
               {/* Compatibility Triangles */}
               {showTriangles && compTriangles.map((tri: any, idx: number) => {
                 const p1 = currentTacticData.players.find(p => p.id === tri.player1Id);
@@ -280,6 +340,18 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
               className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showClashes ? "bg-rose-500/10 text-rose-400 border-rose-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"} ${!showLines ? "opacity-30 cursor-not-allowed" : ""}`}
             >
               Show Clashes
+            </button>
+            <button
+              onClick={() => setShowHeatmaps(!showHeatmaps)}
+              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showHeatmaps ? "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
+            >
+              Heatmaps
+            </button>
+            <button
+              onClick={() => setShowMovements(!showMovements)}
+              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showMovements ? "bg-amber-500/10 text-amber-400 border-amber-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
+            >
+              Movements
             </button>
           </div>
         )}
