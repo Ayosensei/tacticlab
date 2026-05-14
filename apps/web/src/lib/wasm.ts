@@ -183,8 +183,8 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   for (let i = 0; i < numPlayers; i++) {
     for (let j = i + 1; j < numPlayers; j++) {
       const p1 = tactic.players[i], p2 = tactic.players[j];
-      const dist = Math.sqrt((p1.x-p2.x)**2 + (p1.y-p2.y)**2);
-      
+      const dist = Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+
       // Distance gate - players must be close enough to interact
       if (dist > 40) continue;
 
@@ -276,7 +276,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
     for (let j = i + 1; j < numPlayers; j++) {
       for (let k = j + 1; k < numPlayers; k++) {
         const p1 = tactic.players[i], p2 = tactic.players[j], p3 = tactic.players[k];
-        
+
         // Find pairwise scores. If no explicit synergy exists, assume base score of 50.
         const s12 = synergies.find(s => (s.player1Id === p1.id && s.player2Id === p2.id) || (s.player1Id === p2.id && s.player2Id === p1.id))?.score ?? 50;
         const s23 = synergies.find(s => (s.player1Id === p2.id && s.player2Id === p3.id) || (s.player1Id === p3.id && s.player2Id === p2.id))?.score ?? 50;
@@ -284,7 +284,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
 
         if (s12 >= 50 && s23 >= 50 && s31 >= 50) {
           const compScore = Math.round((s12 + s23 + s31) / 3);
-          
+
           let patternLabel = "";
           let patternDesc = "";
 
@@ -295,7 +295,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
           const hasWB = roles.includes("Wing Back") || roles.includes("Complete Wing-Back");
           const hasIF = roles.includes("Inside Forward") || roles.includes("Inverted Winger");
           const hasAM = roles.includes("Advanced Playmaker") || roles.includes("Attacking Midfielder");
-          
+
           if (hasAnchorDM && hasDLP && hasCM) {
             patternLabel = "Double Pivot Hub";
             patternDesc = "Ultimate central control unit blending protection and playmaking.";
@@ -303,15 +303,15 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
             patternLabel = "Wide Overlap Triangle";
             patternDesc = "Classic wide progression unit. AM feeds the IF cutting inside, while WB overlaps.";
           } else if (compScore > 65) {
-             patternLabel = "Cohesive Unit";
-             patternDesc = "Strong collective understanding between these roles.";
+            patternLabel = "Cohesive Unit";
+            patternDesc = "Strong collective understanding between these roles.";
           }
 
           if (patternLabel !== "") {
-              compTriangles.push({
-                player1Id: p1.id, player2Id: p2.id, player3Id: p3.id,
-                score: compScore, label: patternLabel, description: patternDesc
-              });
+            compTriangles.push({
+              player1Id: p1.id, player2Id: p2.id, player3Id: p3.id,
+              score: compScore, label: patternLabel, description: patternDesc
+            });
           }
         }
       }
@@ -328,59 +328,59 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   compTriangles.sort((a, b) => b.score - a.score);
 
   // ─── Mentality modifiers ─────────────────────────────────────────
-  const mentalityBonus: Record<string,number> = { Defensive:-20, Cautious:-10, Balanced:0, Positive:10, Attacking:20 };
+  const mentalityBonus: Record<string, number> = { Defensive: -20, Cautious: -10, Balanced: 0, Positive: 10, Attacking: 20 };
   const mBonus = mentalityBonus[mentality] ?? 0;
 
   // ─── Penetration score ───────────────────────────────────────────
-  let penetration = 30 + Math.min(attack,4)*10 + mBonus;
+  let penetration = 30 + Math.min(attack, 4) * 10 + mBonus;
   synergies.forEach(s => {
-    if (s.type==="positive"&&s.label.includes("Overlap")) penetration += 10;
-    if (s.type==="positive"&&s.label.includes("Pair")) penetration += 10;
+    if (s.type === "positive" && s.label.includes("Overlap")) penetration += 10;
+    if (s.type === "positive" && s.label.includes("Pair")) penetration += 10;
   });
 
   // ─── Solidity score ──────────────────────────────────────────────
-  let solidity = 30 + Math.min(defend,5)*8 - mBonus;
-  if (restDefStructure==="3-2"||restDefStructure==="3-1") solidity += 15;
-  synergies.forEach(s => { if (s.type==="positive"&&s.label.includes("Pivot")) solidity += 10; });
-  riskFactors.forEach(r => { if (r.severity==="critical") solidity -= 15; });
-  if (highLine&&!tactic.players.some(p=>p.role==="Sweeper Keeper")) solidity -= 10;
+  let solidity = 30 + Math.min(defend, 5) * 8 - mBonus;
+  if (restDefStructure === "3-2" || restDefStructure === "3-1") solidity += 15;
+  synergies.forEach(s => { if (s.type === "positive" && s.label.includes("Pivot")) solidity += 10; });
+  riskFactors.forEach(r => { if (r.severity === "critical") solidity -= 15; });
+  if (highLine && !tactic.players.some(p => p.role === "Sweeper Keeper")) solidity -= 10;
 
   // ─── Phase ratings ────────────────────────────────────────────────
   const hasPlaymakerRole = tactic.players.some(p => isPlaymaker(p.role));
-  const channelSpread = [channels.wideLeft>0, channels.halfSpaceLeft>0, channels.center>0, channels.halfSpaceRight>0, channels.wideRight>0].filter(Boolean).length;
+  const channelSpread = [channels.wideLeft > 0, channels.halfSpaceLeft > 0, channels.center > 0, channels.halfSpaceRight > 0, channels.wideRight > 0].filter(Boolean).length;
   let inPossessionRating = 30
-    + Math.min(support,5)*7
-    + channelSpread*5
+    + Math.min(support, 5) * 7
+    + channelSpread * 5
     + (hasPlaymakerRole ? 10 : 0)
-    + (!["4-0","3-0","2-0"].includes(buildUpStructure) ? 10 : 0)
-    + mBonus*0.5;
+    + (!["4-0", "3-0", "2-0"].includes(buildUpStructure) ? 10 : 0)
+    + mBonus * 0.5;
 
   let outOfPossessionRating = 30
-    + Math.min(defend,5)*7
-    + (restDefenceCount>=4 ? 15 : 0)
-    + (dmsOnDefend>0 ? 10 : 0)
-    + (highPress&&!lowLoe ? 10 : 0)
-    - (highLine&&!tactic.players.some(p=>p.role==="Sweeper Keeper") ? 10 : 0)
-    - mBonus*0.5;
-  riskFactors.forEach(r => { if (r.severity==="critical") outOfPossessionRating -= 10; });
+    + Math.min(defend, 5) * 7
+    + (restDefenceCount >= 4 ? 15 : 0)
+    + (dmsOnDefend > 0 ? 10 : 0)
+    + (highPress && !lowLoe ? 10 : 0)
+    - (highLine && !tactic.players.some(p => p.role === "Sweeper Keeper") ? 10 : 0)
+    - mBonus * 0.5;
+  riskFactors.forEach(r => { if (r.severity === "critical") outOfPossessionRating -= 10; });
 
   // ─── Tactical Narrative ──────────────────────────────────────────
-  const styleAdj: Record<string,string> = {
-    Defensive:"A resolute, defensive", Cautious:"A cautious, controlled",
-    Balanced:"A balanced", Positive:"A progressive, attacking", Attacking:"A bold, high-octane"
+  const styleAdj: Record<string, string> = {
+    Defensive: "A resolute, defensive", Cautious: "A cautious, controlled",
+    Balanced: "A balanced", Positive: "A progressive, attacking", Attacking: "A bold, high-octane"
   };
   const patterns: string[] = [];
-  if (highLine&&highPress) patterns.push("high-press, high-line shape");
-  else if (lowLoe&&(dl==="Lower"||dl==="Much Lower")) patterns.push("deep low-block");
-  else if (posWon==="Counter") patterns.push("counter-attacking system");
+  if (highLine && highPress) patterns.push("high-press, high-line shape");
+  else if (lowLoe && (dl === "Lower" || dl === "Much Lower")) patterns.push("deep low-block");
+  else if (posWon === "Counter") patterns.push("counter-attacking system");
   if (hasPlaymakerRole) patterns.push("built around a deep playmaker");
-  if (synergies.some(s=>s.type==="positive"&&s.label.includes("Overlap"))) patterns.push("wide overloads on the flanks");
-  if (restDefStructure==="3-2"||restDefStructure==="3-1") patterns.push("a compact resting defence");
+  if (synergies.some(s => s.type === "positive" && s.label.includes("Overlap"))) patterns.push("wide overloads on the flanks");
+  if (restDefStructure === "3-2" || restDefStructure === "3-1") patterns.push("a compact resting defence");
   const patternStr = patterns.length ? ` with ${patterns.join(", ")}` : "";
-  const strengthStr = penetration>solidity ? "Best suited for attacking transitions." : "Defensively structured to be difficult to break down.";
-  const critCount = riskFactors.filter(r=>r.severity==="critical").length;
-  const riskStr = critCount>0 ? ` ${critCount} critical structural risk${critCount>1?"s":""} detected.` : " Structurally sound.";
-  const tacticalNarrative = `${styleAdj[mentality]??"A"} ${tactic.formation}${patternStr}. ${strengthStr}${riskStr}`;
+  const strengthStr = penetration > solidity ? "Best suited for attacking transitions." : "Defensively structured to be difficult to break down.";
+  const critCount = riskFactors.filter(r => r.severity === "critical").length;
+  const riskStr = critCount > 0 ? ` ${critCount} critical structural risk${critCount > 1 ? "s" : ""} detected.` : " Structurally sound.";
+  const tacticalNarrative = `${styleAdj[mentality] ?? "A"} ${tactic.formation}${patternStr}. ${strengthStr}${riskStr}`;
 
   return {
     tacticalNarrative,
