@@ -1,3 +1,5 @@
+import { PlayerPosition } from "@/types/tactic";
+
 export const GRID_SLOTS = [
   { id: "LST", x: 35, y: 15, band: "ST" },
   { id: "ST", x: 50, y: 15, band: "ST" },
@@ -228,9 +230,19 @@ export function getClosestSlot(x: number, y: number) {
   return closest;
 }
 
-export function getValidRolesForPosition(x: number, y: number): string[] {
+export function getValidRolesForPosition(x: number, y: number, players?: PlayerPosition[]): string[] {
   const slot = getClosestSlot(x, y);
-  return POSITIONS_DB[slot.band as keyof typeof POSITIONS_DB] || POSITIONS_DB.CM;
+  const baseRoles = POSITIONS_DB[slot.band as keyof typeof POSITIONS_DB] || POSITIONS_DB.CM;
+
+  // Formation-based restrictions
+  if (slot.band === "CB" && players) {
+    const cbCount = players.filter(p => getClosestSlot(p.x, p.y).band === "CB").length;
+    if (cbCount < 3) {
+      return baseRoles.filter(r => r !== "Libero" && r !== "Wide Centre-Back");
+    }
+  }
+
+  return baseRoles;
 }
 
 export const ROLE_ABBREVIATIONS: Record<string, string> = {

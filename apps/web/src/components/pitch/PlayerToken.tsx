@@ -17,7 +17,7 @@ interface PlayerTokenProps {
 export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { updatePlayerRole, setSelectedPlayerId, setActiveSidebarTab } = useTacticStore();
+  const { currentTactic, updatePlayerRole, setSelectedPlayerId, setActiveSidebarTab } = useTacticStore();
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: player.id,
@@ -150,7 +150,7 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
             
             {/* Valid Roles List */}
             <div className="max-h-48 overflow-y-auto p-1 py-2 flex flex-col gap-0.5 role-scroll">
-              {getValidRolesForPosition(player.x, player.y).map(role => (
+              {getValidRolesForPosition(player.x, player.y, currentTactic.players).map(role => (
                 <button
                   key={role}
                   onClick={() => { updatePlayerRole(player.id, role, player.duty); setMenuOpen(false); }}
