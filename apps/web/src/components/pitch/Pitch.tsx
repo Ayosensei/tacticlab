@@ -249,6 +249,26 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
                 const pos1 = getPlayerPosition(p1);
                 const pos2 = getPlayerPosition(p2);
 
+                const dx = pos2.x - pos1.x;
+                const dy = pos2.y - pos1.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                let x1 = pos1.x;
+                let y1 = pos1.y;
+                let x2 = pos2.x;
+                let y2 = pos2.y;
+
+                // Trim lines by ~3.5 units so they start/end at the jersey perimeter
+                if (dist > 7) {
+                  const padding = 3.5;
+                  const paddingX = (dx / dist) * padding;
+                  const paddingY = (dy / dist) * padding;
+                  x1 += paddingX;
+                  y1 += paddingY;
+                  x2 -= paddingX;
+                  y2 -= paddingY;
+                }
+
                 // Scale intensity: score 70->0.4 opacity, 100->0.9 opacity. 
                 // For negative: score 40->0.4, 0->0.9
                 const intensity = isPositive
@@ -275,10 +295,10 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
                 return (
                   <line
                     key={`syn-${idx}`}
-                    x1={pos1.x}
-                    y1={pos1.y}
-                    x2={pos2.x}
-                    y2={pos2.y}
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
                     stroke={strokeColor}
                     strokeWidth={strokeWidth}
                     strokeDasharray={strokeDash}
