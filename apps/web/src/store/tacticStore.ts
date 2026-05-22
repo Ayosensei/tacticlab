@@ -31,6 +31,7 @@ interface TacticState {
   toggleInstruction: (phase: "inPossession" | "inTransition" | "outOfPossession", id: string, value: string | boolean) => void;
   setShowChemistry: (show: boolean) => void;
   setTitle: (title: string) => void;
+  triggerAnalysis: () => void;
 }
 
 const initialTactic: Tactic = {
@@ -189,6 +190,13 @@ export const useTacticStore = create<TacticState>((set, get) => ({
   
   setShowChemistry: (show) => set({ showChemistry: show }),
   setTitle: (title) => set((state) => ({ currentTactic: { ...state.currentTactic, title } })),
+  triggerAnalysis: () => {
+    set({ isLoading: true });
+    scoreTactic(get().currentTactic).then(result => {
+      get().setAnalysis(result);
+      set({ isLoading: false });
+    });
+  },
 }));
 
 // Helper to trigger analysis on store updates

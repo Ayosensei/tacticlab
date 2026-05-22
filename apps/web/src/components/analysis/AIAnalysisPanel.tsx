@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Cpu, Info, AlertTriangle, CheckCircle2, ShieldAlert, Navigation, Swords, Shield, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTacticStore } from "@/store/tacticStore";
@@ -10,7 +10,7 @@ const MAX_WIDTH = 600;
 const DEFAULT_WIDTH = 320;
 
 export function AIAnalysisPanel() {
-  const { analysis, isLoading } = useTacticStore();
+  const { analysis, isLoading, triggerAnalysis } = useTacticStore();
   const [width, setWidth] = useState(DEFAULT_WIDTH);
   const isDragging = useRef(false);
   const startX = useRef(0);
@@ -18,6 +18,12 @@ export function AIAnalysisPanel() {
   // Preserve scroll position across width-driven re-renders
   const scrollRef = useRef<HTMLDivElement>(null);
   const savedScroll = useRef(0);
+
+  useEffect(() => {
+    if (!analysis && !isLoading) {
+      triggerAnalysis();
+    }
+  }, [analysis, isLoading, triggerAnalysis]);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     isDragging.current = true;

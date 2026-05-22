@@ -4,6 +4,7 @@ import { LayoutGrid, Sliders, Target, BookOpen, BarChart3, UserCog } from "lucid
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTacticStore } from "@/store/tacticStore";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { icon: Sliders, label: "Style", id: "style" },
@@ -14,7 +15,13 @@ const navItems = [
 ];
 
 export function Sidebar() {
-  const { activeSidebarTab, setActiveSidebarTab } = useTacticStore();
+  const { activeSidebarTab, setActiveSidebarTab, triggerAnalysis } = useTacticStore();
+  const router = useRouter();
+
+  const handleAnalyzePitch = () => {
+    triggerAnalysis();
+    router.push("/analysis");
+  };
 
   return (
     <aside className="w-64 border-r border-[#ffffff0a] bg-[#0d0f14] flex flex-col h-[calc(100vh-80px)] overflow-y-auto z-50">
@@ -53,7 +60,7 @@ export function Sidebar() {
       </div>
 
       <div className="mt-auto p-6">
-        <Button variant="outline" className="w-full border-white/10 hover:bg-white/5 text-[10px] uppercase font-bold tracking-[0.2em] h-12 gap-3 group">
+        <Button onClick={handleAnalyzePitch} variant="outline" className="w-full border-white/10 hover:bg-white/5 text-[10px] uppercase font-bold tracking-[0.2em] h-12 gap-3 group">
           <BarChart3 className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
           Analyze Pitch
         </Button>
