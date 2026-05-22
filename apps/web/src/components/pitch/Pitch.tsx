@@ -3,10 +3,10 @@
 import { useTacticStore } from "@/store/tacticStore";
 import { PlayerToken } from "./PlayerToken";
 import { FORMATIONS } from "@/lib/tacticsData";
-import { DndContext, DragEndEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragStartEvent, DragMoveEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
 import { useRef, useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Tactic, AnalysisResult } from "@/types/tactic";
+import { Tactic, AnalysisResult, PlayerPosition } from "@/types/tactic";
 import { getVisualizationData } from "@/lib/visualizations";
 
 interface PitchProps {
@@ -41,6 +41,8 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
   const compTriangles = (currentAnalysisData as any)?.compatibilityTriangles || [];
   const synergies = (currentAnalysisData as any)?.synergies || [];
 
+  const [activeDrag, setActiveDrag] = useState<{ id: string; deltaX: number; deltaY: number } | null>(null);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -53,7 +55,22 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
     })
   );
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDrag({ id: event.active.id as string, deltaX: 0, deltaY: 0 });
+  };
+
+  const handleDragMove = (event: DragMoveEvent) => {
+    if (!pitchRef.current) return;
+    const rect = pitchRef.current.getBoundingClientRect();
+    setActiveDrag({
+      id: event.active.id as string,
+      deltaX: (event.delta.x / rect.width) * 100,
+      deltaY: (event.delta.y / rect.height) * 100,
+    });
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveDrag(null);
     if (readOnly) return;
     const { active, delta } = event;
     const playerId = active.id as string;
@@ -76,10 +93,17 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
     updatePlayerPosition(playerId, newX, newY);
   };
 
+  const getPlayerPosition = (p: PlayerPosition) => {
+    if (activeDrag && activeDrag.id === p.id) {
+      return { x: p.x + activeDrag.deltaX, y: p.y + activeDrag.deltaY };
+    }
+    return { x: p.x, y: p.y };
+  };
+
   if (!isMounted) return <div className="h-full aspect-[68/105] bg-[#12141a] rounded-lg animate-pulse" />;
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
       <div
         ref={pitchRef}
         className="relative flex-none aspect-[68/105] w-full max-w-[800px] mx-auto border border-white/10 bg-[#12141a] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group mt-8 mb-20"
@@ -142,14 +166,15 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
 
               {/* Player Movements */}
               {showMovements && currentTacticData.players.map(p => {
-                const viz = getVisualizationData(p.role, p.duty, p.x, p.y);
+                const pos = getPlayerPosition(p);
+                const viz = getVisualizationData(p.role, p.duty, pos.x, pos.y);
                 return viz.movements.map(mov => {
                   let markerId = "arrowhead-attack";
                   if (mov.color.includes("96, 165")) markerId = "arrowhead-support";
                   if (mov.color.includes("248, 113")) markerId = "arrowhead-defend";
 
                   return (
-                    <g key={`${p.id}-${mov.id}`} transform={`translate(${p.x}, ${p.y})`}>
+                    <g key={`${p.id}-${mov.id}`} transform={`translate(${pos.x}, ${pos.y})`}>
                       <path
                         d={mov.path}
                         fill="none"
@@ -170,6 +195,10 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
                 const p2 = currentTacticData.players.find(p => p.id === tri.player2Id);
                 const p3 = currentTacticData.players.find(p => p.id === tri.player3Id);
                 if (!p1 || !p2 || !p3) return null;
+                
+                const pos1 = getPlayerPosition(p1);
+                const pos2 = getPlayerPosition(p2);
+                const pos3 = getPlayerPosition(p3);
 
                 // Color based on score thresholds
                 let color = "rgba(245, 158, 11, 0.15)"; // Amber (tension/okay)
@@ -195,7 +224,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
                 return (
                   <polygon
                     key={`tri-${idx}`}
-                    points={`${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`}
+                    points={`${pos1.x},${pos1.y} ${pos2.x},${pos2.y} ${pos3.x},${pos3.y}`}
                     fill={color}
                     stroke={stroke}
                     strokeWidth="0.5"
@@ -216,6 +245,9 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
                 const p1 = currentTacticData.players.find(p => p.id === syn.player1Id);
                 const p2 = currentTacticData.players.find(p => p.id === syn.player2Id);
                 if (!p1 || !p2) return null;
+                
+                const pos1 = getPlayerPosition(p1);
+                const pos2 = getPlayerPosition(p2);
 
                 // Scale intensity: score 70->0.4 opacity, 100->0.9 opacity. 
                 // For negative: score 40->0.4, 0->0.9
@@ -243,10 +275,10 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
                 return (
                   <line
                     key={`syn-${idx}`}
-                    x1={p1.x}
-                    y1={p1.y}
-                    x2={p2.x}
-                    y2={p2.y}
+                    x1={pos1.x}
+                    y1={pos1.y}
+                    x2={pos2.x}
+                    y2={pos2.y}
                     stroke={strokeColor}
                     strokeWidth={strokeWidth}
                     strokeDasharray={strokeDash}
