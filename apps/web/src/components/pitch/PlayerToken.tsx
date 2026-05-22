@@ -77,16 +77,16 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
       {...(readOnly ? {} : listeners)}
       {...(readOnly ? {} : attributes)}
       className={cn(
-        "absolute -translate-x-1/2 -translate-y-1/2 touch-none z-20 transition-all",
+        "absolute -translate-x-1/2 -translate-y-1/2 w-14 h-14 touch-none z-20 transition-all flex items-center justify-center",
         !readOnly && "active:scale-110",
         isDragging && !readOnly ? "z-50 opacity-100 scale-110 cursor-grabbing shadow-2xl" : (readOnly ? "cursor-default" : "cursor-grab")
       )}
     >
-      <div ref={containerRef} className={cn("relative flex flex-col items-center gap-2", isDragging ? "drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "")}>
+      <div ref={containerRef} className={cn("relative w-full h-full flex items-center justify-center", isDragging ? "drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "")}>
         {/* Modern Jersey Silhouette (Matched to Tactic Builder.png) */}
         <svg
           viewBox="0 0 100 100"
-          className="w-14 h-14 filter drop-shadow-md"
+          className="absolute inset-0 w-14 h-14 filter drop-shadow-md"
         >
           <path
             d="M 20 20 L 35 10 C 40 15 60 15 65 10 L 80 20 L 80 40 L 70 40 L 70 90 L 30 90 L 30 40 L 20 40 Z"
@@ -107,7 +107,7 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
             setActiveSidebarTab("player_instructions");
           }}
           className={cn(
-            "flex items-center gap-1.5 bg-[#0d0f14]/90 backdrop-blur-md px-3 py-1.5 rounded-[12px] w-max border shadow-xl group/label transition-colors",
+            "absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#0d0f14]/90 backdrop-blur-md px-3 py-1.5 rounded-[12px] w-max border shadow-xl group/label transition-colors",
             menuOpen ? "border-emerald-400/50" : "border-white/10 hover:border-emerald-400/30"
           )}
         >
@@ -126,7 +126,7 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
         {menuOpen && (
           <div 
             onPointerDown={(e) => e.stopPropagation()} // Prevent DnD dragging while using menu
-            className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-56 bg-[#0a0c10] border border-white/10 rounded-lg shadow-2xl z-[100] flex flex-col overflow-hidden"
+            className="absolute top-[calc(100%+42px)] left-1/2 -translate-x-1/2 w-56 bg-[#0a0c10] border border-white/10 rounded-lg shadow-2xl z-[100] flex flex-col overflow-hidden"
           >
             {/* Duty Segmentation */}
             <div className="flex bg-[#12141a] p-1 border-b border-white/5">
