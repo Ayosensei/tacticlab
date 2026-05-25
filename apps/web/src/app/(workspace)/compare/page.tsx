@@ -36,12 +36,12 @@ export default function ComparePage() {
 
   const StatBar = ({ label, val1, val2 }: { label: string; val1: number; val2: number }) => (
     <div className="flex flex-col gap-1 mb-4">
-      <div className="flex justify-between text-[10px] uppercase font-bold tracking-widest text-slate-400">
+      <div className="flex justify-between text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
         <span>{val1}</span>
         <span>{label}</span>
         <span>{val2 !== undefined ? val2 : '-'}</span>
       </div>
-      <div className="flex h-1.5 bg-[#12141a] rounded-full overflow-hidden relative">
+      <div className="flex h-1.5 bg-card rounded-full overflow-hidden relative">
         <div 
           className="absolute right-1/2 top-0 bottom-0 bg-emerald-500 transition-all duration-500" 
           style={{ width: `${val1 / 2}%` }}
@@ -50,19 +50,19 @@ export default function ComparePage() {
           className="absolute left-1/2 top-0 bottom-0 bg-indigo-500 transition-all duration-500" 
           style={{ width: val2 ? `${val2 / 2}%` : '0%' }}
         />
-        <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-white/20" />
+        <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-foreground/20" />
       </div>
     </div>
   );
 
   return (
-    <div className="h-full w-full bg-[#0d0f14] overflow-y-auto relative text-white flex flex-col">
+    <div className="h-full w-full bg-background overflow-y-auto relative text-foreground flex flex-col">
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(16,185,129,0.03),transparent)] pointer-events-none" />
       
       {/* Compare Header */}
-      <div className="w-full flex border-b border-white/5 relative z-30 shrink-0">
+      <div className="w-full flex border-b border-border relative z-30 shrink-0">
         {/* Left Side Header */}
-        <div className="flex-1 p-4 flex items-center justify-center border-r border-white/5">
+        <div className="flex-1 p-4 flex items-center justify-center border-r border-border">
           <span className="text-[12px] font-black uppercase text-emerald-400 tracking-[0.2em]">
             {currentTactic.formation} (Current)
           </span>
@@ -72,7 +72,7 @@ export default function ComparePage() {
         <div className="flex-1 p-4 flex items-center justify-center relative">
           <button 
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] transition-colors hover:text-white text-indigo-400"
+            className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] transition-colors hover:text-foreground text-indigo-500"
           >
             {comparisonTactic ? comparisonTactic.formation : "Select Tactic to Compare"}
             <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180 opacity-100' : 'opacity-50'}`} />
@@ -80,22 +80,22 @@ export default function ComparePage() {
 
           {isDropdownOpen && (
             <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50">
-              <div className="bg-[#0a0c10] border border-white/10 rounded-md shadow-2xl flex flex-col p-1 w-56 max-h-[300px] overflow-y-auto">
+              <div className="bg-background border border-border rounded-md shadow-2xl flex flex-col p-1 w-56 max-h-[300px] overflow-y-auto">
                 <button
                   onClick={() => loadComparison("none")}
-                  className="text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded text-slate-500 hover:bg-white/5 hover:text-white"
+                  className="text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                 >
                   Clear Comparison
                 </button>
-                <div className="h-[1px] w-full bg-white/5 my-1" />
+                <div className="h-[1px] w-full bg-border my-1" />
                 {FORMATIONS.map(form => (
                   <button
                     key={form.id}
                     onClick={() => loadComparison(form.id)}
                     className={`text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded transition-colors ${
                       comparisonTactic?.formation === form.name 
-                        ? "bg-indigo-500/10 text-indigo-400" 
-                        : "text-slate-300 hover:bg-white/5 hover:text-white"
+                        ? "bg-indigo-500/10 text-indigo-500" 
+                        : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                     }`}
                   >
                     {form.name}
@@ -110,7 +110,7 @@ export default function ComparePage() {
       {/* Split Pitches */}
       <div className="flex flex-1 relative z-10 py-6 px-4">
         {/* Left Pitch */}
-        <div className="flex-1 border-r border-white/5 flex justify-center items-start">
+        <div className="flex-1 border-r border-border flex justify-center items-start">
           <div className="w-full max-w-[420px]">
             <Pitch tactic={currentTactic} analysis={currentAnalysis} hideOverlays={true} />
           </div>
@@ -134,7 +134,7 @@ export default function ComparePage() {
       </div>
 
       {/* Comparison Stats Footer */}
-      <div className="w-full bg-[#0a0c10] border-t border-white/5 p-8 relative z-10 shrink-0">
+      <div className="w-full bg-card border-t border-border p-8 relative z-10 shrink-0">
         <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] text-center mb-8">
           Tactical Metrics Comparison
         </h3>
