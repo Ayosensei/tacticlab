@@ -135,7 +135,10 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
                 : DUTIES).map((duty: string) => (
                 <button
                   key={duty}
-                  onClick={() => updatePlayerRole(player.id, player.role, duty as Duty)}
+                  onPointerDown={(e) => {
+                    e.stopPropagation();
+                    updatePlayerRole(player.id, player.role, duty as Duty);
+                  }}
                   className={cn(
                     "flex-1 py-1.5 text-[11px] font-bold tracking-widest rounded transition-colors",
                     player.duty === duty 
@@ -153,7 +156,11 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
               {getValidRolesForPosition(player.x, player.y, currentTactic.players).map(role => (
                 <button
                   key={role}
-                  onClick={() => { updatePlayerRole(player.id, role, player.duty); setMenuOpen(false); }}
+                  onPointerDown={(e) => { 
+                    e.stopPropagation();
+                    updatePlayerRole(player.id, role, player.duty); 
+                    setMenuOpen(false); 
+                  }}
                   className={cn(
                     "text-left px-3 py-2 text-[10px] font-bold uppercase tracking-widest rounded flex items-center justify-between transition-colors",
                     player.role === role 
