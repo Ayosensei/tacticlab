@@ -17,7 +17,7 @@ export function ConfigPanel() {
     <div 
       id="config-panel-container"
       className={cn(
-        "bg-[#0a0c10] border-r border-[#ffffff0a] h-[calc(100vh-80px)] overflow-hidden flex flex-col z-[100] shadow-[20px_0_40px_rgba(0,0,0,0.5)] transition-all duration-500 ease-in-out shrink-0",
+        "bg-background border-r border-border h-[calc(100vh-80px)] overflow-hidden flex flex-col z-[100] shadow-[20px_0_40px_rgba(0,0,0,0.5)] transition-all duration-500 ease-in-out shrink-0",
         activeSidebarTab === "instructions" ? "w-[calc(100vw-16rem)]" : "w-80"
       )}
     >
@@ -25,8 +25,8 @@ export function ConfigPanel() {
       {activeSidebarTab !== "instructions" && (
         <div className="flex flex-col h-full overflow-y-auto">
           {/* Header */}
-          <div className="p-6 border-b border-white/5 bg-[#0d0f14] sticky top-0 z-10">
-            <h3 className="text-emerald-400 font-black text-lg tracking-tight uppercase">
+          <div className="p-6 border-b border-border bg-card sticky top-0 z-10">
+            <h3 className="text-emerald-500 font-black text-lg tracking-tight uppercase">
               {activeSidebarTab.replace(/_/g, ' ')} Options
             </h3>
             <p className="text-xs text-muted-foreground mt-1">
@@ -48,14 +48,14 @@ export function ConfigPanel() {
                   className={cn(
                     "flex flex-col text-left p-4 rounded-lg border transition-all duration-200",
                     isActive
-                      ? "bg-[#162a22] border-emerald-500/30"
-                      : "bg-[#12141a] border-white/5 hover:border-white/20 hover:bg-white/5"
+                      ? "bg-emerald-500/10 border-emerald-500/30"
+                      : "bg-card border-border hover:border-foreground/20 hover:bg-foreground/5"
                   )}
                 >
                   <div className="flex justify-between items-center w-full mb-2">
                     <span className={cn(
                       "text-[11px] font-black uppercase tracking-widest",
-                      isActive ? "text-emerald-400" : "text-slate-200"
+                      isActive ? "text-emerald-500" : "text-foreground"
                     )}>
                       {style.name}
                     </span>
@@ -77,14 +77,14 @@ export function ConfigPanel() {
                   className={cn(
                     "flex flex-col text-left p-4 rounded-lg border transition-all duration-200",
                     isActive
-                      ? "bg-[#162a22] border-emerald-500/30"
-                      : "bg-[#12141a] border-white/5 hover:border-white/20 hover:bg-white/5"
+                      ? "bg-emerald-500/10 border-emerald-500/30"
+                      : "bg-card border-border hover:border-foreground/20 hover:bg-foreground/5"
                   )}
                 >
                   <div className="flex justify-between items-center w-full mb-2">
                     <span className={cn(
                       "text-[11px] font-black uppercase tracking-widest",
-                      isActive ? "text-emerald-400" : "text-slate-200"
+                      isActive ? "text-emerald-500" : "text-foreground"
                     )}>
                       {mentality.name}
                     </span>
@@ -106,14 +106,14 @@ export function ConfigPanel() {
                   className={cn(
                     "flex flex-col text-left p-4 rounded-lg border transition-all duration-200",
                     isActive
-                      ? "bg-[#162a22] border-emerald-500/30"
-                      : "bg-[#12141a] border-white/5 hover:border-white/20 hover:bg-white/5"
+                      ? "bg-emerald-500/10 border-emerald-500/30"
+                      : "bg-card border-border hover:border-foreground/20 hover:bg-foreground/5"
                   )}
                 >
                   <div className="flex justify-between items-center w-full">
                     <span className={cn(
                       "text-[11px] font-black uppercase tracking-widest",
-                      isActive ? "text-emerald-400" : "text-slate-200"
+                      isActive ? "text-emerald-500" : "text-foreground"
                     )}>
                       {formation.name}
                     </span>
@@ -147,27 +147,27 @@ export function ConfigPanel() {
 
               return (
                 <div className="flex flex-col gap-4">
-                  <div className="bg-[#12141a] p-4 rounded-lg border border-white/5">
+                  <div className="bg-card p-4 rounded-lg border border-border">
                     <div className="flex justify-between items-center mb-2">
-                      <h4 className="text-emerald-400 font-black tracking-widest uppercase text-[11px]">{player.role}</h4>
-                      <span className="text-[9px] font-bold text-slate-400 bg-white/5 px-2 py-0.5 rounded uppercase">{player.duty}</span>
+                      <h4 className="text-emerald-500 font-black tracking-widest uppercase text-[11px]">{player.role}</h4>
+                      <span className="text-[9px] font-bold text-muted-foreground bg-foreground/5 px-2 py-0.5 rounded uppercase">{player.duty}</span>
                     </div>
                     <p className="text-[10px] text-muted-foreground leading-relaxed">{roleData.description}</p>
                   </div>
 
                   {(activeInstructions.length > 0 || activeHidden.length > 0) && (
-                    <div className="bg-[#12141a] p-4 rounded-lg border border-white/5">
-                      <h5 className="text-[9px] text-slate-400 uppercase tracking-widest font-bold mb-3">Tactical Instructions</h5>
+                    <div className="bg-card p-4 rounded-lg border border-border">
+                      <h5 className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold mb-3">Tactical Instructions</h5>
                       <div className="flex flex-col gap-2">
                         {activeInstructions.map((inst, i) => (
-                          <div key={i} className="flex items-center gap-2 text-[10px] font-bold text-slate-200">
-                            <Check className="w-3 h-3 text-emerald-400" />
+                          <div key={i} className="flex items-center gap-2 text-[10px] font-bold text-foreground">
+                            <Check className="w-3 h-3 text-emerald-500" />
                             {inst}
                           </div>
                         ))}
                         {activeHidden.map((inst, i) => (
-                          <div key={`h-${i}`} className="flex items-center gap-2 text-[10px] font-bold text-slate-400 italic">
-                            <Check className="w-3 h-3 text-emerald-600 opacity-50" />
+                          <div key={`h-${i}`} className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground italic">
+                            <Check className="w-3 h-3 text-emerald-500 opacity-50" />
                             {inst} (Engine Default)
                           </div>
                         ))}
@@ -181,7 +181,7 @@ export function ConfigPanel() {
 
           {/* Chemistry Footer */}
           {showChemistry && chemistry && (
-            <div className="p-4 border-t border-white/5 bg-[#0d0f14] shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.2)] z-20">
+            <div className="p-4 border-t border-border bg-card shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.2)] z-20">
               <div className="flex justify-between items-center mb-3">
                 <h4 className="text-emerald-400 font-black text-xs uppercase tracking-widest flex items-center gap-2">
                   <span className="relative flex h-2 w-2">
@@ -211,21 +211,21 @@ export function ConfigPanel() {
                   </div>
                 ))}
                 {chemistry.warnings.length === 0 && chemistry.tips.length === 0 && (
-                  <div className="text-[10px] text-slate-400 text-center italic py-2">
+                  <div className="text-[10px] text-muted-foreground text-center italic py-2">
                     Start combining roles to see chemistry insights.
                   </div>
                 )}
               </div>
               <div className="mt-3 text-center">
-                <button onClick={() => setShowChemistry(false)} className="text-[9px] text-slate-500 uppercase tracking-widest font-bold hover:text-slate-400 transition-colors">
+                <button onClick={() => setShowChemistry(false)} className="text-[9px] text-muted-foreground uppercase tracking-widest font-bold hover:text-foreground transition-colors">
                   Hide Chemistry
                 </button>
               </div>
             </div>
           )}
           {!showChemistry && (
-            <div className="p-3 border-t border-white/5 bg-[#0d0f14] shrink-0 text-center shadow-[0_-10px_20px_rgba(0,0,0,0.2)] z-20">
-              <button onClick={() => setShowChemistry(true)} className="text-[10px] text-emerald-400 uppercase tracking-widest font-black hover:text-emerald-300 transition-colors">
+            <div className="p-3 border-t border-border bg-card shrink-0 text-center shadow-[0_-10px_20px_rgba(0,0,0,0.2)] z-20">
+              <button onClick={() => setShowChemistry(true)} className="text-[10px] text-emerald-500 uppercase tracking-widest font-black hover:text-emerald-400 transition-colors">
                 Show Chemistry Insights
               </button>
             </div>
@@ -235,9 +235,9 @@ export function ConfigPanel() {
 
       {/* Full-width Instructions Panel */}
       {activeSidebarTab === "instructions" && (
-        <div className="flex flex-col h-full bg-[#0a0c10] relative z-[110]">
+        <div className="flex flex-col h-full bg-background relative z-[110]">
           {/* Header */}
-          <div className="p-6 border-b border-white/5 bg-[#0d0f14] flex justify-between items-center shrink-0">
+          <div className="p-6 border-b border-border bg-card flex justify-between items-center shrink-0">
             <div>
               <h3 className="text-emerald-400 font-black text-lg tracking-tight uppercase">
                 Team Instructions
@@ -254,7 +254,7 @@ export function ConfigPanel() {
           </div>
 
           {/* Phase Sub-tabs */}
-          <div className="flex border-b border-white/5 bg-[#0a0c10] shrink-0">
+          <div className="flex border-b border-border bg-background shrink-0">
             {(["inPossession", "inTransition", "outOfPossession"] as const).map((phase) => (
               <button
                 key={phase}
@@ -262,8 +262,8 @@ export function ConfigPanel() {
                 className={cn(
                   "flex-1 py-4 px-6 text-[10px] uppercase font-black tracking-[0.2em] transition-colors text-center border-b-2",
                   activeInstructionPhase === phase
-                    ? "border-emerald-500 text-emerald-400 bg-emerald-500/5"
-                    : "border-transparent text-muted-foreground hover:text-white hover:bg-white/5"
+                    ? "border-emerald-500 text-emerald-500 bg-emerald-500/5"
+                    : "border-transparent text-muted-foreground hover:text-foreground hover:bg-foreground/5"
                 )}
               >
                 {phase.replace(/([A-Z])/g, ' $1').trim()}
@@ -272,7 +272,7 @@ export function ConfigPanel() {
           </div>
 
           {/* 3 Columns Grid */}
-          <div className="flex-1 p-8 grid grid-cols-3 gap-8 overflow-y-auto bg-[#0d0f14] relative min-h-0">
+          <div className="flex-1 p-8 grid grid-cols-3 gap-8 overflow-y-auto bg-card relative min-h-0">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.03),transparent)] pointer-events-none" />
 
             {TEAM_INSTRUCTIONS[activeInstructionPhase]?.map((column) => (
@@ -297,17 +297,17 @@ export function ConfigPanel() {
                           className={cn(
                             "flex items-center justify-between text-left px-4 py-3 rounded-lg border transition-all duration-200 group relative overflow-hidden",
                             isActive
-                              ? "bg-[#115e3b] border-[#1f8757] shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)]"
-                              : "bg-[#161b22] border-white/5 hover:border-white/20 hover:bg-[#1c222b]"
+                              ? "bg-emerald-500/20 border-emerald-500/50 shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)]"
+                              : "bg-background border-border hover:border-foreground/20 hover:bg-foreground/5"
                           )}
                         >
                           <span className={cn(
                             "text-[11px] font-bold tracking-wide relative z-10",
-                            isActive ? "text-white" : "text-slate-300"
+                            isActive ? "text-emerald-500" : "text-foreground"
                           )}>
                             {item.name}
                           </span>
-                          {isActive && <Check className="w-4 h-4 text-white relative z-10" />}
+                          {isActive && <Check className="w-4 h-4 text-emerald-500 relative z-10" />}
                         </button>
                       );
                     }
@@ -315,13 +315,13 @@ export function ConfigPanel() {
                     if (item.type === "select" && item.options) {
                       return (
                         <div key={item.id} className="flex flex-col gap-1.5 relative group">
-                          <label className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-1 group-hover:text-slate-400 transition-colors">
+                          <label className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest px-1 group-hover:text-foreground transition-colors">
                             {item.name}
                           </label>
                           <select
                             value={(value as string) || "None"}
                             onChange={(e) => toggleInstruction(activeInstructionPhase, item.id, e.target.value)}
-                            className="w-full bg-[#161b22] border border-white/5 hover:border-white/20 text-slate-200 text-[11px] font-bold rounded-lg px-4 py-3 outline-none focus:border-emerald-500/50 focus:bg-[#1a2028] transition-all appearance-none cursor-pointer"
+                            className="w-full bg-background border border-border hover:border-foreground/20 text-foreground text-[11px] font-bold rounded-lg px-4 py-3 outline-none focus:border-emerald-500/50 focus:bg-foreground/5 transition-all appearance-none cursor-pointer"
                           >
                             {item.options.map(opt => (
                               <option key={opt} value={opt}>{opt}</option>
