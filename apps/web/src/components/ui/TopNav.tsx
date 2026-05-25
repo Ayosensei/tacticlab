@@ -54,7 +54,7 @@ export function TopNav() {
   };
   
   return (
-    <nav className="h-20 border-b border-white/5 bg-[#12141a] flex items-center justify-between px-8 z-50">
+    <nav className="h-20 border-b border-border bg-card flex items-center justify-between px-8 z-50">
       <div className="flex items-center gap-8">
         <h1 className="text-2xl font-black text-emerald-400 tracking-tighter shrink-0">
           TACTICLAB
@@ -70,7 +70,7 @@ export function TopNav() {
                 onChange={(e) => setTitleDraft(e.target.value)}
                 onBlur={commitTitle}
                 onKeyDown={handleTitleKeyDown}
-                className="bg-transparent border-b border-emerald-400/60 text-white text-sm font-bold uppercase tracking-widest outline-none px-1 py-0.5 min-w-[160px] max-w-[280px] caret-emerald-400"
+                className="bg-transparent border-b border-emerald-400/60 text-foreground text-sm font-bold uppercase tracking-widest outline-none px-1 py-0.5 min-w-[160px] max-w-[280px] caret-emerald-400"
               />
               <button onClick={commitTitle} className="text-emerald-400 hover:text-emerald-300 transition-colors">
                 <Check className="w-3.5 h-3.5" />
@@ -78,12 +78,12 @@ export function TopNav() {
             </>
           ) : (
             <>
-              <span className="text-sm font-bold text-white/40 tracking-widest uppercase truncate max-w-[220px]">
+              <span className="text-sm font-bold text-muted-foreground tracking-widest uppercase truncate max-w-[220px]">
                 {currentTactic.title}
               </span>
               <button
                 onClick={startEditing}
-                className="opacity-0 group-hover/title:opacity-100 transition-opacity text-white/30 hover:text-emerald-400"
+                className="opacity-0 group-hover/title:opacity-100 transition-opacity text-muted-foreground hover:text-emerald-400"
               >
                 <Pencil className="w-3 h-3" />
               </button>
@@ -118,8 +118,8 @@ export function TopNav() {
           className={cn(
             "font-bold text-[10px] uppercase tracking-widest px-6 h-10 gap-2 transition-all duration-300",
             exported
-              ? "bg-emerald-400 text-[#0a0c10] scale-95"
-              : "bg-emerald-500 hover:bg-emerald-600 text-[#0a0c10]"
+              ? "bg-emerald-400 text-primary-foreground scale-95"
+              : "bg-emerald-500 hover:bg-emerald-600 text-primary-foreground"
           )}
         >
           <Download className="w-3.5 h-3.5" />
@@ -133,7 +133,7 @@ export function TopNav() {
           <button onClick={() => openModal('settings')} className="hover:text-foreground cursor-pointer transition-colors">
             <Settings className="w-5 h-5" />
           </button>
-          <button onClick={() => openModal('profile')} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/10 cursor-pointer hover:bg-white/20 transition-colors">
+          <button onClick={() => openModal('profile')} className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-border cursor-pointer hover:bg-foreground/10 transition-colors">
             <User className="w-5 h-5" />
           </button>
         </div>

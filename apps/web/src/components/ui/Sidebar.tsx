@@ -24,7 +24,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r border-[#ffffff0a] bg-[#0d0f14] flex flex-col h-[calc(100vh-80px)] overflow-y-auto z-50">
+    <aside className="w-64 border-r border-border bg-background flex flex-col h-[calc(100vh-80px)] overflow-y-auto z-50">
       <div className="p-6 flex flex-col gap-10">
         <div>
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] block mb-2 opacity-50">
@@ -45,7 +45,7 @@ export function Sidebar() {
                   "group flex items-center gap-4 px-3 py-3 transition-all duration-200 text-left relative",
                   isActive 
                     ? "text-emerald-400 bg-emerald-400/5 font-bold after:absolute after:right-0 after:top-0 after:h-full after:w-1 after:bg-emerald-400" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
                 )}
               >
                 <item.icon className={cn(
@@ -60,7 +60,7 @@ export function Sidebar() {
       </div>
 
       <div className="mt-auto p-6">
-        <Button onClick={handleAnalyzePitch} variant="outline" className="w-full border-white/10 hover:bg-white/5 text-[10px] uppercase font-bold tracking-[0.2em] h-12 gap-3 group">
+        <Button onClick={handleAnalyzePitch} variant="outline" className="w-full border-border hover:bg-foreground/5 text-[10px] uppercase font-bold tracking-[0.2em] h-12 gap-3 group">
           <BarChart3 className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
           Analyze Pitch
         </Button>
