@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 
 export default function CommunityPage() {
   return (
-    <div className="relative h-full w-full bg-[#0a0c10] overflow-y-auto text-white">
+    <div className="relative h-full w-full bg-background overflow-y-auto text-foreground">
       {/* Coming Soon Watermark */}
       <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none bg-black/60 backdrop-blur-sm">
-        <div className="transform -rotate-12 border-8 border-white/20 p-8 rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]">
-          <h1 className="text-6xl md:text-8xl font-black text-white/40 uppercase tracking-[0.2em] drop-shadow-2xl">Coming Soon</h1>
+        <div className="transform -rotate-12 border-8 border-border p-8 rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]">
+          <h1 className="text-6xl md:text-8xl font-black text-muted-foreground/40 uppercase tracking-[0.2em] drop-shadow-2xl">Coming Soon</h1>
         </div>
       </div>
       {/* Page Header */}
@@ -24,7 +24,7 @@ export default function CommunityPage() {
             <input 
               type="text" 
               placeholder="Search tactics, creators..." 
-              className="w-full bg-[#12141a] border border-white/5 rounded-md h-12 pl-12 pr-4 text-sm focus:outline-none focus:border-emerald-400/50 transition-colors placeholder:text-white/20"
+              className="w-full bg-card border border-border rounded-md h-12 pl-12 pr-4 text-sm focus:outline-none focus:border-emerald-500/50 transition-colors placeholder:text-muted-foreground/50"
             />
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function CommunityPage() {
         </div>
 
         {/* Filter Bar */}
-        <div className="flex items-center justify-between mb-8 pb-8 border-b border-white/5">
+        <div className="flex items-center justify-between mb-8 pb-8 border-b border-border">
           <div className="flex gap-4">
             <FilterDropdown label="Formation" />
             <FilterDropdown label="Style" />
@@ -137,12 +137,12 @@ function TrendingCard({ title, formation, rating, tags, colorTheme, action }: { 
   const isEmerald = colorTheme === "emerald";
   
   return (
-    <div className="bg-[#12141a] border border-white/5 rounded-lg flex flex-col overflow-hidden hover:border-white/10 transition-colors shadow-xl group">
+    <div className="bg-card border border-border rounded-lg flex flex-col overflow-hidden hover:border-foreground/20 transition-colors shadow-xl group">
       <div className="p-5 pb-2">
         <div className="flex justify-between items-start mb-2">
-          <span className="text-[10px] font-bold tracking-widest uppercase text-white/50">{formation}</span>
+          <span className="text-[10px] font-bold tracking-widest uppercase text-muted-foreground">{formation}</span>
           <div className="flex items-center gap-1">
-            <Star className="w-3 h-3 text-white fill-white" />
+            <Star className="w-3 h-3 text-foreground fill-foreground" />
             <span className="text-xs font-bold">{rating}</span>
           </div>
         </div>
@@ -150,35 +150,35 @@ function TrendingCard({ title, formation, rating, tags, colorTheme, action }: { 
       </div>
       
       {/* Mini Pitch Area */}
-      <div className="relative h-40 bg-[#0d0f14] mx-5 mb-4 rounded-md border border-white/5 overflow-hidden flex items-center justify-center">
+      <div className="relative h-40 bg-background mx-5 mb-4 rounded-md border border-border overflow-hidden flex items-center justify-center">
         <div className={`absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] ${isEmerald ? 'from-emerald-500/10' : colorTheme === 'indigo' ? 'from-indigo-500/10' : 'from-rose-500/10'} to-transparent opacity-50`} />
         {/* Simple grid bg */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:10px_10px]" />
         
-        <svg viewBox="0 0 100 60" className="w-3/4 h-3/4 opacity-20">
-          <rect x="0" y="0" width="100" height="60" fill="none" stroke="white" strokeWidth="0.5" />
-          <line x1="50" y1="0" x2="50" y2="60" stroke="white" strokeWidth="0.5" />
-          <circle cx="50" cy="30" r="10" fill="none" stroke="white" strokeWidth="0.5" />
-          <rect x="0" y="15" width="15" height="30" fill="none" stroke="white" strokeWidth="0.5" />
-          <rect x="85" y="15" width="15" height="30" fill="none" stroke="white" strokeWidth="0.5" />
+        <svg viewBox="0 0 100 60" className="w-3/4 h-3/4 opacity-20 text-foreground">
+          <rect x="0" y="0" width="100" height="60" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          <line x1="50" y1="0" x2="50" y2="60" stroke="currentColor" strokeWidth="0.5" />
+          <circle cx="50" cy="30" r="10" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          <rect x="0" y="15" width="15" height="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
+          <rect x="85" y="15" width="15" height="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
         </svg>
       </div>
 
       <div className="px-5 pb-5 flex flex-col flex-1 justify-end">
         <div className="flex gap-2 mb-4">
           {tags.map(tag => (
-            <span key={tag} className="px-2 py-1 bg-[#1a1d25] rounded text-[9px] uppercase font-bold tracking-widest text-slate-300">
+            <span key={tag} className="px-2 py-1 bg-foreground/5 rounded text-[9px] uppercase font-bold tracking-widest text-muted-foreground">
               {tag}
             </span>
           ))}
         </div>
         
         {action === "use" ? (
-          <Button className="w-full bg-[#162a22] hover:bg-[#1a382b] border border-emerald-500/30 text-[10px] uppercase font-bold tracking-widest text-emerald-400 gap-2">
+          <Button className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-[10px] uppercase font-bold tracking-widest text-emerald-500 gap-2">
             Use This Tactic <Download className="w-3 h-3" />
           </Button>
         ) : (
-          <Button variant="outline" className="w-full border-white/5 hover:bg-white/5 text-[10px] uppercase font-bold tracking-widest gap-2 bg-[#0d0f14]">
+          <Button variant="outline" className="w-full border-border hover:bg-foreground/5 text-[10px] uppercase font-bold tracking-widest gap-2 bg-background">
             View Details <Eye className="w-3 h-3" />
           </Button>
         )}
@@ -189,7 +189,7 @@ function TrendingCard({ title, formation, rating, tags, colorTheme, action }: { 
 
 function FilterDropdown({ label, solid }: { label: string, solid?: boolean }) {
   return (
-    <button className={`flex items-center gap-3 px-4 py-2 ${solid ? 'bg-[#12141a]' : 'bg-[#0d0f14]'} border border-white/5 hover:bg-white/5 rounded transition-colors text-[11px] font-bold uppercase tracking-widest`}>
+    <button className={`flex items-center gap-3 px-4 py-2 ${solid ? 'bg-card' : 'bg-background'} border border-border hover:bg-foreground/5 rounded transition-colors text-[11px] font-bold uppercase tracking-widest`}>
       {label}
       <ChevronDown className="w-3 h-3 text-muted-foreground" />
     </button>
@@ -198,15 +198,15 @@ function FilterDropdown({ label, solid }: { label: string, solid?: boolean }) {
 
 function StandardCard({ title, desc, rating, tag, dots }: { title: string, desc: string, rating: number, tag: string, dots: number[][] }) {
   return (
-    <div className="bg-[#12141a] border border-white/5 rounded-lg flex flex-col overflow-hidden hover:border-white/10 transition-colors shadow-lg">
-      <div className="h-40 bg-[#0d0f14] border-b border-white/5 relative flex items-center justify-center p-4">
+    <div className="bg-card border border-border rounded-lg flex flex-col overflow-hidden hover:border-foreground/20 transition-colors shadow-lg">
+      <div className="h-40 bg-background border-b border-border relative flex items-center justify-center p-4">
         {/* Faint crosshair bg like the reference */}
         <div className="absolute inset-0 flex items-center justify-center opacity-10">
-          <div className="w-full h-px bg-white/50" />
-          <div className="h-full w-px bg-white/50 absolute" />
+          <div className="w-full h-px bg-foreground/50" />
+          <div className="h-full w-px bg-foreground/50 absolute" />
         </div>
-        <div className="absolute w-8 h-8 rounded border border-white/10 flex items-center justify-center opacity-20 bg-[#12141a]">
-          <svg viewBox="0 0 24 24" className="w-4 h-4 text-white"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+        <div className="absolute w-8 h-8 rounded border border-border flex items-center justify-center opacity-20 bg-card">
+          <svg viewBox="0 0 24 24" className="w-4 h-4 text-foreground"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
         </div>
         
         {/* Geometric representation of formation */}
@@ -230,17 +230,17 @@ function StandardCard({ title, desc, rating, tag, dots }: { title: string, desc:
         <div className="flex justify-between items-center">
           <h4 className="text-[11px] font-black tracking-widest uppercase">{title}</h4>
           <div className="flex items-center gap-1">
-            <Star className="w-2 h-2 text-white fill-white" />
+            <Star className="w-2 h-2 text-foreground fill-foreground" />
             <span className="text-[10px] font-bold">{rating}</span>
           </div>
         </div>
         <p className="text-[10px] text-muted-foreground leading-relaxed">{desc}</p>
         <div className="mt-2">
-          <span className="px-2 py-1 bg-[#1a1d25] rounded text-[8px] uppercase font-bold tracking-widest text-slate-300">
+          <span className="px-2 py-1 bg-foreground/5 rounded text-[8px] uppercase font-bold tracking-widest text-muted-foreground">
             {tag}
           </span>
         </div>
-        <Button variant="outline" className="w-full mt-4 border-white/5 hover:bg-white/5 text-[9px] uppercase font-bold tracking-widest bg-[#0d0f14] h-8">
+        <Button variant="outline" className="w-full mt-4 border-border hover:bg-foreground/5 text-[9px] uppercase font-bold tracking-widest bg-background h-8">
           Use Tactic
         </Button>
       </div>
