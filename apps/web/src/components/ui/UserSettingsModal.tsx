@@ -102,27 +102,7 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange }: U
                 </div>
               </div>
 
-              {/* Integrations */}
-              <div className="pt-6 border-t border-white/5">
-                <h4 className="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-4">Connections</h4>
-                
-                <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-[#12141a]">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded bg-[#171a21] border border-white/10 flex items-center justify-center">
-                      <div className="w-4 h-4 rounded-full border-2 border-white/50 relative">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white/50 rounded-full" />
-                      </div>
-                    </div>
-                    <div>
-                      <h5 className="text-sm font-bold text-white">Steam / Football Manager</h5>
-                      <p className="text-xs text-white/40">Connect to seamlessly import tactics directly from the game.</p>
-                    </div>
-                  </div>
-                  <button className="px-4 py-2 rounded-lg bg-indigo-500/10 text-indigo-400 text-[10px] font-bold uppercase tracking-widest hover:bg-indigo-500/20 transition-colors">
-                    Connect
-                  </button>
-                </div>
-              </div>
+
               
               {/* Save Button */}
               <div className="flex justify-end pt-4">
@@ -133,10 +113,92 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange }: U
             </div>
           )}
           {activeTab === 'notifications' && (
-            <div>
-              <h3 className="text-xl font-black text-white mb-2">Notifications</h3>
-              <p className="text-sm text-white/50">Activity feed and notification preferences.</p>
-              {/* Placeholder for Sub-task 3 */}
+            <div className="flex flex-col gap-8 animate-fade-in pb-8">
+              <div>
+                <h3 className="text-xl font-black text-white mb-2">Notifications</h3>
+                <p className="text-sm text-white/50">Activity feed and notification preferences.</p>
+              </div>
+
+              {/* Preferences */}
+              <div className="flex flex-col gap-4">
+                <h4 className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Preferences</h4>
+                
+                <div className="bg-[#12141a] border border-white/5 rounded-xl overflow-hidden">
+                  <div className="flex items-center justify-between p-4 border-b border-white/5">
+                    <div>
+                      <h5 className="text-sm font-bold text-white mb-0.5">Tactical Analysis Alerts</h5>
+                      <p className="text-[10px] text-white/40">Get notified when AI finishes analyzing your tactic.</p>
+                    </div>
+                    <div className="w-10 h-5 rounded-full bg-emerald-500 relative cursor-pointer transition-colors">
+                      <div className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-[#0a0c10] shadow transition-transform" />
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 border-b border-white/5">
+                    <div>
+                      <h5 className="text-sm font-bold text-white mb-0.5">Community Comments</h5>
+                      <p className="text-[10px] text-white/40">Receive updates when someone comments on your published tactics.</p>
+                    </div>
+                    <div className="w-10 h-5 rounded-full bg-white/10 relative cursor-pointer transition-colors">
+                      <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white/50 shadow transition-transform" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4">
+                    <div>
+                      <h5 className="text-sm font-bold text-white mb-0.5">System Updates</h5>
+                      <p className="text-[10px] text-white/40">News about new engine versions and features.</p>
+                    </div>
+                    <div className="w-10 h-5 rounded-full bg-emerald-500 relative cursor-pointer transition-colors">
+                      <div className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-[#0a0c10] shadow transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Activity Feed */}
+              <div className="flex flex-col gap-4 pt-4 border-t border-white/5">
+                <h4 className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Recent Activity</h4>
+                
+                <div className="flex flex-col gap-3">
+                  <div className="p-4 rounded-xl bg-indigo-500/5 border border-indigo-500/10 flex gap-4 items-start">
+                    <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0">
+                      <Bell className="w-4 h-4 text-indigo-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-white font-medium leading-relaxed">
+                        <span className="font-bold">v2.1 Kinetic Engine</span> is now live! Check out the new pitch visualizations.
+                      </p>
+                      <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-2 block">2 hours ago</span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex gap-4 items-start opacity-70">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                      <Settings className="w-4 h-4 text-emerald-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-white font-medium leading-relaxed">
+                        Your tactic <span className="font-bold text-emerald-400">Gegenpress 4-2-3-1</span> was successfully exported.
+                      </p>
+                      <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-2 block">Yesterday</span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/5 flex gap-4 items-start opacity-70">
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                      <User className="w-4 h-4 text-emerald-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-white font-medium leading-relaxed">
+                        Welcome to TacticLab! Your profile has been created.
+                      </p>
+                      <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest mt-2 block">3 days ago</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           )}
           {activeTab === 'settings' && (
