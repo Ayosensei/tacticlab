@@ -4,6 +4,7 @@ import "./globals.css";
 import { TopNav } from "@/components/ui/TopNav";
 import { Sidebar } from "@/components/ui/Sidebar";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,10 +19,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: "dark" }} suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "bg-background text-foreground overflow-hidden h-screen flex flex-col")}>
-        <TopNav />
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <TopNav />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
