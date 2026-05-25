@@ -202,10 +202,80 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange }: U
             </div>
           )}
           {activeTab === 'settings' && (
-            <div>
-              <h3 className="text-xl font-black text-white mb-2">Settings</h3>
-              <p className="text-sm text-white/50">App behavior and UI preferences.</p>
-              {/* Placeholder for Sub-task 4 */}
+            <div className="flex flex-col gap-8 animate-fade-in pb-8">
+              <div>
+                <h3 className="text-xl font-black text-white mb-2">Settings</h3>
+                <p className="text-sm text-white/50">App behavior and UI preferences.</p>
+              </div>
+
+              {/* Appearance */}
+              <div className="flex flex-col gap-4">
+                <h4 className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Appearance</h4>
+                
+                <div className="bg-[#12141a] border border-white/5 rounded-xl overflow-hidden p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="text-sm font-bold text-white mb-0.5">Theme</h5>
+                      <p className="text-[10px] text-white/40">Switch between light and dark mode.</p>
+                    </div>
+                    
+                    {/* Theme Switch */}
+                    <div className="flex items-center bg-[#0a0c10] border border-white/5 rounded-lg p-1">
+                      <button className="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest bg-[#1a1d25] text-white shadow-sm transition-all">
+                        Dark
+                      </button>
+                      <button className="px-3 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-white transition-all">
+                        Light
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[#12141a] border border-white/5 rounded-xl overflow-hidden p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="text-sm font-bold text-white mb-0.5">Compact View</h5>
+                      <p className="text-[10px] text-white/40">Reduce padding to fit more information on screen.</p>
+                    </div>
+                    <div className="w-10 h-5 rounded-full bg-white/10 relative cursor-pointer transition-colors">
+                      <div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white/50 shadow transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Engine Preferences */}
+              <div className="flex flex-col gap-4 pt-4 border-t border-white/5">
+                <h4 className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Tactical Engine</h4>
+                
+                <div className="bg-[#12141a] border border-white/5 rounded-xl overflow-hidden p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="text-sm font-bold text-white mb-0.5">Auto-Run Analysis</h5>
+                      <p className="text-[10px] text-white/40">Automatically recalculate tactical analysis when a player is moved or a role is changed.</p>
+                    </div>
+                    <div className="w-10 h-5 rounded-full bg-emerald-500 relative cursor-pointer transition-colors">
+                      <div className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-[#0a0c10] shadow transition-transform" />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-[#12141a] border border-white/5 rounded-xl overflow-hidden p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h5 className="text-sm font-bold text-white mb-0.5">Default Export Format</h5>
+                      <p className="text-[10px] text-white/40">Choose the format used when clicking Export Tactic.</p>
+                    </div>
+                    
+                    <select className="bg-[#0a0c10] border border-white/10 rounded-lg px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white focus:outline-none focus:border-emerald-500/50">
+                      <option>.JSON (TacticLab)</option>
+                      <option>.FMF (Football Manager)</option>
+                      <option>Image (PNG)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
             </div>
           )}
         </div>
