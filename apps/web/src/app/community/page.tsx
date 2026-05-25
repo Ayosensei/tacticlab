@@ -5,15 +5,18 @@ import { Button } from "@/components/ui/button";
 
 export default function CommunityPage() {
   return (
-    <div className="relative h-full w-full bg-background overflow-y-auto text-foreground">
-      {/* Coming Soon Watermark */}
-      <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none bg-black/60 backdrop-blur-sm">
-        <div className="transform -rotate-12 border-8 border-border p-8 rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]">
-          <h1 className="text-6xl md:text-8xl font-black text-muted-foreground/40 uppercase tracking-[0.2em] drop-shadow-2xl">Coming Soon</h1>
+    <div className="h-full w-full bg-background overflow-y-auto text-foreground">
+      <div className="relative min-h-full">
+        {/* Coming Soon Watermark */}
+        <div className="absolute inset-0 z-50 pointer-events-none bg-black/60 backdrop-blur-sm">
+          <div className="sticky top-0 h-[calc(100vh-80px)] w-full flex items-center justify-center">
+            <div className="transform -rotate-12 border-8 border-border p-8 rounded-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)]">
+              <h1 className="text-6xl md:text-8xl font-black text-muted-foreground/40 uppercase tracking-[0.2em] drop-shadow-2xl">Coming Soon</h1>
+            </div>
+          </div>
         </div>
-      </div>
-      {/* Page Header */}
-      <div className="max-w-7xl mx-auto px-8 pt-12 pb-8">
+        {/* Page Header */}
+        <div className="max-w-7xl mx-auto px-8 pt-12 pb-8 relative z-10">
         <div className="flex items-end justify-between mb-16">
           <div className="flex flex-col gap-2">
             <h1 className="text-4xl font-black uppercase tracking-[0.1em]">Tactical Library</h1>
@@ -129,6 +132,7 @@ export default function CommunityPage() {
           />
         </div>
       </div>
+    </div>
     </div>
   );
 }
