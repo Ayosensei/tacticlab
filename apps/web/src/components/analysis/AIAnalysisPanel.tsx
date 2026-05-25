@@ -71,7 +71,7 @@ export function AIAnalysisPanel() {
   if (!analysis) {
     return (
       <aside
-        className="border-l border-white/5 bg-[#0a0c10] flex flex-col h-[calc(100vh-80px)] shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] items-center justify-center p-8 text-center relative"
+        className="border-l border-border bg-background flex flex-col h-[calc(100vh-80px)] shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] items-center justify-center p-8 text-center relative"
         style={{ width }}
       >
         {dragHandle}
@@ -97,19 +97,19 @@ export function AIAnalysisPanel() {
 
   return (
     <aside
-      className="border-l border-white/5 bg-[#0a0c10] flex flex-col h-[calc(100vh-80px)] shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] relative"
+      className="border-l border-border bg-background flex flex-col h-[calc(100vh-80px)] shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] relative"
       style={{ width }}
     >
       {dragHandle}
 
       <div className="flex flex-col h-full">
         {/* Header */}
-        <div className="p-6 pb-4 border-b border-white/5 shrink-0">
+        <div className="p-6 pb-4 border-b border-border shrink-0">
           <div className="flex justify-between items-start mb-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <Navigation className="w-4 h-4 text-indigo-400" />
-                <h2 className="text-white font-black text-lg tracking-[0.1em] uppercase">Analysis</h2>
+                <Navigation className="w-4 h-4 text-indigo-500" />
+                <h2 className="text-foreground font-black text-lg tracking-[0.1em] uppercase">Analysis</h2>
               </div>
               <span className={cn("text-[9px] uppercase font-bold tracking-[0.15em]", isLoading ? "text-amber-400 opacity-100 animate-pulse" : "text-muted-foreground opacity-50")}>
                 {isLoading ? "Recalculating..." : "Tactical Engine v2"}
@@ -121,22 +121,22 @@ export function AIAnalysisPanel() {
           </div>
 
           {/* Tabs */}
-          <div className="flex bg-[#12141a] p-1 rounded-lg border border-white/5">
+          <div className="flex bg-card p-1 rounded-lg border border-border">
             <button
               onClick={() => setActiveTab('overview')}
-              className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[10px] font-bold tracking-widest uppercase rounded transition-colors", activeTab === 'overview' ? "bg-[#1a1d25] text-white shadow-sm" : "text-muted-foreground hover:text-white")}
+              className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[10px] font-bold tracking-widest uppercase rounded transition-colors", activeTab === 'overview' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
             >
               <Activity className="w-3 h-3" /> Overview
             </button>
             <button
               onClick={() => setActiveTab('structure')}
-              className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[10px] font-bold tracking-widest uppercase rounded transition-colors", activeTab === 'structure' ? "bg-[#1a1d25] text-white shadow-sm" : "text-muted-foreground hover:text-white")}
+              className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[10px] font-bold tracking-widest uppercase rounded transition-colors", activeTab === 'structure' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
             >
               <Layers className="w-3 h-3" /> Structure
             </button>
             <button
               onClick={() => setActiveTab('feedback')}
-              className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[10px] font-bold tracking-widest uppercase rounded transition-colors", activeTab === 'feedback' ? "bg-[#1a1d25] text-white shadow-sm" : "text-muted-foreground hover:text-white")}
+              className={cn("flex-1 flex items-center justify-center gap-1.5 py-1.5 text-[10px] font-bold tracking-widest uppercase rounded transition-colors", activeTab === 'feedback' ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
             >
               <MessageSquare className="w-3 h-3" /> Feedback
             </button>
@@ -150,15 +150,15 @@ export function AIAnalysisPanel() {
           {activeTab === 'overview' && (
             <div className="flex flex-col gap-6 animate-fade-in">
               {tacticalNarrative && (
-                <div className="bg-gradient-to-br from-[#12141a] to-[#0d0f14] p-4 rounded-xl border border-white/8 shadow-lg">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-indigo-400 mb-2 block">Tactical Summary</span>
-                  <p className="text-[11px] text-slate-300 leading-relaxed font-medium">{tacticalNarrative}</p>
+                <div className="bg-gradient-to-br from-card to-background p-4 rounded-xl border border-border shadow-lg">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-indigo-500 mb-2 block">Tactical Summary</span>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">{tacticalNarrative}</p>
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-4">
                 <Tooltip text="Rates how effective your tactic is with the ball. Driven by mentality, playmakers, duty balance and channel spread.">
-                  <div className="bg-[#12141a] p-4 rounded-xl border border-white/5 flex flex-col items-center justify-center shadow-lg hover:border-emerald-500/30 transition-colors">
+                  <div className="bg-card p-4 rounded-xl border border-border flex flex-col items-center justify-center shadow-lg hover:border-emerald-500/30 transition-colors">
                     <CircularProgress 
                       value={inPossessionRating} 
                       icon={Swords} 
@@ -170,7 +170,7 @@ export function AIAnalysisPanel() {
                   </div>
                 </Tooltip>
                 <Tooltip text="Rates how effective your tactic is without the ball. Driven by rest defence, pivots, pressing shape, and defensive line.">
-                  <div className="bg-[#12141a] p-4 rounded-xl border border-white/5 flex flex-col items-center justify-center shadow-lg hover:border-indigo-500/30 transition-colors">
+                  <div className="bg-card p-4 rounded-xl border border-border flex flex-col items-center justify-center shadow-lg hover:border-indigo-500/30 transition-colors">
                     <CircularProgress 
                       value={outOfPossessionRating} 
                       icon={Shield} 
@@ -185,23 +185,23 @@ export function AIAnalysisPanel() {
 
               <div className="grid grid-cols-2 gap-3">
                 <Tooltip text="How aggressively this tactic attacks space. Driven by attack duties, wide overlaps, and mentality.">
-                  <div className="bg-[#12141a] p-3 rounded-xl border border-white/5 flex flex-col gap-2 hover:border-white/10 transition-colors">
+                  <div className="bg-card p-3 rounded-xl border border-border flex flex-col gap-2 hover:border-foreground/10 transition-colors">
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-emerald-400">Penetration</span>
-                      <span className="text-sm font-black text-white">{Math.round(penetration)}</span>
+                      <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500">Penetration</span>
+                      <span className="text-sm font-black text-foreground">{Math.round(penetration)}</span>
                     </div>
-                    <div className="h-1 w-full bg-black/50 rounded-full overflow-hidden">
+                    <div className="h-1 w-full bg-foreground/10 rounded-full overflow-hidden">
                       <div className="h-full bg-emerald-500 transition-all duration-1000" style={{ width: `${penetration}%` }} />
                     </div>
                   </div>
                 </Tooltip>
                 <Tooltip text="How well this tactic protects space. Driven by defend duties, pivots, and rest defence structure.">
-                  <div className="bg-[#12141a] p-3 rounded-xl border border-white/5 flex flex-col gap-2 hover:border-white/10 transition-colors">
+                  <div className="bg-card p-3 rounded-xl border border-border flex flex-col gap-2 hover:border-foreground/10 transition-colors">
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-indigo-400">Solidity</span>
-                      <span className="text-sm font-black text-white">{Math.round(solidity)}</span>
+                      <span className="text-[9px] font-black uppercase tracking-widest text-indigo-500">Solidity</span>
+                      <span className="text-sm font-black text-foreground">{Math.round(solidity)}</span>
                     </div>
-                    <div className="h-1 w-full bg-black/50 rounded-full overflow-hidden">
+                    <div className="h-1 w-full bg-foreground/10 rounded-full overflow-hidden">
                       <div className="h-full bg-indigo-500 transition-all duration-1000" style={{ width: `${solidity}%` }} />
                     </div>
                   </div>
@@ -215,35 +215,35 @@ export function AIAnalysisPanel() {
             <div className="flex flex-col gap-6 animate-fade-in">
               <div className="grid grid-cols-2 gap-3">
                 <Tooltip text="Players staying back while in possession. Aim for at least 4 to resist counter-attacks.">
-                  <div className="bg-[#12141a] p-4 rounded-xl border border-white/5 flex flex-col gap-1 items-center justify-center text-center">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5 mb-1">
+                  <div className="bg-card p-4 rounded-xl border border-border flex flex-col gap-1 items-center justify-center text-center">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5 mb-1">
                       <ShieldAlert className="w-3 h-3 text-emerald-500" /> Rest Defence
                     </span>
-                    <span className="text-3xl font-black text-white tracking-tighter">{restDefenceStructure}</span>
+                    <span className="text-3xl font-black text-foreground tracking-tighter">{restDefenceStructure}</span>
                   </div>
                 </Tooltip>
                 <Tooltip text="Deep player structure (Defenders–Pivots). A 3-2 or 4-1 is ideal for playing through a press.">
-                  <div className="bg-[#12141a] p-4 rounded-xl border border-white/5 flex flex-col gap-1 items-center justify-center text-center">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5 mb-1">
-                      <Zap className="w-3 h-3 text-indigo-400" /> Build-Up
+                  <div className="bg-card p-4 rounded-xl border border-border flex flex-col gap-1 items-center justify-center text-center">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5 mb-1">
+                      <Zap className="w-3 h-3 text-indigo-500" /> Build-Up
                     </span>
-                    <span className="text-3xl font-black text-white tracking-tighter">{buildUpStructure}</span>
+                    <span className="text-3xl font-black text-foreground tracking-tighter">{buildUpStructure}</span>
                   </div>
                 </Tooltip>
               </div>
 
               <Tooltip text="The D/S/A duty ratio. Aim for ~4 Defend, ~4 Support, ~3 Attack for a balanced tactic.">
-                <div className="bg-[#12141a] p-4 rounded-xl border border-white/5 flex flex-col gap-3">
+                <div className="bg-card p-4 rounded-xl border border-border flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Duty Balance</span>
                     <div className="flex gap-2 text-[9px] font-black uppercase tracking-widest">
-                      <span className="text-slate-400">{dutyBalance.defend}D</span>
-                      <span className="text-emerald-400">{dutyBalance.support}S</span>
-                      <span className="text-amber-400">{dutyBalance.attack}A</span>
+                      <span className="text-muted-foreground">{dutyBalance.defend}D</span>
+                      <span className="text-emerald-500">{dutyBalance.support}S</span>
+                      <span className="text-amber-500">{dutyBalance.attack}A</span>
                     </div>
                   </div>
-                  <div className="flex h-2 w-full rounded-full overflow-hidden border border-white/5">
-                    <div className="bg-slate-600 transition-all duration-500" style={{ width: `${(dutyBalance.defend / 11) * 100}%` }} />
+                  <div className="flex h-2 w-full rounded-full overflow-hidden border border-border">
+                    <div className="bg-muted-foreground/50 transition-all duration-500" style={{ width: `${(dutyBalance.defend / 11) * 100}%` }} />
                     <div className="bg-emerald-500 transition-all duration-500" style={{ width: `${(dutyBalance.support / 11) * 100}%` }} />
                     <div className="bg-amber-500 transition-all duration-500" style={{ width: `${(dutyBalance.attack / 11) * 100}%` }} />
                   </div>
@@ -294,21 +294,21 @@ export function AIAnalysisPanel() {
                         )}>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              {isPositive ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> : 
-                               isWarning ? <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" /> : 
-                               <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />}
-                              <span className="text-[10px] font-black uppercase tracking-widest text-white">{s.label}</span>
+                              {isPositive ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" /> : 
+                               isWarning ? <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" /> : 
+                               <AlertTriangle className="w-3.5 h-3.5 text-rose-500 shrink-0" />}
+                              <span className="text-[10px] font-black uppercase tracking-widest text-foreground">{s.label}</span>
                             </div>
                             <span className={cn(
                               "text-[9px] font-bold px-1.5 py-0.5 rounded",
-                              isPositive ? "bg-emerald-500/20 text-emerald-400" :
-                              isWarning ? "bg-amber-500/20 text-amber-400" :
-                              "bg-rose-500/20 text-rose-400"
+                              isPositive ? "bg-emerald-500/20 text-emerald-500" :
+                              isWarning ? "bg-amber-500/20 text-amber-500" :
+                              "bg-rose-500/20 text-rose-500"
                             )}>
                               {s.score}/100
                             </span>
                           </div>
-                          <p className="text-[9.5px] text-slate-400 leading-relaxed font-medium pl-5">{s.message}</p>
+                          <p className="text-[9.5px] text-muted-foreground leading-relaxed font-medium pl-5">{s.message}</p>
                         </div>
                       );
                     })}
@@ -321,11 +321,11 @@ export function AIAnalysisPanel() {
                   <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">General Feedback</h3>
                   <div className="flex flex-col gap-2">
                     {suggestions.map((s: any, i: number) => (
-                      <div key={i} className="bg-[#12141a] p-3 rounded-lg border border-white/5 flex gap-3 hover:border-white/10 transition-colors">
+                      <div key={i} className="bg-card p-3 rounded-lg border border-border flex gap-3 hover:border-foreground/10 transition-colors">
                         {s.severity === "critical" && <AlertTriangle className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />}
                         {s.severity === "warning"  && <Info          className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />}
-                        {s.severity === "positive" && <CheckCircle2  className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />}
-                        <p className="text-[10px] text-slate-300 leading-relaxed font-medium">{s.message}</p>
+                        {s.severity === "positive" && <CheckCircle2  className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />}
+                        <p className="text-[10px] text-muted-foreground leading-relaxed font-medium">{s.message}</p>
                       </div>
                     ))}
                   </div>
@@ -352,7 +352,7 @@ function CircularProgress({ value, icon: Icon, label, colorClass, gradientFrom, 
     <div className="flex flex-col items-center gap-3">
       <div className="relative w-20 h-20 flex items-center justify-center">
         <svg className="w-full h-full transform -rotate-90 absolute inset-0" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r={radius} stroke="currentColor" strokeWidth="6" fill="transparent" className="text-white/5" />
+          <circle cx="50" cy="50" r={radius} stroke="currentColor" strokeWidth="6" fill="transparent" className="text-foreground/5" />
           <circle 
             cx="50" cy="50" r={radius} 
             stroke={`url(#${gradientId})`} 
@@ -371,7 +371,7 @@ function CircularProgress({ value, icon: Icon, label, colorClass, gradientFrom, 
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <Icon className={cn("w-3.5 h-3.5 mb-0.5 opacity-80", colorClass)} />
-          <span className="text-xl font-black text-white leading-none">{Math.round(value)}</span>
+          <span className="text-xl font-black text-foreground leading-none">{Math.round(value)}</span>
         </div>
       </div>
       <span className={cn("text-[9px] font-black uppercase tracking-widest text-center", colorClass)}>{label}</span>
@@ -381,14 +381,14 @@ function CircularProgress({ value, icon: Icon, label, colorClass, gradientFrom, 
 
 function ChannelOccupationPitch({ occupation }: { occupation: any }) {
   return (
-    <div className="relative w-full aspect-[4/3] bg-[#050608] border border-white/10 rounded-lg overflow-hidden flex">
+    <div className="relative w-full aspect-[4/3] bg-background border border-border rounded-lg overflow-hidden flex">
       {/* Background pitch markings */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute inset-0 border border-white" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-1/4 border border-t-0 border-white" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-1/4 border border-b-0 border-white" />
-        <div className="absolute top-1/2 left-0 w-full h-px bg-white" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 border border-white rounded-full" />
+        <div className="absolute inset-0 border border-foreground" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-1/4 border border-t-0 border-foreground" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/3 h-1/4 border border-b-0 border-foreground" />
+        <div className="absolute top-1/2 left-0 w-full h-px bg-foreground" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 border border-foreground rounded-full" />
       </div>
 
       <MiniPitchLane label="L" value={occupation.wideLeft} max={3} />
@@ -406,7 +406,7 @@ function MiniPitchLane({ label, value, max, isHalfSpace = false }: { label: stri
   const isOvercrowded = value > 2;
   
   return (
-    <div className={cn("flex-1 h-full relative border-r border-white/5 last:border-r-0 flex flex-col justify-end items-center pb-2", isHalfSpace ? "bg-[#ffffff03]" : "")}>
+    <div className={cn("flex-1 h-full relative border-r border-border last:border-r-0 flex flex-col justify-end items-center pb-2", isHalfSpace ? "bg-foreground/5" : "")}>
       <div
         className={cn(
           "absolute bottom-0 left-0 w-full transition-all duration-700 ease-out", 
@@ -416,7 +416,7 @@ function MiniPitchLane({ label, value, max, isHalfSpace = false }: { label: stri
       />
       <div className={cn(
         "z-10 flex flex-col items-center justify-center p-1 rounded backdrop-blur-sm",
-        isEmpty ? "bg-rose-500/10 text-rose-500" : isOvercrowded ? "bg-amber-500/10 text-amber-400" : "bg-black/40 text-white"
+        isEmpty ? "bg-rose-500/10 text-rose-500" : isOvercrowded ? "bg-amber-500/10 text-amber-500" : "bg-background/40 text-foreground"
       )}>
         <span className="text-[10px] font-black leading-none mb-1">{value}</span>
         <span className="text-[7px] font-black uppercase opacity-70 leading-none">{label}</span>
@@ -451,9 +451,9 @@ function Tooltip({ children, text, wide = false }: { children: React.ReactNode; 
       {children}
       <div
         ref={tipRef}
-        className="fixed z-[9999] p-2 bg-[#0a0c10] border border-white/10 rounded shadow-2xl opacity-0 transition-opacity duration-150 pointer-events-none"
+        className="fixed z-[9999] p-2 bg-background border border-border rounded shadow-2xl opacity-0 transition-opacity duration-150 pointer-events-none"
       >
-        <p className="text-[10px] text-slate-300 font-medium leading-relaxed">{text}</p>
+        <p className="text-[10px] text-muted-foreground font-medium leading-relaxed">{text}</p>
       </div>
     </div>
   );
