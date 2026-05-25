@@ -100,16 +100,16 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
     return { x: p.x, y: p.y };
   };
 
-  if (!isMounted) return <div className="h-full aspect-[68/105] bg-[#12141a] rounded-lg animate-pulse" />;
+  if (!isMounted) return <div className="h-full aspect-[68/105] bg-card rounded-lg animate-pulse" />;
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
       <div
         ref={pitchRef}
-        className="relative flex-none aspect-[68/105] w-full max-w-[800px] mx-auto border border-white/10 bg-[#12141a] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group mt-8 mb-20"
+        className="relative flex-none aspect-[68/105] w-full max-w-[800px] mx-auto border border-border bg-card shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group mt-8 mb-20"
       >
         {/* Pitch Greenish Dark Background */}
-        <div className="absolute inset-0 bg-[#12141a] rounded-lg overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-card rounded-lg overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.06)_0%,transparent_100%)]" />
         </div>
 
@@ -118,14 +118,14 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
           viewBox="-1 -1 70 107"
           className="absolute inset-0 w-full h-full pointer-events-none opacity-40"
         >
-          <g stroke="rgba(255,255,255,0.4)" strokeWidth="0.2" fill="none">
+          <g style={{ stroke: 'var(--foreground)' }} strokeWidth="0.2" fill="none">
             {/* Outer line */}
             <rect x="0" y="0" width="68" height="105" />
 
             {/* Halfway line */}
             <line x1="0" y1="52.5" x2="68" y2="52.5" />
             <circle cx="34" cy="52.5" r="9.15" />
-            <circle cx="34" cy="52.5" r="0.4" fill="rgba(255,255,255,0.4)" />
+            <circle cx="34" cy="52.5" r="0.4" style={{ fill: 'var(--foreground)' }} />
 
             {/* Goal Area Top */}
             <rect x="13.84" y="0" width="40.32" height="16.5" />
@@ -138,8 +138,8 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
             <path d="M 26.69 88.5 A 9.15 9.15 0 0 1 41.31 88.5" />
 
             {/* Penalty spots and arcs */}
-            <circle cx="34" cy="11" r="0.4" fill="rgba(255,255,255,0.4)" />
-            <circle cx="34" cy="94" r="0.4" fill="rgba(255,255,255,0.4)" />
+            <circle cx="34" cy="11" r="0.4" style={{ fill: 'var(--foreground)' }} />
+            <circle cx="34" cy="94" r="0.4" style={{ fill: 'var(--foreground)' }} />
           </g>
         </svg>
 
@@ -324,7 +324,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
         {/* Top Formation Badge Dropdown */}
         <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-50">
           <div className="relative group/formation">
-            <button className="bg-[#12141a] hover:bg-[#1a1d25] transition-colors flex items-center justify-center min-w-[120px] h-[34px] px-4 rounded border border-white/5 gap-3 shadow-2xl">
+            <button className="bg-card hover:bg-foreground/5 transition-colors flex items-center justify-center min-w-[120px] h-[34px] px-4 rounded border border-border gap-3 shadow-2xl">
               <span className="text-[11px] font-black uppercase text-emerald-400 tracking-[0.2em]">
                 {currentTacticData.formation}
               </span>
@@ -334,14 +334,14 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
             {/* Simple CSS Dropdown Formations list */}
             {!readOnly && (
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 pointer-events-none group-hover/formation:opacity-100 group-hover/formation:pointer-events-auto transition-all duration-200">
-                <div className="bg-[#0a0c10] border border-white/10 rounded-md shadow-2xl flex flex-col p-1 w-48">
+                <div className="bg-background border border-border rounded-md shadow-2xl flex flex-col p-1 w-48">
                   {FORMATIONS.map(form => (
                     <button
                       key={form.id}
                       onClick={() => setFormation(form.id)}
                       className={`text-left px-3 py-2 text-[11px] font-bold uppercase tracking-widest rounded transition-colors ${currentTacticData.formation === form.name
-                          ? "bg-emerald-400/10 text-emerald-400"
-                          : "text-slate-300 hover:bg-white/5 hover:text-white"
+                          ? "bg-emerald-400/10 text-emerald-500"
+                          : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                         }`}
                     >
                       {form.name}
@@ -358,26 +358,26 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
           <div className="absolute bottom-4 right-4 z-50 flex flex-col gap-1.5 opacity-40 hover:opacity-100 transition-opacity">
             <button
               onClick={() => setShowLines(!showLines)}
-              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showLines ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
+              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showLines ? "bg-indigo-500/10 text-indigo-500 border-indigo-500/30" : "bg-card text-muted-foreground border-border hover:text-foreground"}`}
             >
               Chemistry Lines
             </button>
             <button
               onClick={() => setShowTriangles(!showTriangles)}
-              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showTriangles ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
+              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showTriangles ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30" : "bg-card text-muted-foreground border-border hover:text-foreground"}`}
             >
               Triangles
             </button>
             <button
               onClick={() => setShowClashes(!showClashes)}
               disabled={!showLines}
-              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showClashes ? "bg-rose-500/10 text-rose-400 border-rose-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"} ${!showLines ? "opacity-30 cursor-not-allowed" : ""}`}
+              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showClashes ? "bg-rose-500/10 text-rose-500 border-rose-500/30" : "bg-card text-muted-foreground border-border hover:text-foreground"} ${!showLines ? "opacity-30 cursor-not-allowed" : ""}`}
             >
               Show Clashes
             </button>
             <button
               onClick={() => setShowMovements(!showMovements)}
-              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showMovements ? "bg-amber-500/10 text-amber-400 border-amber-500/30" : "bg-[#12141a] text-slate-500 border-white/5 hover:text-white"}`}
+              className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showMovements ? "bg-amber-500/10 text-amber-500 border-amber-500/30" : "bg-card text-muted-foreground border-border hover:text-foreground"}`}
             >
               Movements
             </button>
@@ -387,23 +387,23 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
         {/* Hover Tooltip Overlay */}
         {hoveredOverlay && (
           <div
-            className="fixed z-[100] pointer-events-none w-64 bg-[#0a0c10] border border-white/10 rounded-xl shadow-2xl p-3 flex flex-col gap-1.5"
+            className="fixed z-[100] pointer-events-none w-64 bg-background border border-border rounded-xl shadow-2xl p-3 flex flex-col gap-1.5"
             style={{
               left: hoveredOverlay.x + 15,
               top: hoveredOverlay.y + 15
             }}
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[11px] font-black text-white uppercase tracking-widest truncate">{hoveredOverlay.label}</span>
-              <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded ${hoveredOverlay.score >= 80 ? "bg-emerald-500/20 text-emerald-400" :
-                  hoveredOverlay.score >= 60 ? "bg-indigo-500/20 text-indigo-400" :
-                    hoveredOverlay.score >= 40 ? "bg-amber-500/20 text-amber-400" :
-                      "bg-rose-500/20 text-rose-400"
+              <span className="text-[11px] font-black text-foreground uppercase tracking-widest truncate">{hoveredOverlay.label}</span>
+              <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded ${hoveredOverlay.score >= 80 ? "bg-emerald-500/20 text-emerald-500" :
+                  hoveredOverlay.score >= 60 ? "bg-indigo-500/20 text-indigo-500" :
+                    hoveredOverlay.score >= 40 ? "bg-amber-500/20 text-amber-500" :
+                      "bg-rose-500/20 text-rose-500"
                 }`}>
                 {hoveredOverlay.score}/100
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 leading-relaxed font-medium">
+            <p className="text-[10px] text-muted-foreground leading-relaxed font-medium">
               {hoveredOverlay.description}
             </p>
           </div>

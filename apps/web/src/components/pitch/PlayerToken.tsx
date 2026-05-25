@@ -91,13 +91,12 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
           <path
             d="M 20 20 L 35 10 C 40 15 60 15 65 10 L 80 20 L 80 40 L 70 40 L 70 90 L 30 90 L 30 40 L 20 40 Z"
             fill="#5b21b6"
-            stroke="rgba(255,255,255,0.2)"
+            style={{ stroke: 'var(--border)' }}
             strokeWidth="3"
             strokeLinejoin="round"
           />
         </svg>
         
-        {/* Polished Label Pill serving as Dropdown Trigger */}
         <button
           onPointerDown={(e) => { 
             e.stopPropagation(); 
@@ -107,18 +106,18 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
             setActiveSidebarTab("player_instructions");
           }}
           className={cn(
-            "absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-[#0d0f14]/90 backdrop-blur-md px-3 py-1.5 rounded-[12px] w-max border shadow-xl group/label transition-colors",
-            menuOpen ? "border-emerald-400/50" : "border-white/10 hover:border-emerald-400/30"
+            "absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-background/90 backdrop-blur-md px-3 py-1.5 rounded-[12px] w-max border shadow-xl group/label transition-colors",
+            menuOpen ? "border-emerald-500/50" : "border-border hover:border-emerald-500/30"
           )}
         >
-          <span className="text-xs font-black uppercase text-white tracking-widest leading-none">
+          <span className="text-xs font-black uppercase text-foreground tracking-widest leading-none">
             {getRoleAbbreviation(player.role)} - 
           </span>
           <span className={cn("text-xs font-black tracking-widest leading-none", getDutyColor(player.duty))}>
             {getDutyAbbreviation(player.duty)}
           </span>
           {!readOnly && (
-            <ChevronDown className={`w-3.5 h-3.5 ml-0.5 transition-transform ${menuOpen ? 'text-emerald-400 rotate-180' : 'text-white/30 group-hover/label:text-emerald-400'}`} />
+            <ChevronDown className={`w-3.5 h-3.5 ml-0.5 transition-transform ${menuOpen ? 'text-emerald-500 rotate-180' : 'text-muted-foreground/50 group-hover/label:text-emerald-500'}`} />
           )}
         </button>
 
@@ -126,10 +125,10 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
         {menuOpen && (
           <div 
             onPointerDown={(e) => e.stopPropagation()} // Prevent DnD dragging while using menu
-            className="absolute top-[calc(100%+42px)] left-1/2 -translate-x-1/2 w-56 bg-[#0a0c10] border border-white/10 rounded-lg shadow-2xl z-[100] flex flex-col overflow-hidden"
+            className="absolute top-[calc(100%+42px)] left-1/2 -translate-x-1/2 w-56 bg-background border border-border rounded-lg shadow-2xl z-[100] flex flex-col overflow-hidden"
           >
             {/* Duty Segmentation */}
-            <div className="flex bg-[#12141a] p-1 border-b border-white/5">
+            <div className="flex bg-card p-1 border-b border-border">
               {(Object.keys(ROLES_DB[player.role]?.duties || {}).length > 0 
                 ? Object.keys(ROLES_DB[player.role].duties) 
                 : DUTIES).map((duty: string) => (
@@ -142,8 +141,8 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
                   className={cn(
                     "flex-1 py-1.5 text-[11px] font-bold tracking-widest rounded transition-colors",
                     player.duty === duty 
-                      ? "bg-[#1a1d25] text-white shadow-sm" 
-                      : "text-muted-foreground hover:text-white"
+                      ? "bg-foreground/5 text-foreground shadow-sm" 
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {getDutyAbbreviation(duty)}
@@ -164,12 +163,12 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
                   className={cn(
                     "text-left px-3 py-2 text-[10px] font-bold uppercase tracking-widest rounded flex items-center justify-between transition-colors",
                     player.role === role 
-                      ? "bg-emerald-400/10 text-emerald-400" 
-                      : "text-slate-300 hover:bg-white/5 hover:text-white"
+                      ? "bg-emerald-500/10 text-emerald-500" 
+                      : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
                   )}
                 >
                   {role}
-                  {player.role === role && <Check className="w-3 h-3 text-emerald-400" />}
+                  {player.role === role && <Check className="w-3 h-3 text-emerald-500" />}
                 </button>
               ))}
             </div>
