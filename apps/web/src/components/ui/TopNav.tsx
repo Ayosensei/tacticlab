@@ -8,6 +8,7 @@ import { useTacticStore } from "@/store/tacticStore";
 import { downloadTacticJson } from "@/lib/exportTactic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { UserSettingsModal, ModalTab } from "@/components/ui/UserSettingsModal";
 
 const links = [
   { label: "Builder", href: "/builder" },
@@ -22,6 +23,13 @@ export function TopNav() {
   const [exported, setExported] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleDraft, setTitleDraft] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeModalTab, setActiveModalTab] = useState<ModalTab>("profile");
+
+  const openModal = (tab: ModalTab) => {
+    setActiveModalTab(tab);
+    setModalOpen(true);
+  };
 
   const handleExport = () => {
     downloadTacticJson(currentTactic);
@@ -119,13 +127,24 @@ export function TopNav() {
         </Button>
         
         <div className="flex items-center gap-4 text-muted-foreground">
-          <Bell className="w-5 h-5 hover:text-foreground cursor-pointer" />
-          <Settings className="w-5 h-5 hover:text-foreground cursor-pointer" />
-          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/10 cursor-pointer hover:bg-white/20">
+          <button onClick={() => openModal('notifications')} className="hover:text-foreground cursor-pointer transition-colors">
+            <Bell className="w-5 h-5" />
+          </button>
+          <button onClick={() => openModal('settings')} className="hover:text-foreground cursor-pointer transition-colors">
+            <Settings className="w-5 h-5" />
+          </button>
+          <button onClick={() => openModal('profile')} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/10 cursor-pointer hover:bg-white/20 transition-colors">
             <User className="w-5 h-5" />
-          </div>
+          </button>
         </div>
       </div>
+
+      <UserSettingsModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        activeTab={activeModalTab} 
+        onTabChange={setActiveModalTab} 
+      />
     </nav>
   );
 }
