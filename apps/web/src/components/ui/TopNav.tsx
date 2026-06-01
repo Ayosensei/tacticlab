@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell, Settings, User, Download, Pencil, Check } from "lucide-react";
+import { Bell, Settings, User, Download, Pencil, Check, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTacticStore } from "@/store/tacticStore";
@@ -28,6 +28,7 @@ export function TopNav() {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeModalTab, setActiveModalTab] = useState<ModalTab>("profile");
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -75,14 +76,14 @@ export function TopNav() {
   };
   
   return (
-    <nav className="h-20 border-b border-border bg-card flex items-center justify-between px-8 z-50">
-      <div className="flex items-center gap-8">
-        <h1 className="text-2xl font-black text-emerald-400 tracking-tighter shrink-0">
+    <nav className="h-20 border-b border-border bg-card flex items-center justify-between px-4 md:px-8 z-[100] relative">
+      <div className="flex items-center gap-4 md:gap-8">
+        <h1 className="text-xl md:text-2xl font-black text-emerald-400 tracking-tighter shrink-0">
           TACTICLAB
         </h1>
 
-        {/* Inline Editable Tactic Title */}
-        <div className="flex items-center gap-2 group/title">
+        {/* Inline Editable Tactic Title - Hidden on very small screens */}
+        <div className="hidden sm:flex items-center gap-2 group/title">
           {editingTitle ? (
             <>
               <input
@@ -91,7 +92,7 @@ export function TopNav() {
                 onChange={(e) => setTitleDraft(e.target.value)}
                 onBlur={commitTitle}
                 onKeyDown={handleTitleKeyDown}
-                className="bg-transparent border-b border-emerald-400/60 text-foreground text-sm font-bold uppercase tracking-widest outline-none px-1 py-0.5 min-w-[160px] max-w-[280px] caret-emerald-400"
+                className="bg-transparent border-b border-emerald-400/60 text-foreground text-sm font-bold uppercase tracking-widest outline-none px-1 py-0.5 min-w-[120px] max-w-[200px] md:max-w-[280px] caret-emerald-400"
               />
               <button onClick={commitTitle} className="text-emerald-400 hover:text-emerald-300 transition-colors">
                 <Check className="w-3.5 h-3.5" />
@@ -99,7 +100,7 @@ export function TopNav() {
             </>
           ) : (
             <>
-              <span className="text-sm font-bold text-muted-foreground tracking-widest uppercase truncate max-w-[220px]">
+              <span className="text-xs md:text-sm font-bold text-muted-foreground tracking-widest uppercase truncate max-w-[140px] md:max-w-[220px]">
                 {currentTactic.title}
               </span>
               <button
@@ -112,7 +113,8 @@ export function TopNav() {
           )}
         </div>
 
-        <div className="flex items-center gap-8 h-full">
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-8 h-full">
           {links.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -131,7 +133,8 @@ export function TopNav() {
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
+      {/* Desktop Actions */}
+      <div className="hidden md:flex items-center gap-6">
         <Button
           id="deploy-tactic-btn"
           size="sm"
@@ -172,6 +175,80 @@ export function TopNav() {
           )}
         </div>
       </div>
+
+      {/* Mobile Menu Toggle */}
+      <div className="flex items-center md:hidden">
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-foreground">
+          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Dropdown */}
+      {mobileMenuOpen && (
+        <div className="absolute top-20 left-0 w-full bg-card border-b border-border flex flex-col p-4 shadow-xl md:hidden animate-in slide-in-from-top-2 duration-200">
+          <div className="flex flex-col gap-2 mb-6">
+            {links.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "px-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors",
+                    isActive ? "bg-emerald-500/10 text-emerald-500" : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="h-px w-full bg-border mb-6" />
+
+          <div className="flex flex-col gap-4">
+            {user ? (
+              <div className="flex items-center justify-around mb-4">
+                <button onClick={() => { setMobileMenuOpen(false); openModal('notifications'); }} className="flex flex-col items-center gap-1.5 text-muted-foreground hover:text-foreground">
+                  <Bell className="w-5 h-5" />
+                  <span className="text-[9px] font-bold uppercase tracking-widest">Alerts</span>
+                </button>
+                <button onClick={() => { setMobileMenuOpen(false); openModal('settings'); }} className="flex flex-col items-center gap-1.5 text-muted-foreground hover:text-foreground">
+                  <Settings className="w-5 h-5" />
+                  <span className="text-[9px] font-bold uppercase tracking-widest">Settings</span>
+                </button>
+                <button onClick={() => { setMobileMenuOpen(false); openModal('profile'); }} className="flex flex-col items-center gap-1.5 text-emerald-500">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <span className="text-[9px] font-bold uppercase tracking-widest">Profile</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 mb-4">
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-center rounded-lg bg-foreground/5 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-foreground/10 transition-colors">
+                  Log In
+                </Link>
+                <Link href="/register" onClick={() => setMobileMenuOpen(false)} className="px-4 py-3 text-center rounded-lg bg-emerald-500 text-emerald-950 hover:bg-emerald-400 text-xs font-bold uppercase tracking-widest transition-colors shadow-sm">
+                  Sign Up
+                </Link>
+              </div>
+            )}
+
+            <Button
+              onClick={() => { setMobileMenuOpen(false); handleExport(); }}
+              className={cn(
+                "w-full font-bold text-xs uppercase tracking-widest h-12 gap-2 transition-all duration-300",
+                exported ? "bg-emerald-400 text-primary-foreground scale-95" : "bg-emerald-500 hover:bg-emerald-600 text-primary-foreground"
+              )}
+            >
+              <Download className="w-4 h-4" />
+              {exported ? "Exported!" : "Export Tactic"}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <UserSettingsModal 
         isOpen={modalOpen} 

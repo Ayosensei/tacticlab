@@ -34,21 +34,21 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange, use
       />
 
       {/* Modal Content */}
-      <div className="relative w-full max-w-4xl h-[80vh] min-h-[600px] bg-background border border-border rounded-2xl shadow-2xl flex overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div className="relative w-[95vw] md:w-full max-w-4xl max-h-[90vh] md:h-[80vh] md:min-h-[600px] bg-background border border-border rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden animate-in fade-in zoom-in duration-200">
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground bg-foreground/5 hover:bg-foreground/10 rounded-full transition-colors z-10"
+          className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-foreground bg-foreground/5 hover:bg-foreground/10 rounded-full transition-colors z-[60]"
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* Sidebar Navigation */}
-        <div className="w-64 bg-card border-r border-border p-6 flex flex-col">
-          <h2 className="text-sm font-black text-emerald-400 tracking-widest uppercase mb-8">Preferences</h2>
+        <div className="w-full md:w-64 bg-card border-b md:border-b-0 md:border-r border-border p-4 md:p-6 flex flex-col shrink-0">
+          <h2 className="text-sm font-black text-emerald-400 tracking-widest uppercase mb-4 md:mb-8 hidden md:block">Preferences</h2>
 
-          <nav className="flex flex-col gap-2">
+          <nav className="flex flex-row md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
             <TabButton
               icon={User}
               label="Profile"
@@ -71,15 +71,15 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange, use
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 p-8 overflow-y-auto bg-background">
+        <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-background">
           {activeTab === 'profile' && (
-            <div className="flex flex-col gap-8 animate-fade-in pb-8">
-              <div>
-                <h3 className="text-xl font-black text-foreground mb-2">Profile</h3>
-                <p className="text-sm text-muted-foreground">Manage your public profile and connected accounts.</p>
+            <div className="flex flex-col gap-6 md:gap-8 animate-fade-in pb-8">
+              <div className="pr-10 md:pr-0">
+                <h3 className="text-lg md:text-xl font-black text-foreground mb-1 md:mb-2">Profile</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">Manage your public profile and connected accounts.</p>
               </div>
 
-              <div className="flex items-start gap-8">
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
                 {/* Avatar Section */}
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative w-24 h-24 rounded-full bg-card border border-border flex items-center justify-center overflow-hidden group cursor-pointer hover:border-emerald-500/50 transition-colors">
@@ -128,10 +128,10 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange, use
             </div>
           )}
           {activeTab === 'notifications' && (
-            <div className="flex flex-col gap-8 animate-fade-in pb-8">
-              <div>
-                <h3 className="text-xl font-black text-foreground mb-2">Notifications</h3>
-                <p className="text-sm text-muted-foreground">Activity feed and notification preferences.</p>
+            <div className="flex flex-col gap-6 md:gap-8 animate-fade-in pb-8">
+              <div className="pr-10 md:pr-0">
+                <h3 className="text-lg md:text-xl font-black text-foreground mb-1 md:mb-2">Notifications</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">Activity feed and notification preferences.</p>
               </div>
 
               {/* Preferences */}
@@ -217,10 +217,10 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange, use
             </div>
           )}
           {activeTab === 'settings' && (
-            <div className="flex flex-col gap-8 animate-fade-in pb-8">
-              <div>
-                <h3 className="text-xl font-black text-foreground mb-2">Settings</h3>
-                <p className="text-sm text-muted-foreground">App behavior and UI preferences.</p>
+            <div className="flex flex-col gap-6 md:gap-8 animate-fade-in pb-8">
+              <div className="pr-10 md:pr-0">
+                <h3 className="text-lg md:text-xl font-black text-foreground mb-1 md:mb-2">Settings</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">App behavior and UI preferences.</p>
               </div>
 
               {/* Appearance */}
@@ -310,7 +310,7 @@ function TabButton({ icon: Icon, label, isActive, onClick }: { icon: React.Eleme
     <button
       onClick={onClick}
       className={cn(
-        "flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200",
+        "flex items-center gap-2 md:gap-3 px-3 py-2 md:px-4 md:py-3 rounded-lg text-left transition-all duration-200 shrink-0",
         isActive
           ? "bg-emerald-500/10 text-emerald-500 font-bold"
           : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground font-medium"
