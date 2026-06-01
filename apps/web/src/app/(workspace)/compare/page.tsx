@@ -5,7 +5,8 @@ import { Pitch } from "@/components/pitch/Pitch";
 import { FORMATIONS } from "@/lib/tacticsData";
 import { ChevronDown, BarChart2 } from "lucide-react";
 import { useState } from "react";
-import { scoreTactic } from "@/lib/wasm";
+import { Tactic } from "@/types/tactic";
+
 
 export default function ComparePage() {
   const { currentTactic, analysis: currentAnalysis, comparisonTactic, comparisonAnalysis, setComparisonTactic } = useTacticStore();

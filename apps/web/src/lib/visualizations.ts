@@ -17,7 +17,7 @@ export interface MovementData {
   color: string;
 }
 
-export function getVisualizationData(role: string, duty: Duty, x: number, _y: number) {
+export function getVisualizationData(role: string, duty: Duty, x: number) {
   const roleData = ROLES_DB[role];
   const heatmaps: HeatmapData[] = [];
   const movements: MovementData[] = [];

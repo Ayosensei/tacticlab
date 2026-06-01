@@ -37,9 +37,8 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
   const [showClashes, setShowClashes] = useState(true);
   const [showMovements, setShowMovements] = useState(true);
 
-  // Extract metrics from analysis
-  const compTriangles = (currentAnalysisData as any)?.compatibilityTriangles || [];
-  const synergies = (currentAnalysisData as any)?.synergies || [];
+  const compTriangles = (currentAnalysisData as { compatibilityTriangles?: unknown[] })?.compatibilityTriangles || [];
+  const synergies = (currentAnalysisData as { synergies?: unknown[] })?.synergies || [];
 
   const [activeDrag, setActiveDrag] = useState<{ id: string; deltaX: number; deltaY: number } | null>(null);
 
@@ -167,7 +166,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
               {/* Player Movements */}
               {showMovements && currentTacticData.players.map(p => {
                 const pos = getPlayerPosition(p);
-                const viz = getVisualizationData(p.role, p.duty, pos.x, pos.y);
+                const viz = getVisualizationData(p.role, p.duty, pos.x);
                 return viz.movements.map(mov => {
                   let markerId = "arrowhead-attack";
                   if (mov.color.includes("96, 165")) markerId = "arrowhead-support";
@@ -190,7 +189,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
               })}
 
               {/* Compatibility Triangles */}
-              {showTriangles && compTriangles.map((tri: any, idx: number) => {
+              {showTriangles && compTriangles.map((tri: { player1Id: string, player2Id: string, player3Id: string, score: number, label: string, description: string }, idx: number) => {
                 const p1 = currentTacticData.players.find(p => p.id === tri.player1Id);
                 const p2 = currentTacticData.players.find(p => p.id === tri.player2Id);
                 const p3 = currentTacticData.players.find(p => p.id === tri.player3Id);
@@ -236,7 +235,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
               })}
 
               {/* Role Chemistry Lines */}
-              {showLines && synergies.map((syn: any, idx: number) => {
+              {showLines && synergies.map((syn: { type: string, player1Id: string, player2Id: string, score: number, label: string, message: string }, idx: number) => {
                 const isPositive = syn.type === "positive";
 
                 // Filter out clashes if toggled off
