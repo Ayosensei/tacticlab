@@ -16,13 +16,13 @@ export default function CommunityPage() {
           </div>
         </div>
         {/* Page Header */}
-        <div className="max-w-7xl mx-auto px-8 pt-12 pb-8 relative z-10">
-        <div className="flex items-end justify-between mb-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 pt-6 md:pt-12 pb-8 relative z-10">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 md:gap-0 mb-8 md:mb-16">
           <div className="flex flex-col gap-2">
-            <h1 className="text-4xl font-black uppercase tracking-[0.1em]">Tactical Library</h1>
-            <p className="text-muted-foreground text-sm">Explore, analyze, and deploy high-performance tactical systems from the global community.</p>
+            <h1 className="text-2xl md:text-4xl font-black uppercase tracking-[0.1em]">Tactical Library</h1>
+            <p className="text-muted-foreground text-xs md:text-sm">Explore, analyze, and deploy high-performance tactical systems from the global community.</p>
           </div>
-          <div className="relative w-80">
+          <div className="relative w-full md:w-80">
             <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input 
               type="text" 
@@ -38,7 +38,7 @@ export default function CommunityPage() {
           <h2 className="text-xs font-bold uppercase tracking-widest">Trending Systems</h2>
         </div>
 
-        <div className="grid grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           <TrendingCard 
             title="Klopp Kinetic V2" 
             formation="4-3-3 Gegenpress" 
@@ -66,20 +66,20 @@ export default function CommunityPage() {
         </div>
 
         {/* Filter Bar */}
-        <div className="flex items-center justify-between mb-8 pb-8 border-b border-border">
-          <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0 mb-8 pb-8 border-b border-border">
+          <div className="flex gap-2 md:gap-4 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
             <FilterDropdown label="Formation" />
             <FilterDropdown label="Style" />
             <FilterDropdown label="Rating" />
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-muted-foreground">Sort by:</span>
+          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+            <span className="text-xs text-muted-foreground hidden md:inline">Sort by:</span>
             <FilterDropdown label="Highest Rated" solid />
           </div>
         </div>
 
         {/* Standard Grid */}
-        <div className="grid grid-cols-4 gap-6 pb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-20">
           <StandardCard 
             title="4-2-3-1 WIDE" 
             desc="Direct counter-attacking system." 
