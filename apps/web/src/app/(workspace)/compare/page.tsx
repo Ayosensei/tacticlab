@@ -29,7 +29,7 @@ export default function ComparePage() {
         players: JSON.parse(JSON.stringify(form.players)),
         arrows: []
       };
-      setComparisonTactic(tactic as any);
+      setComparisonTactic(tactic as Tactic);
     }
     setIsDropdownOpen(false);
   };

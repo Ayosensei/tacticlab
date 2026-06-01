@@ -1,6 +1,6 @@
 import { Tactic, AnalysisResult, CompatibilityTriangle, Synergy, RiskFactor, DutyBalance } from "@/types/tactic";
 
-let wasmModule: any = null;
+const wasmModule: unknown = null;
 
 export async function getWasm() {
   if (typeof window === "undefined") return null;
@@ -31,8 +31,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   const isWingBack = (r: string) => ["Full Back", "Wing Back", "Inverted Wing Back", "Complete Wing-Back"].includes(r);
   const isInsideFwd = (r: string) => ["Inside Forward", "Inverted Winger"].includes(r);
   const isWinger = (r: string) => ["Winger"].includes(r);
-  const isCreatorST = (r: string) => ["Deep Lying Forward", "Target Forward", "False Nine", "Complete Forward"].includes(r);
-  const isFinisherST = (r: string) => ["Advanced Forward", "Poacher", "Pressing Forward"].includes(r);
+
 
   // ─── Instruction reads ──────────────────────────────────────────
   const mentality = tactic.mentality ?? "Balanced";
@@ -62,21 +61,20 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   let ams = 0, attackStrikers = 0;
 
   tactic.players.forEach(player => {
-    let targetX = player.x, targetY = player.y;
+    let targetX = player.x;
     switch (player.role) {
       case "Inverted Wing Back":
-        targetX = player.x < 50 ? 35 : 65; targetY = 60; break;
+        targetX = player.x < 50 ? 35 : 65; break;
       case "Inverted Winger":
       case "Inside Forward":
-        targetX = player.x < 50 ? 35 : 65; targetY = 25; break;
+        targetX = player.x < 50 ? 35 : 65; break;
       case "Mezzala":
         targetX = player.x < 50 ? 20 : 80; break;
       case "False Nine":
       case "Deep Lying Forward":
-        targetY = 35; break;
+        break;
       default:
-        if (player.duty === "Attack") targetY -= 15;
-        else if (player.duty === "Defend") targetY += 5;
+        break;
     }
     if (targetX < 20) channels.wideLeft++;
     else if (targetX < 40) channels.halfSpaceLeft++;
@@ -122,7 +120,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   const dutyBalance: DutyBalance = { defend, support, attack };
 
   // ─── Suggestions & risks ─────────────────────────────────────────
-  const suggestions: any[] = [];
+  const suggestions: { severity: string, area: string, message: string }[] = [];
   const riskFactors: RiskFactor[] = [];
 
   // Existing structural suggestions
@@ -348,7 +346,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   // ─── Phase ratings ────────────────────────────────────────────────
   const hasPlaymakerRole = tactic.players.some(p => isPlaymaker(p.role));
   const channelSpread = [channels.wideLeft > 0, channels.halfSpaceLeft > 0, channels.center > 0, channels.halfSpaceRight > 0, channels.wideRight > 0].filter(Boolean).length;
-  let inPossessionRating = 30
+  const inPossessionRating = 30
     + Math.min(support, 5) * 7
     + channelSpread * 5
     + (hasPlaymakerRole ? 10 : 0)
@@ -395,6 +393,6 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
     compatibilityTriangles: compTriangles,
     synergies,
     riskFactors,
-    suggestions: suggestions as any,
+    suggestions: suggestions as unknown as { severity: string, area: string, message: string }[],
   };
 }

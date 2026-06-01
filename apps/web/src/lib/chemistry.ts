@@ -7,14 +7,12 @@ export interface ChemistryResult {
 }
 
 // Helper to determine general position based on Y coordinate
-const isGoalkeeper = (y: number) => y >= 90;
 const isDefender = (y: number) => y >= 70 && y < 90;
 const isDefensiveMidfielder = (y: number) => y >= 60 && y < 70;
 const isCentralMidfielder = (y: number) => y >= 40 && y < 60;
 const isAttackingMidfielder = (y: number) => y >= 25 && y < 40;
 const isForward = (y: number) => y < 25;
 
-const isFlank = (x: number) => x <= 25 || x >= 75;
 const isLeftFlank = (x: number) => x <= 25;
 const isRightFlank = (x: number) => x >= 75;
 const isCentral = (x: number) => x > 25 && x < 75;

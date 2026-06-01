@@ -199,7 +199,4 @@ export const useTacticStore = create<TacticState>((set, get) => ({
   },
 }));
 
-// Helper to trigger analysis on store updates
-const triggerAnalysis = (state: TacticState) => {
-  scoreTactic(state.currentTactic).then(result => state.setAnalysis(result));
-};
+

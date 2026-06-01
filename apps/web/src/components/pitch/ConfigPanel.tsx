@@ -73,7 +73,7 @@ export function ConfigPanel() {
               return (
                 <button
                   key={mentality.id}
-                  onClick={() => setMentality(mentality.name as any)}
+                  onClick={() => setMentality(mentality.name as Tactic["mentality"])}
                   className={cn(
                     "flex flex-col text-left p-4 rounded-lg border transition-all duration-200",
                     isActive
@@ -134,7 +134,7 @@ export function ConfigPanel() {
                 <div className="p-4 text-center text-xs text-muted-foreground">No data found for {player.role}.</div>
               );
 
-              const duties = roleData.duties as any;
+              const duties = roleData.duties as Record<string, { instructions?: string[], hiddenInstructions?: string[] }>;
               const dutyOverrides = (duties && duties[player.duty]) || {};
               const activeInstructions = [
                 ...roleData.baseInstructions.instructions,
@@ -285,7 +285,7 @@ export function ConfigPanel() {
 
                 <div className="flex flex-col gap-3">
                   {column.items.map((item) => {
-                    const phaseData = (currentTactic[activeInstructionPhase] as any) || {};
+                    const phaseData = (currentTactic[activeInstructionPhase] as Record<string, string | boolean>) || {};
                     const value = phaseData[item.id];
 
                     if (item.type === "toggle") {

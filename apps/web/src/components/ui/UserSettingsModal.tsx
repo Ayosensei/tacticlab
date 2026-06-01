@@ -297,7 +297,7 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange }: U
   );
 }
 
-function TabButton({ icon: Icon, label, isActive, onClick }: any) {
+function TabButton({ icon: Icon, label, isActive, onClick }: { icon: React.ElementType, label: string, isActive: boolean, onClick: () => void }) {
   return (
     <button
       onClick={onClick}

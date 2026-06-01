@@ -81,7 +81,7 @@ export function AIAnalysisPanel() {
     );
   }
 
-  const a = analysis as any;
+  const a = analysis as Record<string, unknown>;
   const tacticalNarrative     = (a.tacticalNarrative     as string)  ?? "";
   const inPossessionRating    = (a.inPossessionRating    as number)  ?? 0;
   const outOfPossessionRating = (a.outOfPossessionRating as number)  ?? 0;
@@ -268,7 +268,7 @@ export function AIAnalysisPanel() {
                     <AlertTriangle className="w-3.5 h-3.5" /> Structural Risks
                   </h3>
                   <div className="flex flex-col gap-2">
-                    {riskFactors.map((r: any, i: number) => (
+                    {riskFactors.map((r: { message: string }, i: number) => (
                       <div key={i} className="bg-rose-500/8 p-3 rounded-lg border border-rose-500/20 flex gap-3">
                         <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
                         <p className="text-[10px] text-rose-200 leading-relaxed font-medium">{r.message}</p>
@@ -282,7 +282,7 @@ export function AIAnalysisPanel() {
                 <div className="flex flex-col gap-3">
                   <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Role Compatibility</h3>
                   <div className="flex flex-col gap-2">
-                    {synergies.slice(0, 6).map((s: any, i: number) => {
+                    {synergies.slice(0, 6).map((s: { score: number, label: string, message: string }, i: number) => {
                       const isPositive = s.score >= 70;
                       const isWarning = s.score > 40 && s.score < 70;
                       return (
@@ -320,7 +320,7 @@ export function AIAnalysisPanel() {
                 <div className="flex flex-col gap-3">
                   <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">General Feedback</h3>
                   <div className="flex flex-col gap-2">
-                    {suggestions.map((s: any, i: number) => (
+                    {suggestions.map((s: { severity: string, message: string }, i: number) => (
                       <div key={i} className="bg-card p-3 rounded-lg border border-border flex gap-3 hover:border-foreground/10 transition-colors">
                         {s.severity === "critical" && <AlertTriangle className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />}
                         {s.severity === "warning"  && <Info          className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />}
@@ -342,7 +342,7 @@ export function AIAnalysisPanel() {
 
 // ── Components ────────────────────────────────────────────────────────────
 
-function CircularProgress({ value, icon: Icon, label, colorClass, gradientFrom, gradientTo }: any) {
+function CircularProgress({ value, icon: Icon, label, colorClass, gradientFrom, gradientTo }: { value: number, icon: React.ElementType, label: string, colorClass: string, gradientFrom: string, gradientTo: string }) {
   const radius = 32;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (value / 100) * circumference;
@@ -379,7 +379,7 @@ function CircularProgress({ value, icon: Icon, label, colorClass, gradientFrom, 
   );
 }
 
-function ChannelOccupationPitch({ occupation }: { occupation: any }) {
+function ChannelOccupationPitch({ occupation }: { occupation: { wideLeft: number, halfSpaceLeft: number, center: number, halfSpaceRight: number, wideRight: number } }) {
   return (
     <div className="relative w-full aspect-[4/3] bg-background border border-border rounded-lg overflow-hidden flex">
       {/* Background pitch markings */}

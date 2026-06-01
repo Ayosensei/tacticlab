@@ -17,7 +17,7 @@ export interface MovementData {
   color: string;
 }
 
-export function getVisualizationData(role: string, duty: Duty, x: number, y: number) {
+export function getVisualizationData(role: string, duty: Duty, x: number, _y: number) {
   const roleData = ROLES_DB[role];
   const heatmaps: HeatmapData[] = [];
   const movements: MovementData[] = [];
@@ -26,14 +26,14 @@ export function getVisualizationData(role: string, duty: Duty, x: number, y: num
 
   // Combine traits from base and specific duty
   const baseTraits = roleData.baseTraits.complementary || [];
-  const dutyTraits = (roleData.duties as any)[duty]?.traits?.complementary || [];
+  const dutyTraits = (roleData.duties as Record<string, { traits?: { complementary?: string[] }, instructions?: string[], hiddenInstructions?: string[] }>)[duty]?.traits?.complementary || [];
   const allTraits = [...baseTraits, ...dutyTraits];
   
   // Combine instructions
   const baseInst = roleData.baseInstructions.instructions || [];
   const baseHidden = roleData.baseInstructions.hiddenInstructions || [];
-  const dutyInst = (roleData.duties as any)[duty]?.instructions || [];
-  const dutyHidden = (roleData.duties as any)[duty]?.hiddenInstructions || [];
+  const dutyInst = (roleData.duties as Record<string, { traits?: { complementary?: string[] }, instructions?: string[], hiddenInstructions?: string[] }>)[duty]?.instructions || [];
+  const dutyHidden = (roleData.duties as Record<string, { traits?: { complementary?: string[] }, instructions?: string[], hiddenInstructions?: string[] }>)[duty]?.hiddenInstructions || [];
   const allInstructions = [...baseInst, ...baseHidden, ...dutyInst, ...dutyHidden].map(i => i.toLowerCase());
 
   // Determine color based on duty
