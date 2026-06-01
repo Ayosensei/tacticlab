@@ -59,6 +59,10 @@ export async function signInWithGoogle() {
     },
   })
 
+  if (error) {
+    return redirect('/login?error=' + encodeURIComponent(error.message))
+  }
+
   if (data?.url) {
     redirect(data.url)
   }

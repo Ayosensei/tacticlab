@@ -75,7 +75,7 @@ export default function Login({
         )}
         
         <div className="flex flex-col gap-2 mt-2 text-center text-[11px] font-medium text-muted-foreground uppercase tracking-widest">
-           Don't have an account?
+           Don&apos;t have an account?
            <Link href="/register" className="font-black text-foreground hover:text-emerald-400 underline transition-colors">
              Register
            </Link>

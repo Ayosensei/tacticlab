@@ -9,6 +9,7 @@ import { downloadTacticJson } from "@/lib/exportTactic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { UserSettingsModal, ModalTab } from "@/components/ui/UserSettingsModal";
 
 const links = [
@@ -26,7 +27,7 @@ export function TopNav() {
   const [titleDraft, setTitleDraft] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [activeModalTab, setActiveModalTab] = useState<ModalTab>("profile");
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const router = useRouter();
 
   useEffect(() => {
