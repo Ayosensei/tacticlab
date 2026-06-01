@@ -42,38 +42,3 @@ tacticlab-monorepo/
 │   └── tacticlab-core/             # Rust core (for high-perf WASM tasks)
 └── turbo.json                      # Turborepo configuration
 ```
-
-## 💻 Local Development
-
-1. **Install Dependencies**
-   TacticLab uses `pnpm` as its package manager.
-   ```bash
-   pnpm install
-   ```
-
-2. **Environment Variables**
-   Create a `.env.local` file in `apps/web` with your Supabase credentials to enable authentication features:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-3. **Start the Development Server**
-   ```bash
-   pnpm dev
-   ```
-   This will start the Next.js application on `http://localhost:3000`.
-
-4. **Build for Production**
-   ```bash
-   pnpm build
-   ```
-
-## 🌍 Deployment
-
-TacticLab is optimized for effortless deployment on Vercel:
-1. Push your repository to GitHub.
-2. Import the repository into Vercel.
-3. Add your `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to the Vercel Environment Variables.
-4. Vercel will automatically detect the Turborepo architecture and Next.js frontend.
-5. Click **Deploy**. Make sure to add your production URL to your Supabase project's Authentication Redirect Allow List.
