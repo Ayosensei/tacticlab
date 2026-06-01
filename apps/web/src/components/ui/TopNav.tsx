@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bell, Settings, User, Download, Pencil, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTacticStore } from "@/store/tacticStore";
 import { downloadTacticJson } from "@/lib/exportTactic";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { UserSettingsModal, ModalTab } from "@/components/ui/UserSettingsModal";
 
 const links = [
@@ -25,6 +26,21 @@ export function TopNav() {
   const [titleDraft, setTitleDraft] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [activeModalTab, setActiveModalTab] = useState<ModalTab>("profile");
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
 
   const openModal = (tab: ModalTab) => {
     setActiveModalTab(tab);
@@ -32,6 +48,10 @@ export function TopNav() {
   };
 
   const handleExport = () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     downloadTacticJson(currentTactic);
     setExported(true);
     setTimeout(() => setExported(false), 2000);
@@ -127,15 +147,28 @@ export function TopNav() {
         </Button>
         
         <div className="flex items-center gap-4 text-muted-foreground">
-          <button onClick={() => openModal('notifications')} className="hover:text-foreground cursor-pointer transition-colors">
-            <Bell className="w-5 h-5" />
-          </button>
-          <button onClick={() => openModal('settings')} className="hover:text-foreground cursor-pointer transition-colors">
-            <Settings className="w-5 h-5" />
-          </button>
-          <button onClick={() => openModal('profile')} className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-border cursor-pointer hover:bg-foreground/10 transition-colors">
-            <User className="w-5 h-5" />
-          </button>
+          {user ? (
+            <>
+              <button onClick={() => openModal('notifications')} className="hover:text-foreground cursor-pointer transition-colors">
+                <Bell className="w-5 h-5" />
+              </button>
+              <button onClick={() => openModal('settings')} className="hover:text-foreground cursor-pointer transition-colors">
+                <Settings className="w-5 h-5" />
+              </button>
+              <button onClick={() => openModal('profile')} className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-border cursor-pointer hover:bg-foreground/10 transition-colors">
+                <User className="w-5 h-5" />
+              </button>
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link href="/login" className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-emerald-400 transition-colors">
+                Log In
+              </Link>
+              <Link href="/register" className="px-4 py-2 rounded-md bg-emerald-500 text-emerald-950 hover:bg-emerald-400 text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm">
+                Sign Up
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 

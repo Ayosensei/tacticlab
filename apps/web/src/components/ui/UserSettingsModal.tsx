@@ -4,6 +4,7 @@ import { X, User, Bell, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useTheme } from "next-themes";
+import { signOut } from "@/app/actions/auth";
 
 export type ModalTab = "profile" | "notifications" | "settings";
 
@@ -112,7 +113,12 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange }: U
 
 
               {/* Save Button */}
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-between items-center pt-4 border-t border-border mt-4">
+                <form action={signOut}>
+                  <button type="submit" className="px-6 py-2.5 rounded-lg bg-rose-500/10 text-rose-500 text-[10px] font-bold uppercase tracking-widest hover:bg-rose-500/20 transition-colors">
+                    Sign Out
+                  </button>
+                </form>
                 <button className="px-6 py-2.5 rounded-lg bg-emerald-500 text-primary-foreground text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-400 transition-colors">
                   Save Profile
                 </button>
