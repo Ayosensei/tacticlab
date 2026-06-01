@@ -325,11 +325,11 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
         {/* Top Formation Badge Dropdown */}
         <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-50">
           <div className="relative group/formation">
-            <button className="bg-card hover:bg-foreground/5 transition-colors flex items-center justify-center min-w-[120px] h-[34px] px-4 rounded border border-border gap-3 shadow-2xl">
-              <span className="text-[11px] font-black uppercase text-emerald-400 tracking-[0.2em]">
+            <button className="bg-card hover:bg-foreground/5 transition-colors flex items-center justify-center min-w-[90px] md:min-w-[120px] h-[28px] md:h-[34px] px-2 md:px-4 rounded border border-border gap-1 md:gap-3 shadow-2xl">
+              <span className="text-[9px] md:text-[11px] font-black uppercase text-emerald-400 tracking-[0.2em]">
                 {currentTacticData.formation}
               </span>
-              {!readOnly && <ChevronDown className="w-4 h-4 text-muted-foreground opacity-50" />}
+              {!readOnly && <ChevronDown className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground opacity-50" />}
             </button>
 
             {/* Simple CSS Dropdown Formations list */}

@@ -77,7 +77,7 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
       {...(readOnly ? {} : listeners)}
       {...(readOnly ? {} : attributes)}
       className={cn(
-        "absolute -translate-x-1/2 -translate-y-1/2 w-14 h-14 touch-none z-20 transition-all flex items-center justify-center",
+        "absolute -translate-x-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 lg:w-14 lg:h-14 touch-none z-20 transition-all flex items-center justify-center",
         !readOnly && "active:scale-110",
         isDragging && !readOnly ? "z-50 opacity-100 scale-110 cursor-grabbing shadow-2xl" : (readOnly ? "cursor-default" : "cursor-grab")
       )}
@@ -86,7 +86,7 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
         {/* Modern Jersey Silhouette (Matched to Tactic Builder.png) */}
         <svg
           viewBox="0 0 100 100"
-          className="absolute inset-0 w-14 h-14 filter drop-shadow-md"
+          className="absolute inset-0 w-8 h-8 md:w-10 md:h-10 lg:w-14 lg:h-14 filter drop-shadow-md"
         >
           <path
             d="M 20 20 L 35 10 C 40 15 60 15 65 10 L 80 20 L 80 40 L 70 40 L 70 90 L 30 90 L 30 40 L 20 40 Z"
@@ -106,18 +106,18 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
             setActiveSidebarTab("player_instructions");
           }}
           className={cn(
-            "absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-background/90 backdrop-blur-md px-3 py-1.5 rounded-[12px] w-max border shadow-xl group/label transition-colors",
+            "absolute top-[calc(100%+2px)] md:top-[calc(100%+8px)] left-1/2 -translate-x-1/2 flex items-center gap-0.5 md:gap-1.5 bg-background/90 backdrop-blur-md px-1.5 py-0.5 md:px-3 md:py-1.5 rounded-[12px] w-max border shadow-xl group/label transition-colors",
             menuOpen ? "border-emerald-500/50" : "border-border hover:border-emerald-500/30"
           )}
         >
-          <span className="text-xs font-black uppercase text-foreground tracking-widest leading-none">
+          <span className="text-[8px] md:text-xs font-black uppercase text-foreground tracking-widest leading-none">
             {getRoleAbbreviation(player.role)} - 
           </span>
-          <span className={cn("text-xs font-black tracking-widest leading-none", getDutyColor(player.duty))}>
+          <span className={cn("text-[8px] md:text-xs font-black tracking-widest leading-none", getDutyColor(player.duty))}>
             {getDutyAbbreviation(player.duty)}
           </span>
           {!readOnly && (
-            <ChevronDown className={`w-3.5 h-3.5 ml-0.5 transition-transform ${menuOpen ? 'text-emerald-500 rotate-180' : 'text-muted-foreground/50 group-hover/label:text-emerald-500'}`} />
+            <ChevronDown className={`w-2.5 h-2.5 md:w-3.5 md:h-3.5 ml-0.5 transition-transform ${menuOpen ? 'text-emerald-500 rotate-180' : 'text-muted-foreground/50 group-hover/label:text-emerald-500'}`} />
           )}
         </button>
 
