@@ -61,16 +61,16 @@ export default function ComparePage() {
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(16,185,129,0.03),transparent)] pointer-events-none" />
       
       {/* Compare Header */}
-      <div className="w-full flex border-b border-border relative z-30 shrink-0">
+      <div className="w-full flex flex-col md:flex-row border-b border-border relative z-30 shrink-0">
         {/* Left Side Header */}
-        <div className="flex-1 p-4 flex items-center justify-center border-r border-border">
+        <div className="flex-1 p-3 md:p-4 flex items-center justify-center border-b md:border-b-0 md:border-r border-border">
           <span className="text-[12px] font-black uppercase text-emerald-400 tracking-[0.2em]">
             {currentTactic.formation} (Current)
           </span>
         </div>
 
         {/* Right Side Header */}
-        <div className="flex-1 p-4 flex items-center justify-center relative">
+        <div className="flex-1 p-3 md:p-4 flex items-center justify-center relative">
           <button 
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className="flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] transition-colors hover:text-foreground text-indigo-500"
@@ -109,9 +109,9 @@ export default function ComparePage() {
       </div>
 
       {/* Split Pitches */}
-      <div className="flex flex-1 relative z-10 py-6 px-4">
+      <div className="flex flex-col lg:flex-row flex-1 relative z-10 py-6 px-4 gap-8 lg:gap-0">
         {/* Left Pitch */}
-        <div className="flex-1 border-r border-border flex justify-center items-start">
+        <div className="flex-1 border-b lg:border-b-0 lg:border-r border-border flex justify-center items-start pb-8 lg:pb-0">
           <div className="w-full max-w-[420px]">
             <Pitch tactic={currentTactic} analysis={currentAnalysis} hideOverlays={true} />
           </div>
@@ -135,8 +135,8 @@ export default function ComparePage() {
       </div>
 
       {/* Comparison Stats Footer */}
-      <div className="w-full bg-card border-t border-border p-8 relative z-10 shrink-0">
-        <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] text-center mb-8">
+      <div className="w-full bg-card border-t border-border p-4 md:p-8 relative z-10 shrink-0">
+        <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] text-center mb-6 md:mb-8">
           Tactical Metrics Comparison
         </h3>
         <div className="max-w-2xl mx-auto">

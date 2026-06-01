@@ -57,7 +57,7 @@ export function AIAnalysisPanel() {
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
-      className="absolute left-0 top-0 h-full w-1.5 cursor-col-resize hover:bg-indigo-500/40 active:bg-indigo-500/60 transition-colors z-50 group"
+      className="hidden md:block absolute left-0 top-0 h-full w-1.5 cursor-col-resize hover:bg-indigo-500/40 active:bg-indigo-500/60 transition-colors z-50 group"
       title="Drag to resize"
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -71,8 +71,8 @@ export function AIAnalysisPanel() {
   if (!analysis) {
     return (
       <aside
-        className="border-l border-border bg-background flex flex-col h-[calc(100vh-80px)] shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] items-center justify-center p-8 text-center relative"
-        style={{ width }}
+        className="border-t md:border-t-0 md:border-l border-border bg-background flex flex-col h-[600px] md:h-[calc(100vh-80px)] shrink-0 z-20 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] md:shadow-[-20px_0_40px_rgba(0,0,0,0.5)] items-center justify-center p-8 text-center relative !w-full md:!w-[var(--panel-width)]"
+        style={{ '--panel-width': `${width}px` } as React.CSSProperties}
       >
         {dragHandle}
         <Cpu className="w-8 h-8 text-emerald-500/20 mb-4 animate-pulse" />
@@ -98,8 +98,8 @@ export function AIAnalysisPanel() {
 
   return (
     <aside
-      className="border-l border-border bg-background flex flex-col h-[calc(100vh-80px)] shrink-0 z-20 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] relative"
-      style={{ width }}
+      className="border-t md:border-t-0 md:border-l border-border bg-background flex flex-col h-[800px] md:h-[calc(100vh-80px)] shrink-0 z-20 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] md:shadow-[-20px_0_40px_rgba(0,0,0,0.5)] relative !w-full md:!w-[var(--panel-width)]"
+      style={{ '--panel-width': `${width}px` } as React.CSSProperties}
     >
       {dragHandle}
 
