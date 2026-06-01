@@ -6,6 +6,7 @@ import { TACTICAL_STYLES, MENTALITIES, FORMATIONS, TEAM_INSTRUCTIONS } from "@/l
 import { ROLES_DB } from "@/lib/rolesData";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
+import { Tactic } from "@/types/tactic";
 
 export function ConfigPanel() {
   const { activeSidebarTab, currentTactic, setStyle, setMentality, setFormation, selectedPlayerId, toggleInstruction, chemistry, showChemistry, setShowChemistry } = useTacticStore();

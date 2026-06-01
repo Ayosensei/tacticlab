@@ -37,8 +37,10 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
   const [showClashes, setShowClashes] = useState(true);
   const [showMovements, setShowMovements] = useState(true);
 
-  const compTriangles = (currentAnalysisData as { compatibilityTriangles?: unknown[] })?.compatibilityTriangles || [];
-  const synergies = (currentAnalysisData as { synergies?: unknown[] })?.synergies || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const compTriangles = (currentAnalysisData as { compatibilityTriangles?: any[] })?.compatibilityTriangles || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const synergies = (currentAnalysisData as { synergies?: any[] })?.synergies || [];
 
   const [activeDrag, setActiveDrag] = useState<{ id: string; deltaX: number; deltaY: number } | null>(null);
 

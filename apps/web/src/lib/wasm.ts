@@ -1,6 +1,7 @@
-import { Tactic, AnalysisResult, CompatibilityTriangle, Synergy, RiskFactor, DutyBalance } from "@/types/tactic";
+import { Tactic, AnalysisResult, CompatibilityTriangle, Synergy, RiskFactor, DutyBalance, Suggestion } from "@/types/tactic";
 
-const wasmModule: unknown = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const wasmModule: any = null;
 
 export async function getWasm() {
   if (typeof window === "undefined") return null;
@@ -393,6 +394,6 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
     compatibilityTriangles: compTriangles,
     synergies,
     riskFactors,
-    suggestions: suggestions as unknown as { severity: string, area: string, message: string }[],
+    suggestions: suggestions as Suggestion[],
   };
 }

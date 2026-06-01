@@ -81,7 +81,8 @@ export function AIAnalysisPanel() {
     );
   }
 
-  const a = analysis as Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const a = analysis as Record<string, any>;
   const tacticalNarrative     = (a.tacticalNarrative     as string)  ?? "";
   const inPossessionRating    = (a.inPossessionRating    as number)  ?? 0;
   const outOfPossessionRating = (a.outOfPossessionRating as number)  ?? 0;
@@ -91,7 +92,7 @@ export function AIAnalysisPanel() {
   const dutyBalance           = a.dutyBalance            ?? { defend:0, support:0, attack:0 };
   const penetration           = (a.penetration           as number)  ?? 0;
   const solidity              = (a.solidity              as number)  ?? 0;
-  const suggestions           = analysis.suggestions     ?? [];
+  const suggestions           = a.suggestions            ?? [];
   const synergies             = a.synergies              ?? [];
   const riskFactors           = a.riskFactors            ?? [];
 
