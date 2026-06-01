@@ -9,7 +9,7 @@ export default function BuilderPage() {
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(16,185,129,0.03),transparent)] pointer-events-none" />
       
       {/* Main Pitch Area */}
-      <div className="w-full min-h-full py-12 px-6 flex flex-col items-center justify-start relative z-10">
+      <div className="w-full min-h-full py-4 px-2 md:py-12 md:px-6 flex flex-col items-center justify-start relative z-10">
         <Pitch />
       </div>
     </div>

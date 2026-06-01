@@ -107,7 +107,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
       <div
         ref={pitchRef}
-        className="relative flex-none aspect-[68/105] w-full max-w-[800px] mx-auto border border-border bg-emerald-900 dark:bg-[#12141a] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group mt-8 mb-20"
+        className="relative flex-none aspect-[68/105] w-full max-w-[800px] mx-auto border border-border bg-emerald-900 dark:bg-[#12141a] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group mt-12 md:mt-8 mb-20"
       >
         {/* Pitch Greenish Dark Background */}
         <div className="absolute inset-0 bg-emerald-900 dark:bg-[#12141a] rounded-lg overflow-hidden pointer-events-none">
@@ -356,7 +356,7 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
 
         {/* Overlay Toggles */}
         {!hideOverlays && (
-          <div className="absolute bottom-4 right-4 z-50 flex flex-col gap-1.5 opacity-40 hover:opacity-100 transition-opacity">
+          <div className="absolute -bottom-14 md:bottom-4 right-0 md:right-4 z-50 flex flex-row md:flex-col gap-1.5 opacity-80 md:opacity-40 hover:opacity-100 transition-opacity flex-wrap justify-end">
             <button
               onClick={() => setShowLines(!showLines)}
               className={`px-3 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded transition-all border ${showLines ? "bg-indigo-500/10 text-indigo-500 border-indigo-500/30" : "bg-card text-muted-foreground border-border hover:text-foreground"}`}

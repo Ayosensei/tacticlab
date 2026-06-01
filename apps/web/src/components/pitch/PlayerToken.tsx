@@ -125,7 +125,10 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
         {menuOpen && (
           <div 
             onPointerDown={(e) => e.stopPropagation()} // Prevent DnD dragging while using menu
-            className="absolute top-[calc(100%+42px)] left-1/2 -translate-x-1/2 w-56 bg-background border border-border rounded-lg shadow-2xl z-[100] flex flex-col overflow-hidden"
+            className={cn(
+              "absolute top-[calc(100%+42px)] w-56 max-w-[calc(100vw-2rem)] bg-background border border-border rounded-lg shadow-2xl z-[100] flex flex-col overflow-hidden",
+              player.x < 25 ? "left-0" : player.x > 75 ? "right-0" : "left-1/2 -translate-x-1/2"
+            )}
           >
             {/* Duty Segmentation */}
             <div className="flex bg-card p-1 border-b border-border">
