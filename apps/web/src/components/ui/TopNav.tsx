@@ -178,6 +178,7 @@ export function TopNav() {
         onClose={() => setModalOpen(false)} 
         activeTab={activeModalTab} 
         onTabChange={setActiveModalTab} 
+        user={user}
       />
     </nav>
   );

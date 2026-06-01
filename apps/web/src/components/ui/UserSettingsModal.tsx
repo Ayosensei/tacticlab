@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useTheme } from "next-themes";
 import { signOut } from "@/app/actions/auth";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 export type ModalTab = "profile" | "notifications" | "settings";
 
@@ -13,9 +14,10 @@ interface UserSettingsModalProps {
   onClose: () => void;
   activeTab: ModalTab;
   onTabChange: (tab: ModalTab) => void;
+  user?: SupabaseUser | null;
 }
 
-export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange }: UserSettingsModalProps) {
+export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange, user }: UserSettingsModalProps) {
   // Local state for UI prototyping
   const { theme, setTheme } = useTheme();
   const [compactView, setCompactView] = useState(false);
@@ -95,12 +97,12 @@ export function UserSettingsModal({ isOpen, onClose, activeTab, onTabChange }: U
                 <div className="flex-1 flex flex-col gap-4">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Username</label>
-                    <input type="text" defaultValue="saturnsurfer" className="bg-card border border-border rounded-lg px-4 py-2.5 text-sm font-medium text-foreground focus:outline-none focus:border-emerald-500/50 transition-colors" />
+                    <input type="text" defaultValue={user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || "Player"} className="bg-card border border-border rounded-lg px-4 py-2.5 text-sm font-medium text-foreground focus:outline-none focus:border-emerald-500/50 transition-colors" />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Email Address</label>
-                    <input type="email" defaultValue="hello@tacticlab.app" className="bg-card border border-border rounded-lg px-4 py-2.5 text-sm font-medium text-foreground focus:outline-none focus:border-emerald-500/50 transition-colors" />
+                    <input type="email" defaultValue={user?.email || ""} className="bg-card border border-border rounded-lg px-4 py-2.5 text-sm font-medium text-foreground focus:outline-none focus:border-emerald-500/50 transition-colors" disabled />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
