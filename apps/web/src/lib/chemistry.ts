@@ -1,4 +1,4 @@
-import { PlayerPosition } from "@/types/tactic";
+import type { PlayerPosition } from "@/types/tactic";
 
 export interface ChemistryResult {
   score: number;
@@ -64,14 +64,16 @@ export function evaluateChemistry(players: PlayerPosition[]): ChemistryResult {
     const cb1 = centralDefenders[0];
     const cb2 = centralDefenders[1];
     
-    if (cb1.duty === "Stopper" && cb2.duty === "Stopper") {
-      penalize(15, "Two Stoppers in defence exposes too much space behind.");
-    } else if (cb1.duty === "Cover" && cb2.duty === "Cover") {
-      penalize(15, "Two Covers in defence exposes too much space in front of them.");
-    } else if ((cb1.duty === "Stopper" && cb2.duty === "Cover") || (cb1.duty === "Cover" && cb2.duty === "Stopper")) {
-      reward(5, "Stopper-Cover pairing creates an aggressive block with pace to sweep behind. Note: This breaks the offside trap.");
-    } else if (cb1.duty === "Defend" && cb2.duty === "Defend") {
-      reward(5, "Defend-Defend pairing is excellent for maintaining a solid line and offside trap.");
+    if (cb1 && cb2) {
+      if (cb1.duty === "Stopper" && cb2.duty === "Stopper") {
+        penalize(15, "Two Stoppers in defence exposes too much space behind.");
+      } else if (cb1.duty === "Cover" && cb2.duty === "Cover") {
+        penalize(15, "Two Covers in defence exposes too much space in front of them.");
+      } else if ((cb1.duty === "Stopper" && cb2.duty === "Cover") || (cb1.duty === "Cover" && cb2.duty === "Stopper")) {
+        reward(5, "Stopper-Cover pairing creates an aggressive block with pace to sweep behind. Note: This breaks the offside trap.");
+      } else if (cb1.duty === "Defend" && cb2.duty === "Defend") {
+        reward(5, "Defend-Defend pairing is excellent for maintaining a solid line and offside trap.");
+      }
     }
   }
 
@@ -98,11 +100,13 @@ export function evaluateChemistry(players: PlayerPosition[]): ChemistryResult {
     // Lone wide player check
     if (sidePlayers.length === 1) {
       const p = sidePlayers[0];
-      if (p.duty === "Attack" && (p.role === "Winger" || p.role === "Wide Midfielder")) {
-        penalize(10, `Lone wide player on the ${sideName} has an Attack duty and won't track back enough.`);
-      }
-      if (p.role === "Inverted Wing Back" || p.role === "Inside Forward") {
-        penalize(10, `Lone wide player on the ${sideName} is inverted and won't provide necessary natural width.`);
+      if (p) {
+        if (p.duty === "Attack" && (p.role === "Winger" || p.role === "Wide Midfielder")) {
+          penalize(10, `Lone wide player on the ${sideName} has an Attack duty and won't track back enough.`);
+        }
+        if (p.role === "Inverted Wing Back" || p.role === "Inside Forward") {
+          penalize(10, `Lone wide player on the ${sideName} is inverted and won't provide necessary natural width.`);
+        }
       }
     }
 

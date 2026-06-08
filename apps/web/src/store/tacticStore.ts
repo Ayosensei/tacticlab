@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import { Tactic, AnalysisResult, Duty } from "@/types/tactic";
+import type { Tactic, AnalysisResult, Duty } from "@/types/tactic";
 import { FORMATIONS, getValidRolesForPosition, getClosestSlot } from "../lib/tacticsData";
 import { ROLES_DB } from "../lib/rolesData";
 import { scoreTactic } from "../lib/wasm";
-import { evaluateChemistry, ChemistryResult } from "../lib/chemistry";
+import type { ChemistryResult } from "../lib/chemistry";
+import { evaluateChemistry } from "../lib/chemistry";
 
 interface TacticState {
   currentTactic: Tactic;
@@ -88,28 +89,34 @@ export const useTacticStore = create<TacticState>((set, get) => ({
       const draggedIndex = players.findIndex(p => p.id === playerId);
       if (draggedIndex === -1) return state;
       
-      const originalX = players[draggedIndex].x;
-      const originalY = players[draggedIndex].y;
+      const playerToDrag = players[draggedIndex];
+      if (!playerToDrag) return state;
+      
+      const originalX = playerToDrag.x;
+      const originalY = playerToDrag.y;
       
       // Check collision
       const occupantIndex = players.findIndex(p => p.x === closestSlot.x && p.y === closestSlot.y && p.id !== playerId);
       
       // Update dragged player
-      const draggedPlayer = { ...players[draggedIndex], x: closestSlot.x, y: closestSlot.y };
+      const draggedPlayer = { ...playerToDrag, x: closestSlot.x, y: closestSlot.y };
       const validRoles = getValidRolesForPosition(closestSlot.x, closestSlot.y);
-      if (!validRoles.includes(draggedPlayer.role)) {
-        draggedPlayer.role = validRoles[0];
+      if (draggedPlayer.role && !validRoles.includes(draggedPlayer.role)) {
+        draggedPlayer.role = validRoles[0] as string;
       }
       players[draggedIndex] = draggedPlayer;
       
       // Swap occupant
       if (occupantIndex !== -1) {
-        const occupant = { ...players[occupantIndex], x: originalX, y: originalY };
-        const occupantRoles = getValidRolesForPosition(originalX, originalY);
-        if (!occupantRoles.includes(occupant.role)) {
-          occupant.role = occupantRoles[0];
+        const occupantToSwap = players[occupantIndex];
+        if (occupantToSwap) {
+          const occupant = { ...occupantToSwap, x: originalX, y: originalY };
+          const occupantRoles = getValidRolesForPosition(originalX, originalY);
+          if (occupant.role && !occupantRoles.includes(occupant.role)) {
+            occupant.role = occupantRoles[0] as string;
+          }
+          players[occupantIndex] = occupant;
         }
-        players[occupantIndex] = occupant;
       }
       
       const newTactic = { ...state.currentTactic, players };

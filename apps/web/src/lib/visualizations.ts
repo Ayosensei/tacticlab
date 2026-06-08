@@ -1,5 +1,5 @@
 import { ROLES_DB } from "./rolesData";
-import { Duty } from "@/types/tactic";
+import type { Duty } from "@/types/tactic";
 
 export interface HeatmapData {
   id: string;

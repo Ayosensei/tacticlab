@@ -1,4 +1,4 @@
-import { Tactic, AnalysisResult, CompatibilityTriangle, Synergy, RiskFactor, DutyBalance, Suggestion } from "@/types/tactic";
+import type { Tactic, AnalysisResult, CompatibilityTriangle, Synergy, RiskFactor, DutyBalance, Suggestion } from "@/types/tactic";
 
 let wasmModule: { score_tactic?: (json: string) => string } | null = null;
 
@@ -181,6 +181,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
   for (let i = 0; i < numPlayers; i++) {
     for (let j = i + 1; j < numPlayers; j++) {
       const p1 = tactic.players[i], p2 = tactic.players[j];
+      if (!p1 || !p2) continue;
       const dist = Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
 
       // Distance gate - players must be close enough to interact
@@ -274,6 +275,7 @@ function mockAnalyzeTactic(tactic: Tactic): AnalysisResult {
     for (let j = i + 1; j < numPlayers; j++) {
       for (let k = j + 1; k < numPlayers; k++) {
         const p1 = tactic.players[i], p2 = tactic.players[j], p3 = tactic.players[k];
+        if (!p1 || !p2 || !p3) continue;
 
         // Find pairwise scores. If no explicit synergy exists, assume base score of 50.
         const s12 = synergies.find(s => (s.player1Id === p1.id && s.player2Id === p2.id) || (s.player1Id === p2.id && s.player2Id === p1.id))?.score ?? 50;

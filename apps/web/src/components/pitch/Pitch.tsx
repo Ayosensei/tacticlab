@@ -3,10 +3,11 @@
 import { useTacticStore } from "@/store/tacticStore";
 import { PlayerToken } from "./PlayerToken";
 import { FORMATIONS } from "@/lib/tacticsData";
-import { DndContext, DragEndEvent, DragStartEvent, DragMoveEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
+import { DndContext, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent, DragMoveEvent } from "@dnd-kit/core";
 import { useRef, useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Tactic, AnalysisResult, PlayerPosition } from "@/types/tactic";
+import type { Tactic, AnalysisResult, PlayerPosition } from "@/types/tactic";
 import { getVisualizationData } from "@/lib/visualizations";
 
 interface PitchProps {

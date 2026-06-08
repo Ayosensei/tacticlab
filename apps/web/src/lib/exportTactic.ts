@@ -1,4 +1,4 @@
-import { Tactic } from "@/types/tactic";
+import type { Tactic } from "@/types/tactic";
 import { ROLES_DB } from "./rolesData";
 import { TEAM_INSTRUCTIONS } from "./tacticsData";
 

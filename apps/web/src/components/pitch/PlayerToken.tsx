@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { PlayerPosition, Duty } from "@/types/tactic";
+import type { PlayerPosition, Duty } from "@/types/tactic";
 import { cn } from "@/lib/utils";
 import { useDraggable } from "@dnd-kit/core";
 import { ChevronDown, Check } from "lucide-react";
@@ -133,7 +133,7 @@ export function PlayerToken({ player, readOnly = false }: PlayerTokenProps) {
             {/* Duty Segmentation */}
             <div className="flex bg-card p-1 border-b border-border">
               {(Object.keys(ROLES_DB[player.role]?.duties || {}).length > 0 
-                ? Object.keys(ROLES_DB[player.role].duties) 
+                ? Object.keys(ROLES_DB[player.role]?.duties || {}) 
                 : DUTIES).map((duty: string) => (
                 <button
                   key={duty}

@@ -1,4 +1,4 @@
-import { Duty } from "@/types/tactic";
+import type { Duty } from "@/types/tactic";
 
 export interface RoleInstruction {
   instructions: string[];

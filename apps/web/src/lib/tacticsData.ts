@@ -1,4 +1,4 @@
-import { PlayerPosition } from "@/types/tactic";
+import type { PlayerPosition } from "@/types/tactic";
 
 export const GRID_SLOTS = [
   { id: "LST", x: 35, y: 15, band: "ST" },
@@ -218,7 +218,7 @@ export const POSITIONS_DB = {
 };
 
 export function getClosestSlot(x: number, y: number) {
-  let closest = GRID_SLOTS[0];
+  let closest = GRID_SLOTS[0]!;
   let minDistance = Infinity;
   for (const slot of GRID_SLOTS) {
     const d = Math.pow(slot.x - x, 2) + Math.pow(slot.y - y, 2);

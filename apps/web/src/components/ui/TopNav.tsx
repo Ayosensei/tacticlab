@@ -10,7 +10,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { UserSettingsModal, ModalTab } from "@/components/ui/UserSettingsModal";
+import { UserSettingsModal } from "@/components/ui/UserSettingsModal";
+import type { ModalTab } from "@/components/ui/UserSettingsModal";
 
 const links = [
   { label: "Builder", href: "/builder" },

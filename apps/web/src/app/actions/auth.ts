@@ -4,10 +4,24 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { headers } from 'next/headers'
+import { z } from 'zod'
+
+const authSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+})
 
 export async function signIn(formData: FormData) {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  const parsed = authSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+  })
+
+  if (!parsed.success) {
+    return redirect('/login?error=Invalid email or password format')
+  }
+
+  const { email, password } = parsed.data
   const supabase = await createClient()
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -24,8 +38,16 @@ export async function signIn(formData: FormData) {
 }
 
 export async function signUp(formData: FormData) {
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
+  const parsed = authSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password'),
+  })
+
+  if (!parsed.success) {
+    return redirect('/register?error=Invalid email or password format')
+  }
+
+  const { email, password } = parsed.data
   const supabase = await createClient()
 
   const headersList = headers()

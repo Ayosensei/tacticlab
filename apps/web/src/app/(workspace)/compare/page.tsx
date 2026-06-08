@@ -5,7 +5,7 @@ import { Pitch } from "@/components/pitch/Pitch";
 import { FORMATIONS } from "@/lib/tacticsData";
 import { ChevronDown, BarChart2 } from "lucide-react";
 import { useState } from "react";
-import { Tactic } from "@/types/tactic";
+import type { Tactic } from "@/types/tactic";
 
 
 export default function ComparePage() {
