@@ -42,7 +42,7 @@ export function Sidebar() {
                 key={item.id}
                 onClick={() => setActiveSidebarTab(isActive ? null : item.id)}
                 className={cn(
-                  "group flex items-center gap-4 px-3 py-3 transition-all duration-200 text-left relative",
+                  "group flex items-center gap-4 px-3 py-3 transition-all duration-200 text-left relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
                   isActive 
                     ? "text-emerald-400 bg-emerald-400/5 font-bold after:absolute after:right-0 after:top-0 after:h-full after:w-1 after:bg-emerald-400" 
                     : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"

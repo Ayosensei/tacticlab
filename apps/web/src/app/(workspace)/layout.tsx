@@ -10,7 +10,7 @@ export default function WorkspaceLayout({
     <div className="flex flex-1 overflow-hidden relative">
       <Sidebar />
       <ConfigPanel />
-      <main className="flex-1 overflow-y-auto relative w-full bg-[#0d0f14]">
+      <main className="flex-1 overflow-y-auto relative w-full bg-background">
         {children}
       </main>
     </div>

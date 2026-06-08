@@ -115,7 +115,7 @@ export function AIAnalysisPanel() {
                 {isLoading ? "Recalculating..." : "Tactical Engine v2"}
               </span>
             </div>
-            <div className="bg-[#4f46e510] border border-indigo-500/20 px-2 py-1 rounded">
+            <div className="bg-indigo-500/10 border border-indigo-500/20 px-2 py-1 rounded">
               <span className="text-[10px] font-black text-indigo-400">LIVE</span>
             </div>
           </div>

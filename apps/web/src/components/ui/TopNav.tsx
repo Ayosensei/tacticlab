@@ -92,7 +92,7 @@ export function TopNav() {
                 onChange={(e) => setTitleDraft(e.target.value)}
                 onBlur={commitTitle}
                 onKeyDown={handleTitleKeyDown}
-                className="bg-transparent border-b border-emerald-400/60 text-foreground text-sm font-bold uppercase tracking-widest outline-none px-1 py-0.5 min-w-[120px] max-w-[200px] md:max-w-[280px] caret-emerald-400"
+                className="bg-transparent border-b border-emerald-400/60 text-foreground text-sm font-bold uppercase tracking-widest outline-none px-1 py-0.5 min-w-[120px] max-w-[200px] md:max-w-[280px] caret-emerald-400 focus-visible:border-emerald-500 focus-visible:ring-0"
               />
               <button onClick={commitTitle} className="text-emerald-400 hover:text-emerald-300 transition-colors">
                 <Check className="w-3.5 h-3.5" />
@@ -122,7 +122,7 @@ export function TopNav() {
                 key={link.label}
                 href={link.href}
                 className={cn(
-                  "text-[10px] uppercase font-bold tracking-[0.2em] transition-all hover:text-emerald-400 h-20 flex items-center border-b-2",
+                  "text-[10px] uppercase font-bold tracking-[0.2em] transition-all hover:text-emerald-400 h-20 flex items-center border-b-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
                   isActive ? "text-emerald-400 border-emerald-400" : "text-muted-foreground border-transparent"
                 )}
               >
@@ -153,22 +153,22 @@ export function TopNav() {
         <div className="flex items-center gap-4 text-muted-foreground">
           {user ? (
             <>
-              <button onClick={() => openModal('notifications')} className="hover:text-foreground cursor-pointer transition-colors">
+              <button onClick={() => openModal('notifications')} className="hover:text-foreground cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded">
                 <Bell className="w-5 h-5" />
               </button>
-              <button onClick={() => openModal('settings')} className="hover:text-foreground cursor-pointer transition-colors">
+              <button onClick={() => openModal('settings')} className="hover:text-foreground cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded">
                 <Settings className="w-5 h-5" />
               </button>
-              <button onClick={() => openModal('profile')} className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-border cursor-pointer hover:bg-foreground/10 transition-colors">
+              <button onClick={() => openModal('profile')} className="w-8 h-8 rounded-full bg-foreground/5 flex items-center justify-center border border-border cursor-pointer hover:bg-foreground/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
                 <User className="w-5 h-5" />
               </button>
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <Link href="/login" className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-emerald-400 transition-colors">
+              <Link href="/login" className="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-emerald-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded">
                 Log In
               </Link>
-              <Link href="/register" className="px-4 py-2 rounded-md bg-emerald-500 text-emerald-950 hover:bg-emerald-400 text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm">
+              <Link href="/register" className="px-4 py-2 rounded-md bg-emerald-500 text-emerald-950 hover:bg-emerald-400 text-[10px] font-bold uppercase tracking-widest transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
                 Sign Up
               </Link>
             </div>

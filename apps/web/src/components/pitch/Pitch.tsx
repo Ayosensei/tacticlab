@@ -99,16 +99,16 @@ export function Pitch({ tactic: propTactic, analysis: propAnalysis, readOnly = f
     return { x: p.x, y: p.y };
   };
 
-  if (!isMounted) return <div className="h-full aspect-[68/105] bg-emerald-900 dark:bg-[#12141a] rounded-lg animate-pulse" />;
+  if (!isMounted) return <div className="h-full aspect-[68/105] bg-emerald-900 dark:bg-card rounded-lg animate-pulse" />;
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragMove={handleDragMove} onDragEnd={handleDragEnd}>
       <div
         ref={pitchRef}
-        className="relative flex-none aspect-[68/105] w-full max-w-[800px] mx-auto border border-border bg-emerald-900 dark:bg-[#12141a] shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group mt-12 md:mt-8 mb-20"
+        className="relative flex-none aspect-[68/105] w-full max-w-[800px] mx-auto border border-border bg-emerald-900 dark:bg-card shadow-[0_0_80px_rgba(0,0,0,0.6)] rounded-lg group mt-12 md:mt-8 mb-20"
       >
         {/* Pitch Greenish Dark Background */}
-        <div className="absolute inset-0 bg-emerald-900 dark:bg-[#12141a] rounded-lg overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-emerald-900 dark:bg-card rounded-lg overflow-hidden pointer-events-none">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.06)_0%,transparent_100%)]" />
         </div>
 
