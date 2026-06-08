@@ -1,7 +1,6 @@
 import { Tactic, AnalysisResult, CompatibilityTriangle, Synergy, RiskFactor, DutyBalance, Suggestion } from "@/types/tactic";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const wasmModule: any = null;
+let wasmModule: { score_tactic?: (json: string) => string } | null = null;
 
 export async function getWasm() {
   if (typeof window === "undefined") return null;

@@ -81,17 +81,16 @@ export function AIAnalysisPanel() {
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const a = analysis as Record<string, any>;
-  const tacticalNarrative     = (a.tacticalNarrative     as string)  ?? "";
-  const inPossessionRating    = (a.inPossessionRating    as number)  ?? 0;
-  const outOfPossessionRating = (a.outOfPossessionRating as number)  ?? 0;
+  const a = analysis;
+  const tacticalNarrative     = a.tacticalNarrative     ?? "";
+  const inPossessionRating    = a.inPossessionRating    ?? 0;
+  const outOfPossessionRating = a.outOfPossessionRating ?? 0;
   const channelOccupation     = a.channelOccupation      ?? { wideLeft:0, halfSpaceLeft:0, center:0, halfSpaceRight:0, wideRight:0 };
-  const restDefenceStructure  = (a.restDefenceStructure  as string)  ?? "";
-  const buildUpStructure      = (a.buildUpStructure      as string)  ?? "";
+  const restDefenceStructure  = a.restDefenceStructure  ?? "";
+  const buildUpStructure      = a.buildUpStructure      ?? "";
   const dutyBalance           = a.dutyBalance            ?? { defend:0, support:0, attack:0 };
-  const penetration           = (a.penetration           as number)  ?? 0;
-  const solidity              = (a.solidity              as number)  ?? 0;
+  const penetration           = a.penetration           ?? 0;
+  const solidity              = a.solidity              ?? 0;
   const suggestions           = a.suggestions            ?? [];
   const synergies             = a.synergies              ?? [];
   const riskFactors           = a.riskFactors            ?? [];
