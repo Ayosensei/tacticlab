@@ -50,7 +50,7 @@ export async function signUp(formData: FormData) {
   const { email, password } = parsed.data
   const supabase = await createClient()
 
-  const headersList = headers()
+  const headersList = await headers()
   const origin = headersList.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
   const { error } = await supabase.auth.signUp({
@@ -71,7 +71,7 @@ export async function signUp(formData: FormData) {
 export async function signInWithGoogle() {
   const supabase = await createClient()
   
-  const headersList = headers()
+  const headersList = await headers()
   const origin = headersList.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
   const { data, error } = await supabase.auth.signInWithOAuth({
